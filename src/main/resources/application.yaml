@@ -1,6 +1,7 @@
 spring:
   application:
     name: FidelisApi
+  jackson: {}
   datasource:
     url: jdbc:h2:mem:fidelisdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
@@ -26,3 +27,11 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

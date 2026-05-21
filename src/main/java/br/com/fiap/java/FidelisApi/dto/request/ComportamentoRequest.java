@@ -4,11 +4,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@Schema(description = "Request para criar/atualizar comportamento")
 public class ComportamentoRequest {
 
     @NotNull(message = "Data do registro é obrigatória")

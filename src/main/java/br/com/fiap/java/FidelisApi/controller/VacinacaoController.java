@@ -3,6 +3,7 @@ package br.com.fiap.java.FidelisApi.controller;
 import br.com.fiap.java.FidelisApi.dto.request.VacinacaoRequest;
 import br.com.fiap.java.FidelisApi.dto.response.VacinacaoResponse;
 import br.com.fiap.java.FidelisApi.entity.Vacinacao;
+import br.com.fiap.java.FidelisApi.mapper.VacinacaoMapper;
 import br.com.fiap.java.FidelisApi.service.VacinacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,15 +15,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
+@Tag(name = "Vacinacao")
 @RestController
-@RequestMapping("/api/vacinacoes")
+@RequestMapping("/api/v1/vacinacoes")
 @RequiredArgsConstructor
 public class VacinacaoController {
 
     private final VacinacaoService vacinacaoService;
 
     @GetMapping
+    @Operation(summary = "Listar vacinações", description = "Retorna uma página de vacinações")
     public ResponseEntity<Page<VacinacaoResponse>> listar(
             @RequestParam(required = false) String vacinaAplicada,
             @RequestParam(defaultValue = "0") int page,
@@ -32,52 +37,36 @@ public class VacinacaoController {
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sort);
         Page<VacinacaoResponse> response = vacinacaoService.findAll(vacinaAplicada, pageable)
-                .map(this::toResponse);
+                .map(VacinacaoMapper::toResponse);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar vacinação por ID", description = "Retorna os dados de uma vacinação pelo seu ID")
     public ResponseEntity<VacinacaoResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(toResponse(vacinacaoService.findById(id)));
+        return ResponseEntity.ok(VacinacaoMapper.toResponse(vacinacaoService.findById(id)));
     }
 
     @PostMapping
+    @Operation(summary = "Criar vacinação", description = "Cria um novo registro de vacinação")
     public ResponseEntity<VacinacaoResponse> criar(@Validated @RequestBody VacinacaoRequest request) {
-        Vacinacao saved = vacinacaoService.create(toEntity(request), request.getPetId(), request.getVeterinarioId());
-        return ResponseEntity.created(URI.create("/api/vacinacoes/" + saved.getId())).body(toResponse(saved));
+        Vacinacao saved = vacinacaoService.create(VacinacaoMapper.toEntity(request), request.getPetId(), request.getVeterinarioId());
+        return ResponseEntity.created(URI.create("/api/v1/vacinacoes/" + saved.getId())).body(VacinacaoMapper.toResponse(saved));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar vacinação", description = "Atualiza os dados de uma vacinação")
     public ResponseEntity<VacinacaoResponse> atualizar(@PathVariable Long id,
                                                        @Validated @RequestBody VacinacaoRequest request) {
-        Vacinacao updated = vacinacaoService.update(id, toEntity(request));
-        return ResponseEntity.ok(toResponse(updated));
+        Vacinacao updated = vacinacaoService.update(id, VacinacaoMapper.toEntity(request));
+        return ResponseEntity.ok(VacinacaoMapper.toResponse(updated));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar vacinação", description = "Remove uma vacinação pelo ID")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         vacinacaoService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-    private Vacinacao toEntity(VacinacaoRequest request) {
-        return Vacinacao.builder()
-                .dataAplicacao(request.getDataAplicacao())
-                .dataProxima(request.getDataProxima())
-                .vacinaAplicada(request.getVacinaAplicada())
-                .observacao(request.getObservacao())
-                .build();
-    }
-
-    private VacinacaoResponse toResponse(Vacinacao entity) {
-        return VacinacaoResponse.builder()
-                .id(entity.getId())
-                .dataAplicacao(entity.getDataAplicacao())
-                .dataProxima(entity.getDataProxima())
-                .vacinaAplicada(entity.getVacinaAplicada())
-                .observacao(entity.getObservacao())
-                .petId(entity.getPet().getId())
-                .veterinarioId(entity.getVeterinario().getId())
-                .build();
-    }
 }
+

@@ -28,8 +28,8 @@ public class Lembrete {
     @Column(name = "data_prevista", nullable = false)
     private LocalDate dataPrevista;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Convert(converter = LembreteStatusConverter.class)
+    @Column(nullable = false, length = 1)
     private LembreteStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)

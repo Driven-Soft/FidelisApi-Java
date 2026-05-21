@@ -3,6 +3,7 @@ package br.com.fiap.java.FidelisApi.controller;
 import br.com.fiap.java.FidelisApi.dto.request.PrescricaoRequest;
 import br.com.fiap.java.FidelisApi.dto.response.PrescricaoResponse;
 import br.com.fiap.java.FidelisApi.entity.Prescricao;
+import br.com.fiap.java.FidelisApi.mapper.PrescricaoMapper;
 import br.com.fiap.java.FidelisApi.service.PrescricaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,15 +15,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
+@Tag(name = "Prescricao")
 @RestController
-@RequestMapping("/api/prescricoes")
+@RequestMapping("/api/v1/prescricoes")
 @RequiredArgsConstructor
 public class PrescricaoController {
 
     private final PrescricaoService prescricaoService;
 
     @GetMapping
+    @Operation(summary = "Listar prescrições", description = "Retorna uma página de prescrições")
     public ResponseEntity<Page<PrescricaoResponse>> listar(
             @RequestParam(required = false) String dosagem,
             @RequestParam(defaultValue = "0") int page,
@@ -32,51 +37,36 @@ public class PrescricaoController {
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sort);
         Page<PrescricaoResponse> response = prescricaoService.findAll(dosagem, pageable)
-                .map(this::toResponse);
+                .map(PrescricaoMapper::toResponse);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar prescrição por ID", description = "Retorna os dados de uma prescrição pelo seu ID")
     public ResponseEntity<PrescricaoResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(toResponse(prescricaoService.findById(id)));
+        return ResponseEntity.ok(PrescricaoMapper.toResponse(prescricaoService.findById(id)));
     }
 
     @PostMapping
+    @Operation(summary = "Criar prescrição", description = "Cria uma nova prescrição")
     public ResponseEntity<PrescricaoResponse> criar(@Validated @RequestBody PrescricaoRequest request) {
-        Prescricao saved = prescricaoService.create(toEntity(request), request.getConsultaId());
-        return ResponseEntity.created(URI.create("/api/prescricoes/" + saved.getId())).body(toResponse(saved));
+        Prescricao saved = prescricaoService.create(PrescricaoMapper.toEntity(request), request.getConsultaId());
+        return ResponseEntity.created(URI.create("/api/v1/prescricoes/" + saved.getId())).body(PrescricaoMapper.toResponse(saved));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar prescrição", description = "Atualiza os dados de uma prescrição")
     public ResponseEntity<PrescricaoResponse> atualizar(@PathVariable Long id,
                                                         @Validated @RequestBody PrescricaoRequest request) {
-        Prescricao updated = prescricaoService.update(id, toEntity(request));
-        return ResponseEntity.ok(toResponse(updated));
+        Prescricao updated = prescricaoService.update(id, PrescricaoMapper.toEntity(request));
+        return ResponseEntity.ok(PrescricaoMapper.toResponse(updated));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar prescrição", description = "Remove uma prescrição pelo ID")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         prescricaoService.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-    private Prescricao toEntity(PrescricaoRequest request) {
-        return Prescricao.builder()
-                .dosagem(request.getDosagem())
-                .frequencia(request.getFrequencia())
-                .duracaoDias(request.getDuracaoDias())
-                .observacao(request.getObservacao())
-                .build();
-    }
-
-    private PrescricaoResponse toResponse(Prescricao entity) {
-        return PrescricaoResponse.builder()
-                .id(entity.getId())
-                .dosagem(entity.getDosagem())
-                .frequencia(entity.getFrequencia())
-                .duracaoDias(entity.getDuracaoDias())
-                .observacao(entity.getObservacao())
-                .consultaId(entity.getConsulta().getId())
-                .build();
-    }
 }
+

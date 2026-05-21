@@ -16,13 +16,15 @@ classDiagram
 
     class Tutor {
         +Long id
-        +String nome
         +String cpf
+        +String nome
         +String email
+        +String senha
         +String telefone
         +String endereco
-        +List~Pet~ pets
-        +List~Lembrete~ lembretes
+        +LocalDate dataCriacao
+        +Set~Pet~ pets
+        +Set~Lembrete~ lembretes
     }
 
     class Pet {
@@ -32,40 +34,44 @@ classDiagram
         +String raca
         +SexoPet sexo
         +LocalDate dataNascimento
-        +Double pesoAtual
+        +PetStatus status
+        +String fotoUrl
         +Clinica clinica
         +Tutor tutor
-        +List~Consulta~ consultas
-        +List~HistoricoPeso~ historicoPeso
-        +List~Vacinacao~ vacinacoes
-        +List~Vermifugacao~ vermifugacoes
-        +List~Recomendacao~ recomendacoes
-        +List~Comportamento~ comportamentos
-        +List~Lembrete~ lembretes
+        +Set~Consulta~ consultas
+        +Set~HistoricoPeso~ historicoPeso
+        +Set~Vacinacao~ vacinacoes
+        +Set~Vermifugacao~ vermifugacoes
+        +Set~Recomendacao~ recomendacoes
+        +Set~Comportamento~ comportamentos
+        +Set~Lembrete~ lembretes
     }
 
     class Veterinario {
         +Long id
+        +String cmvv
         +String nome
-        +String crmv
         +String email
-        +String telefone
+        +String senha
         +String especialidade
+        +LocalDate dataCriacao
         +Clinica clinica
-        +List~Consulta~ consultas
-        +List~Vacinacao~ vacinacoes
-        +List~Vermifugacao~ vermifugacoes
+        +Set~Consulta~ consultas
+        +Set~Vacinacao~ vacinacoes
+        +Set~Vermifugacao~ vermifugacoes
     }
 
     class Consulta {
         +Long id
-        +String tipo
         +LocalDateTime dataHora
-        +String descricao
+        +String tipo
+        +String diagnostico
+        +String observacoes
+        +LocalDate dataRetorno
         +Veterinario veterinario
         +Pet pet
-        +List~Exame~ exames
-        +List~Prescricao~ prescricoes
+        +Set~Exame~ exames
+        +Set~Prescricao~ prescricoes
     }
 
     class Exame {
@@ -78,24 +84,26 @@ classDiagram
     class Prescricao {
         +Long id
         +String dosagem
-        +String freQuencia
-        +String duracao
+        +String frequencia
+        +Integer duracaoDias
+        +String observacao
         +Consulta consulta
-        +List~Medicamento~ medicamentos
+        +Set~Medicamento~ medicamentos
     }
 
     class Medicamento {
         +Long id
         +String nome
         +String descricao
-        +String posologia
         +Prescricao prescricao
     }
 
     class Vacinacao {
         +Long id
-        +String vacina
+        +String vacinaAplicada
         +LocalDate dataAplicacao
+        +LocalDate dataProxima
+        +String observacao
         +Pet pet
         +Veterinario veterinario
     }
@@ -104,34 +112,39 @@ classDiagram
         +Long id
         +String produto
         +LocalDate dataAplicacao
+        +LocalDate dataProxima
         +Pet pet
         +Veterinario veterinario
     }
 
     class Recomendacao {
         +Long id
+        +String tipo
         +String descricao
+        +LocalDate dataRecomendacao
         +Pet pet
     }
 
     class HistoricoPeso {
         +Long id
-        +Double pesoKg
-        +LocalDate dataRegistro
+        +BigDecimal pesoKg
+        +LocalDate dataMedicao
+        +String observacao
         +Pet pet
     }
 
     class Comportamento {
         +Long id
+        +LocalDate data
         +String descricao
         +Pet pet
     }
 
     class Lembrete {
         +Long id
-        +String titulo
+        +String tipo
         +String descricao
-        +LocalDateTime dataHora
+        +LocalDate dataPrevista
         +LembreteStatus status
         +Tutor tutor
         +Pet pet

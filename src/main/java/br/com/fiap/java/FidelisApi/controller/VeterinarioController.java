@@ -3,6 +3,7 @@ package br.com.fiap.java.FidelisApi.controller;
 import br.com.fiap.java.FidelisApi.dto.request.VeterinarioRequest;
 import br.com.fiap.java.FidelisApi.dto.response.VeterinarioResponse;
 import br.com.fiap.java.FidelisApi.entity.Veterinario;
+import br.com.fiap.java.FidelisApi.mapper.VeterinarioMapper;
 import br.com.fiap.java.FidelisApi.service.VeterinarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,15 +15,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
+@Tag(name = "Veterinario")
 @RestController
-@RequestMapping("/api/veterinarios")
+@RequestMapping("/api/v1/veterinarios")
 @RequiredArgsConstructor
 public class VeterinarioController {
 
     private final VeterinarioService veterinarioService;
 
     @GetMapping
+    @Operation(summary = "Listar veterinários", description = "Retorna uma página de veterinários")
     public ResponseEntity<Page<VeterinarioResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(required = false) String especialidade,
@@ -33,55 +38,37 @@ public class VeterinarioController {
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sort);
         Page<VeterinarioResponse> response = veterinarioService.findAll(nome, especialidade, pageable)
-                .map(this::toResponse);
+                .map(VeterinarioMapper::toResponse);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar veterinário por ID", description = "Retorna os dados de um veterinário pelo seu ID")
     public ResponseEntity<VeterinarioResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(toResponse(veterinarioService.findById(id)));
+        return ResponseEntity.ok(VeterinarioMapper.toResponse(veterinarioService.findById(id)));
     }
 
     @PostMapping
+    @Operation(summary = "Criar veterinário", description = "Cria um novo veterinário")
     public ResponseEntity<VeterinarioResponse> criar(@Validated @RequestBody VeterinarioRequest request) {
-        Veterinario saved = veterinarioService.create(toEntity(request), request.getClinicaId());
-        return ResponseEntity.created(URI.create("/api/veterinarios/" + saved.getId())).body(toResponse(saved));
+        Veterinario saved = veterinarioService.create(VeterinarioMapper.toEntity(request), request.getClinicaId());
+        return ResponseEntity.created(URI.create("/api/v1/veterinarios/" + saved.getId())).body(VeterinarioMapper.toResponse(saved));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar veterinário", description = "Atualiza os dados de um veterinário")
     public ResponseEntity<VeterinarioResponse> atualizar(@PathVariable Long id,
                                                          @Validated @RequestBody VeterinarioRequest request) {
-        Veterinario updated = veterinarioService.update(id, toEntity(request));
-        return ResponseEntity.ok(toResponse(updated));
+        Veterinario updated = veterinarioService.update(id, VeterinarioMapper.toEntity(request));
+        return ResponseEntity.ok(VeterinarioMapper.toResponse(updated));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar veterinário", description = "Remove um veterinário pelo ID")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         veterinarioService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    private Veterinario toEntity(VeterinarioRequest request) {
-        return Veterinario.builder()
-                .cmvv(request.getCmvv())
-                .nome(request.getNome())
-                .email(request.getEmail())
-                .senha(request.getSenha())
-                .especialidade(request.getEspecialidade())
-                .dataCriacao(request.getDataCriacao())
-                .build();
-    }
-
-    private VeterinarioResponse toResponse(Veterinario entity) {
-        return VeterinarioResponse.builder()
-                .id(entity.getId())
-                .cmvv(entity.getCmvv())
-                .nome(entity.getNome())
-                .email(entity.getEmail())
-                .especialidade(entity.getEspecialidade())
-                .dataCriacao(entity.getDataCriacao())
-                .clinicaId(entity.getClinica().getId())
-                .clinicaNome(entity.getClinica().getNome())
-                .build();
-    }
 }
+

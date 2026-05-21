@@ -3,12 +3,14 @@ package br.com.fiap.java.FidelisApi.dto.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@Schema(description = "Request para criar/atualizar histórico de peso")
 public class HistoricoPesoRequest {
 
     @NotNull(message = "Peso é obrigatório")

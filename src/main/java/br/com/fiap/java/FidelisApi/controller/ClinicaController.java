@@ -3,6 +3,7 @@ package br.com.fiap.java.FidelisApi.controller;
 import br.com.fiap.java.FidelisApi.dto.request.ClinicaRequest;
 import br.com.fiap.java.FidelisApi.dto.response.ClinicaResponse;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
+import br.com.fiap.java.FidelisApi.mapper.ClinicaMapper;
 import br.com.fiap.java.FidelisApi.service.ClinicaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,15 +15,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 
+@Tag(name = "Clinica")
 @RestController
-@RequestMapping("/api/clinicas")
+@RequestMapping("/api/v1/clinicas")
 @RequiredArgsConstructor
 public class ClinicaController {
 
     private final ClinicaService clinicaService;
 
     @GetMapping
+    @Operation(summary = "Listar clínicas", description = "Retorna uma página de clínicas com filtros opcionais")
     public ResponseEntity<Page<ClinicaResponse>> listar(
             @RequestParam(required = false) String nome,
             @RequestParam(defaultValue = "0") int page,
@@ -32,52 +37,37 @@ public class ClinicaController {
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sort);
         Page<ClinicaResponse> response = clinicaService.findAll(nome, pageable)
-                .map(this::toResponse);
+                .map(ClinicaMapper::toResponse);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar clínica por ID", description = "Retorna os dados de uma clínica pelo seu ID")
     public ResponseEntity<ClinicaResponse> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(toResponse(clinicaService.findById(id)));
+        return ResponseEntity.ok(ClinicaMapper.toResponse(clinicaService.findById(id)));
     }
 
     @PostMapping
+    @Operation(summary = "Criar clínica", description = "Cria uma nova clínica com os dados fornecidos")
     public ResponseEntity<ClinicaResponse> criar(@Validated @RequestBody ClinicaRequest request) {
-        Clinica saved = clinicaService.create(toEntity(request));
-        return ResponseEntity.created(URI.create("/api/clinicas/" + saved.getId())).body(toResponse(saved));
+        Clinica saved = clinicaService.create(ClinicaMapper.toEntity(request));
+        return ResponseEntity.created(URI.create("/api/v1/clinicas/" + saved.getId())).body(ClinicaMapper.toResponse(saved));
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar clínica", description = "Atualiza os dados de uma clínica existente")
     public ResponseEntity<ClinicaResponse> atualizar(@PathVariable Long id,
                                                      @Validated @RequestBody ClinicaRequest request) {
-        Clinica updated = clinicaService.update(id, toEntity(request));
-        return ResponseEntity.ok(toResponse(updated));
+        Clinica updated = clinicaService.update(id, ClinicaMapper.toEntity(request));
+        return ResponseEntity.ok(ClinicaMapper.toResponse(updated));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deletar clínica", description = "Remove uma clínica pelo ID")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         clinicaService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    private Clinica toEntity(ClinicaRequest request) {
-        return Clinica.builder()
-                .nome(request.getNome())
-                .cnpj(request.getCnpj())
-                .telefone(request.getTelefone())
-                .email(request.getEmail())
-                .endereco(request.getEndereco())
-                .build();
-    }
-
-    private ClinicaResponse toResponse(Clinica entity) {
-        return ClinicaResponse.builder()
-                .id(entity.getId())
-                .nome(entity.getNome())
-                .cnpj(entity.getCnpj())
-                .telefone(entity.getTelefone())
-                .email(entity.getEmail())
-                .endereco(entity.getEndereco())
-                .build();
-    }
 }
+

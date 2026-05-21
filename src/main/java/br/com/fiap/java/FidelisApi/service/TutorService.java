@@ -9,15 +9,19 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class TutorService {
 
     private final TutorRepository tutorRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Cacheable("tutores")
+    @Transactional(readOnly = true)
     public Page<Tutor> findAll(String nome, String email, Pageable pageable) {
         if (email != null && !email.isBlank()) {
             return tutorRepository.findByEmailContainingIgnoreCase(email, pageable);
@@ -34,6 +38,7 @@ public class TutorService {
     }
 
     @CacheEvict(value = "tutores", allEntries = true)
+    @Transactional
     public Tutor create(Tutor tutor) {
         if (tutorRepository.existsByCpf(tutor.getCpf())) {
             throw new BusinessException("CPF já cadastrado.");
@@ -41,10 +46,12 @@ public class TutorService {
         if (tutorRepository.existsByEmail(tutor.getEmail())) {
             throw new BusinessException("Email já cadastrado.");
         }
+        tutor.setSenha(passwordEncoder.encode(tutor.getSenha()));
         return tutorRepository.save(tutor);
     }
 
     @CacheEvict(value = "tutores", allEntries = true)
+    @Transactional
     public Tutor update(Long id, Tutor update) {
         Tutor existing = findById(id);
         if (!existing.getCpf().equals(update.getCpf()) && tutorRepository.existsByCpf(update.getCpf())) {
@@ -55,7 +62,7 @@ public class TutorService {
         }
         existing.setNome(update.getNome());
         existing.setEmail(update.getEmail());
-        existing.setSenha(update.getSenha());
+        existing.setSenha(passwordEncoder.encode(update.getSenha()));
         existing.setTelefone(update.getTelefone());
         existing.setEndereco(update.getEndereco());
         existing.setCpf(update.getCpf());
@@ -64,6 +71,7 @@ public class TutorService {
     }
 
     @CacheEvict(value = "tutores", allEntries = true)
+    @Transactional
     public void delete(Long id) {
         Tutor existing = findById(id);
         tutorRepository.delete(existing);

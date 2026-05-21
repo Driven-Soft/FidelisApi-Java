@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
+@Schema(description = "Request para criar/atualizar vermifugação")
 public class VermifugacaoRequest {
 
     @NotBlank(message = "Produto é obrigatório")

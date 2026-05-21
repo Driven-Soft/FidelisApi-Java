@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,11 @@ public class PetService {
     private final ClinicaRepository clinicaRepository;
 
     @Cacheable("pets")
+    @Transactional(readOnly = true)
     public Page<Pet> findAll(String nome, String especie, Pageable pageable) {
+        if (nome != null && !nome.isBlank() && especie != null && !especie.isBlank()) {
+            return petRepository.findByNomeContainingIgnoreCaseAndEspecieContainingIgnoreCase(nome, especie, pageable);
+        }
         if (especie != null && !especie.isBlank()) {
             return petRepository.findByEspecieContainingIgnoreCase(especie, pageable);
         }
@@ -39,6 +44,7 @@ public class PetService {
     }
 
     @CacheEvict(value = "pets", allEntries = true)
+    @Transactional
     public Pet create(Pet pet, Long tutorId, Long clinicaId) {
         Tutor tutor = tutorRepository.findById(tutorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tutor não encontrado com id " + tutorId));
@@ -50,6 +56,7 @@ public class PetService {
     }
 
     @CacheEvict(value = "pets", allEntries = true)
+    @Transactional
     public Pet update(Long id, Pet update) {
         Pet existing = findById(id);
         existing.setNome(update.getNome());
@@ -63,6 +70,7 @@ public class PetService {
     }
 
     @CacheEvict(value = "pets", allEntries = true)
+    @Transactional
     public void delete(Long id) {
         Pet existing = findById(id);
         petRepository.delete(existing);

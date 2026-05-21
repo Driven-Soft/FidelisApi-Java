@@ -37,8 +37,9 @@ public class Pet {
     @Column(name = "data_nascimento", nullable = false)
     private LocalDate dataNascimento;
 
-    @Column(length = 20)
-    private String status;
+    @Convert(converter = PetStatusConverter.class)
+    @Column(nullable = false, length = 1)
+    private PetStatus status;
 
     @Column(name = "foto_url", length = 255)
     private String fotoUrl;

@@ -2,9 +2,11 @@
 
 API REST construída em Spring Boot para gestão de clínica veterinária. O projeto oferece um conjunto completo de endpoints para cadastro e consulta de clínicas, tutores, pets, veterinários, consultas, vacinas, vermifugações, exames, prescrições, recomendações, lembretes e histórico de peso.
 
+**Repositório GitHub:** [https://github.com/Driven-Soft/FidelisApi-Java](https://github.com/Driven-Soft/FidelisApi-Java)
+
 ## Tecnologias
 
-- Java 21
+- Java 17
 - Spring Boot 4
 - Spring Data JPA
 - H2 Database (memória) para desenvolvimento
@@ -36,30 +38,55 @@ O projeto já está configurado para rodar com H2 em memória no arquivo `src/ma
 
 ## Como executar
 
-1. Abrir o terminal na pasta do projeto
-2. Executar:
+Para instruções detalhadas de execução, veja: **[COMO_EXECUTAR.md](documentos/COMO_EXECUTAR.md)**
 
-```bash
-./mvnw spring-boot:run
+Resumidamente:
+
+```powershell
+# Clonar repositório
+git clone https://github.com/Driven-Soft/FidelisApi-Java.git
+cd FidelisApi-Java
+
+# Compilar e executar
+.\mvnw.cmd spring-boot:run
 ```
 
-ou gerar o `jar` e executar:
+Ou gerar o `jar` e executar:
 
-```bash
-./mvnw clean package
+```powershell
+.\mvnw.cmd clean package
 java -jar target/FidelisApi-0.0.1-SNAPSHOT.jar
 ```
 
+A aplicação estará disponível em: **http://localhost:8080**
+
+## Coleção Postman / Insomnia
+
+Há uma coleção de exemplo em `documentos/postman_collection.json` que contém requisições básicas (listar, criar, buscar por id, atualizar, deletar) para os recursos principais.
+
+- Importe `documentos/postman_collection.json` no Postman ou Insomnia.
+- Ajuste a variável `baseUrl` para `http://localhost:8080` antes de executar as requisições.
+
+## Testes
+
+Para executar a suíte de testes automatizados do projeto:
+
+```bash
+./mvnw test
+```
+
+Os testes usam H2 em memória e são executáveis localmente.
+
 ## Endpoints principais
 
-As rotas seguem o padrão `/api/{recurso}`. Exemplos:
+As rotas seguem o padrão `/api/v1/{recurso}`. Exemplos:
 
-- `GET /api/pets`
-- `POST /api/tutores`
-- `GET /api/consultas`
-- `POST /api/vacinacoes`
-- `GET /api/veterinarios`
-- `POST /api/clinicas`
+- `GET /api/v1/pets`
+- `POST /api/v1/tutores`
+- `GET /api/v1/consultas`
+- `POST /api/v1/vacinacoes`
+- `GET /api/v1/veterinarios`
+- `POST /api/v1/clinicas`
 
 ## Validação
 

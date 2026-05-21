@@ -1,0 +1,190 @@
+{
+  "info": {
+    "name": "Fidelis API - Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleção com requisições principais para validar a API Fidelis"
+  },
+  "item": [
+    {
+      "name": "Clinicas - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/clinicas?page=0&size=5&sort=id&direction=ASC"
+      }
+    },
+    {
+      "name": "Clinicas - Criar",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Clinica Exemplo\",\n  \"cnpj\": \"12.345.678/0001-99\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"contato@clinica.com\",\n  \"endereco\": \"Rua Exemplo, 123\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/clinicas"
+      }
+    },
+    {
+      "name": "Pets - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/pets?page=0&size=5"
+      }
+    },
+    {
+      "name": "Pets - Criar",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nome\": \"Rex\",\n  \"especie\": \"Cachorro\",\n  \"raca\": \"Vira-lata\",\n  \"sexo\": \"MACHO\",\n  \"dataNascimento\": \"2020-01-01\",\n  \"status\": \"ATIVO\",\n  \"fotoUrl\": \"https://example.com/foto.jpg\",\n  \"tutorId\": 1,\n  \"clinicaId\": 1\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/pets"
+      }
+    },
+    {
+      "name": "Tutores - Criar",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"cpf\": \"123.456.789-09\",\n  \"nome\": \"Joao Silva\",\n  \"email\": \"joao.silva@example.com\",\n  \"senha\": \"SenhaSegura123\",\n  \"telefone\": \"(11) 98888-7777\",\n  \"endereco\": \"Av. Exemplo, 100\",\n  \"dataCriacao\": \"2023-01-01\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/tutores"
+      }
+    },
+    {
+      "name": "Pets - Buscar por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/pets/:id"
+      }
+    },
+    {
+      "name": "Pets - Atualizar",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{ \n  \"nome\": \"Rex Atualizado\"\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/pets/:id"
+      }
+    },
+    {
+      "name": "Pets - Deletar",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/pets/:id"
+      }
+    },
+    {
+      "name": "Consultas - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/consultas?page=0&size=5"
+      }
+    },
+    {
+      "name": "Consultas - Criar",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"dataHora\": \"2026-06-01T09:00:00\",\n  \"tipo\": \"RETORNO\",\n  \"diagnostico\": \"OK\",\n  \"observacoes\": \"Nenhuma\",\n  \"veterinarioId\": 1,\n  \"petId\": 1\n}"
+        },
+        "url": "{{baseUrl}}/api/v1/consultas"
+      }
+    },
+    {
+      "name": "Veterinários - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/veterinarios?page=0&size=5"
+      }
+    },
+    {
+      "name": "Prescrições - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/prescricoes?page=0&size=5"
+      }
+    },
+    {
+      "name": "Vacinacões - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/vacinacoes?page=0&size=5"
+      }
+    },
+    {
+      "name": "Vermifugações - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/vermifugacoes?page=0&size=5"
+      }
+    },
+    {
+      "name": "Recomendações - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/recomendacoes?page=0&size=5"
+      }
+    },
+    {
+      "name": "Exames - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/exames?page=0&size=5"
+      }
+    },
+    {
+      "name": "Comportamentos - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/comportamentos?page=0&size=5"
+      }
+    },
+    {
+      "name": "HistóricoPeso - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/historico-pesos?page=0&size=5"
+      }
+    },
+    {
+      "name": "Lembretes - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/lembretes?page=0&size=5"
+      }
+    },
+    {
+      "name": "Medicamentos - Listar",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/medicamentos?page=0&size=5"
+      }
+    }
+  ],
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:8080" }]
+}

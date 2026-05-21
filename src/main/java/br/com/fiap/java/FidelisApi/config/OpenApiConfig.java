@@ -22,6 +22,6 @@ public class OpenApiConfig {
                         .license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.html")))
                 .externalDocs(new ExternalDocumentation()
                         .description("Documentação do projeto")
-                        .url("https://github.com/seuusuario/FidelisApi-Java"));
+                        .url("https://github.com/Driven-Soft/FidelisApi-Java"));
     }
 }

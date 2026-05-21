@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @Setter
@@ -23,9 +24,10 @@ public class ClinicaRequest {
     @Size(max = 15)
     private String telefone;
 
-    @NotBlank(message = "Email da clínica é obrigatório")
-    @Email(message = "Email inválido")
-    private String email;
+        @NotBlank(message = "Email da clínica é obrigatório")
+        @Email(message = "Email inválido")
+        @Schema(description = "Email da clínica")
+        private String email;
 
     @NotBlank(message = "Endereço da clínica é obrigatório")
     @Size(max = 255)

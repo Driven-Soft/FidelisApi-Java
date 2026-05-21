@@ -11,7 +11,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class VeterinarioService {
 
     private final VeterinarioRepository veterinarioRepository;
     private final ClinicaRepository clinicaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Cacheable("veterinarios")
     public Page<Veterinario> findAll(String nome, String especialidade, Pageable pageable) {
@@ -37,6 +40,7 @@ public class VeterinarioService {
     }
 
     @CacheEvict(value = "veterinarios", allEntries = true)
+    @Transactional
     public Veterinario create(Veterinario veterinario, Long clinicaId) {
         Clinica clinica = clinicaRepository.findById(clinicaId)
                 .orElseThrow(() -> new ResourceNotFoundException("Clínica não encontrada com id " + clinicaId));
@@ -47,10 +51,12 @@ public class VeterinarioService {
             throw new BusinessException("Email já cadastrado.");
         }
         veterinario.setClinica(clinica);
+        veterinario.setSenha(passwordEncoder.encode(veterinario.getSenha()));
         return veterinarioRepository.save(veterinario);
     }
 
     @CacheEvict(value = "veterinarios", allEntries = true)
+    @Transactional
     public Veterinario update(Long id, Veterinario update) {
         Veterinario existing = findById(id);
         if (!existing.getCmvv().equals(update.getCmvv()) && veterinarioRepository.existsByCmvv(update.getCmvv())) {
@@ -61,7 +67,7 @@ public class VeterinarioService {
         }
         existing.setNome(update.getNome());
         existing.setEmail(update.getEmail());
-        existing.setSenha(update.getSenha());
+        existing.setSenha(passwordEncoder.encode(update.getSenha()));
         existing.setEspecialidade(update.getEspecialidade());
         existing.setCmvv(update.getCmvv());
         existing.setDataCriacao(update.getDataCriacao());
@@ -69,6 +75,7 @@ public class VeterinarioService {
     }
 
     @CacheEvict(value = "veterinarios", allEntries = true)
+    @Transactional
     public void delete(Long id) {
         Veterinario existing = findById(id);
         veterinarioRepository.delete(existing);
