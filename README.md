@@ -1,5 +1,17 @@
 # FidelisApi
 
+## Equipe Driven Soft
+
+### Integrantes
+
+| Nome | RM |
+| --- | --- |
+| Felipe Bezerra Beatrici | RM 564723 |
+| Max Hayashi Batista | RM 563717 |
+| Henrique Cunha Torres | RM 565119 |
+
+<hr/>
+
 API REST construída em Spring Boot para gestão de clínica veterinária. O projeto oferece um conjunto completo de endpoints para cadastro e consulta de clínicas, tutores, pets, veterinários, consultas, vacinas, vermifugações, exames, prescrições, recomendações, lembretes e histórico de peso.
 
 **Repositório GitHub:** [https://github.com/Driven-Soft/FidelisApi-Java](https://github.com/Driven-Soft/FidelisApi-Java)

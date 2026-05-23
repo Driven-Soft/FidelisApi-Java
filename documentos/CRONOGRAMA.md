@@ -4,7 +4,7 @@
 **Sprint:** 1º/2º Sprint - Java Advanced
 **Desenvolvedor:** HenriqueCTorres (Backend)
 **Data Início:** 2026-05-17
-**Data Conclusão:** 2026-05-21
+**Data Conclusão:** 2026-05-22
 
 ## Fases do Desenvolvimento
 
@@ -47,6 +47,15 @@
 | Criação de COMO_EXECUTAR.md            | HenriqueCTorres | ✓      | 2026-05-21     |
 | Commit final e push                    | HenriqueCTorres | ✓      | 2026-05-21     |
 
+### Fase 4: Verificação Final com Postman (2026-05-22)
+
+| Atividade                                                    | Responsável     | Status | Data Conclusão |
+| ------------------------------------------------------------ | --------------- | ------ | -------------- |
+| Envio final e verificação de todos os endpoints pelo Postman | HenriqueCTorres | ✓      | 2026-05-22     |
+| Validação dos formatos JSON de request/response              | HenriqueCTorres | ✓      | 2026-05-22     |
+| Correção do endpoint `/api/v1/historico-pesos` (faltava "s") | HenriqueCTorres | ✓      | 2026-05-22     |
+| Documentação dos ajustes realizados                          | HenriqueCTorres | ✓      | 2026-05-22     |
+
 ## Recursos
 
 - **Linguagem:** Java 17
@@ -75,5 +84,5 @@
 
 ---
 
-**Data de Atualização:** 21/05/2026
+**Data de Atualização:** 23/05/2026
 **Próximas Etapas:** Feedback de código e melhorias pós-avaliação

@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.Operation;
 
 @Tag(name = "HistoricoPeso")
 @RestController
-@RequestMapping("/api/v1/historico-peso")
+@RequestMapping("/api/v1/historico-pesos")
 @RequiredArgsConstructor
 public class HistoricoPesoController {
 
@@ -53,7 +53,7 @@ public class HistoricoPesoController {
     @Operation(summary = "Criar histórico de peso", description = "Cria um novo registro de histórico de peso")
     public ResponseEntity<HistoricoPesoResponse> criar(@Validated @RequestBody HistoricoPesoRequest request) {
         HistoricoPeso saved = historicoPesoService.create(HistoricoPesoMapper.toEntity(request), request.getPetId());
-        return ResponseEntity.created(URI.create("/api/v1/historico-peso/" + saved.getId())).body(HistoricoPesoMapper.toResponse(saved));
+        return ResponseEntity.created(URI.create("/api/v1/historico-pesos/" + saved.getId())).body(HistoricoPesoMapper.toResponse(saved));
     }
 
     @PutMapping("/{id}")
