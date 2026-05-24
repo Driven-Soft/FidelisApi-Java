@@ -22,7 +22,7 @@ public class LembreteService {
     private final TutorRepository tutorRepository;
     private final PetRepository petRepository;
 
-    @Cacheable("lembretes")
+    @Cacheable(value = "lembretes", key = "(#tipo != null ? #tipo : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Lembrete> findAll(String tipo, Pageable pageable) {
         if (tipo != null && !tipo.isBlank()) {
             return lembreteRepository.findByTipoContainingIgnoreCase(tipo, pageable);

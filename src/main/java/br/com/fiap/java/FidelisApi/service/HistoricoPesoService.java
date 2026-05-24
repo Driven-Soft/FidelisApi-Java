@@ -21,7 +21,7 @@ public class HistoricoPesoService {
     private final HistoricoPesoRepository historicoPesoRepository;
     private final PetRepository petRepository;
 
-    @Cacheable("historicoPeso")
+    @Cacheable(value = "historicoPeso", key = "(#minPeso != null ? #minPeso.toString() : '') + '_' + (#maxPeso != null ? #maxPeso.toString() : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<HistoricoPeso> findAll(BigDecimal minPeso, BigDecimal maxPeso, Pageable pageable) {
         if (minPeso != null && maxPeso != null) {
             return historicoPesoRepository.findByPesoKgBetween(minPeso, maxPeso, pageable);

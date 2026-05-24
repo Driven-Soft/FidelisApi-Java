@@ -22,7 +22,7 @@ public class VermifugacaoService {
     private final PetRepository petRepository;
     private final VeterinarioRepository veterinarioRepository;
 
-    @Cacheable("vermifugacoes")
+    @Cacheable(value = "vermifugacoes", key = "(#produto != null ? #produto : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Vermifugacao> findAll(String produto, Pageable pageable) {
         if (produto != null && !produto.isBlank()) {
             return vermifugacaoRepository.findByProdutoContainingIgnoreCase(produto, pageable);

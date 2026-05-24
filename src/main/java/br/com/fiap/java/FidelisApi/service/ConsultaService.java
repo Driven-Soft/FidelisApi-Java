@@ -24,7 +24,7 @@ public class ConsultaService {
     private final VeterinarioRepository veterinarioRepository;
     private final PetRepository petRepository;
 
-    @Cacheable("consultas")
+    @Cacheable(value = "consultas", key = "(#tipo != null ? #tipo : '') + '_' + (#inicio != null ? #inicio.toString() : '') + '_' + (#fim != null ? #fim.toString() : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Consulta> findAll(String tipo, LocalDateTime inicio, LocalDateTime fim, Pageable pageable) {
         if (tipo != null && !tipo.isBlank()) {
             return consultaRepository.findByTipoContainingIgnoreCase(tipo, pageable);

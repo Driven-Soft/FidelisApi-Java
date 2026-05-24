@@ -23,7 +23,7 @@ public class PetService {
     private final TutorRepository tutorRepository;
     private final ClinicaRepository clinicaRepository;
 
-    @Cacheable("pets")
+    @Cacheable(value = "pets", key = "(#nome != null ? #nome : '') + '_' + (#especie != null ? #especie : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     @Transactional(readOnly = true)
     public Page<Pet> findAll(String nome, String especie, Pageable pageable) {
         if (nome != null && !nome.isBlank() && especie != null && !especie.isBlank()) {

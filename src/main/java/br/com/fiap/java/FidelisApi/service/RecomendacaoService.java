@@ -19,7 +19,7 @@ public class RecomendacaoService {
     private final RecomendacaoRepository recomendacaoRepository;
     private final PetRepository petRepository;
 
-    @Cacheable("recomendacoes")
+    @Cacheable(value = "recomendacoes", key = "(#tipo != null ? #tipo : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Recomendacao> findAll(String tipo, Pageable pageable) {
         if (tipo != null && !tipo.isBlank()) {
             return recomendacaoRepository.findByTipoContainingIgnoreCase(tipo, pageable);

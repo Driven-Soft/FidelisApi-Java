@@ -19,7 +19,7 @@ public class ComportamentoService {
     private final ComportamentoRepository comportamentoRepository;
     private final PetRepository petRepository;
 
-    @Cacheable("comportamentos")
+    @Cacheable(value = "comportamentos", key = "(#descricao != null ? #descricao : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Comportamento> findAll(String descricao, Pageable pageable) {
         if (descricao != null && !descricao.isBlank()) {
             return comportamentoRepository.findByDescricaoContainingIgnoreCase(descricao, pageable);

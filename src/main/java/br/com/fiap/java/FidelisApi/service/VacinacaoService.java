@@ -22,7 +22,7 @@ public class VacinacaoService {
     private final PetRepository petRepository;
     private final VeterinarioRepository veterinarioRepository;
 
-    @Cacheable("vacinacoes")
+    @Cacheable(value = "vacinacoes", key = "(#vacinaAplicada != null ? #vacinaAplicada : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Vacinacao> findAll(String vacinaAplicada, Pageable pageable) {
         if (vacinaAplicada != null && !vacinaAplicada.isBlank()) {
             return vacinacaoRepository.findByVacinaAplicadaContainingIgnoreCase(vacinaAplicada, pageable);

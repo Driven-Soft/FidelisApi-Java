@@ -19,7 +19,7 @@ public class ExameService {
     private final ExameRepository exameRepository;
     private final ConsultaRepository consultaRepository;
 
-    @Cacheable("exames")
+    @Cacheable(value = "exames", key = "(#tipo != null ? #tipo : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Exame> findAll(String tipo, Pageable pageable) {
         if (tipo != null && !tipo.isBlank()) {
             return exameRepository.findByTipoContainingIgnoreCase(tipo, pageable);

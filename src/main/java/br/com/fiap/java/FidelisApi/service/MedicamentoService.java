@@ -19,7 +19,7 @@ public class MedicamentoService {
     private final MedicamentoRepository medicamentoRepository;
     private final PrescricaoRepository prescricaoRepository;
 
-    @Cacheable("medicamentos")
+    @Cacheable(value = "medicamentos", key = "(#nome != null ? #nome : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Medicamento> findAll(String nome, Pageable pageable) {
         if (nome != null && !nome.isBlank()) {
             return medicamentoRepository.findByNomeContainingIgnoreCase(nome, pageable);

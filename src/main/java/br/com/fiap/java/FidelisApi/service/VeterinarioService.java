@@ -23,7 +23,7 @@ public class VeterinarioService {
     private final ClinicaRepository clinicaRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Cacheable("veterinarios")
+    @Cacheable(value = "veterinarios", key = "(#nome != null ? #nome : '') + '_' + (#especialidade != null ? #especialidade : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Veterinario> findAll(String nome, String especialidade, Pageable pageable) {
         if (especialidade != null && !especialidade.isBlank()) {
             return veterinarioRepository.findByEspecialidadeContainingIgnoreCase(especialidade, pageable);

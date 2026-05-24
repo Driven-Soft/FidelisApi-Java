@@ -20,7 +20,7 @@ public class TutorService {
     private final TutorRepository tutorRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Cacheable("tutores")
+    @Cacheable(value = "tutores", key = "(#nome != null ? #nome : '') + '_' + (#email != null ? #email : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     @Transactional(readOnly = true)
     public Page<Tutor> findAll(String nome, String email, Pageable pageable) {
         if (email != null && !email.isBlank()) {

@@ -17,7 +17,7 @@ public class ClinicaService {
 
     private final ClinicaRepository clinicaRepository;
 
-    @Cacheable("clinicas")
+    @Cacheable(value = "clinicas", key = "(#nome != null ? #nome : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     public Page<Clinica> findAll(String nome, Pageable pageable) {
         if (nome == null || nome.isBlank()) {
             return clinicaRepository.findAll(pageable);
