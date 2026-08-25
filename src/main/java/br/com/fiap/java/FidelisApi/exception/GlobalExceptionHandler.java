@@ -3,7 +3,6 @@ package br.com.fiap.java.FidelisApi.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,19 +74,6 @@ public class GlobalExceptionHandler {
                 "Dados inválidos foram enviados",
                 request.getRequestURI(),
                 details
-        );
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(PropertyReferenceException.class)
-    public ResponseEntity<ApiErrorResponse> handleInvalidSortProperty(PropertyReferenceException ex, HttpServletRequest request) {
-        ApiErrorResponse error = new ApiErrorResponse(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                "Invalid sort property",
-                "O campo informado para ordenação (sort) não existe neste recurso.",
-                request.getRequestURI(),
-                List.of(ex.getMessage())
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }

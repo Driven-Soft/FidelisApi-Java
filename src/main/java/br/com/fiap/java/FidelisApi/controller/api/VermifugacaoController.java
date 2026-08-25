@@ -7,9 +7,8 @@ import br.com.fiap.java.FidelisApi.mapper.VermifugacaoMapper;
 import br.com.fiap.java.FidelisApi.service.VermifugacaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import br.com.fiap.java.FidelisApi.common.PageableUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,7 @@ public class VermifugacaoController {
             @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "ASC") String direction
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sort);
+        Pageable pageable = PageableUtils.build(page, size, sort, direction);
         Page<VermifugacaoResponse> response = vermifugacaoService.findAll(produto, pageable)
                 .map(VermifugacaoMapper::toResponse);
         return ResponseEntity.ok(response);
