@@ -1,4 +1,4 @@
-package br.com.fiap.java.FidelisApi.controller;
+package br.com.fiap.java.FidelisApi.controller.api;
 
 import br.com.fiap.java.FidelisApi.dto.request.VermifugacaoRequest;
 import br.com.fiap.java.FidelisApi.dto.response.VermifugacaoResponse;

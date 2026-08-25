@@ -1,4 +1,4 @@
-package br.com.fiap.java.FidelisApi.controller;
+package br.com.fiap.java.FidelisApi.controller.api;
 
 import br.com.fiap.java.FidelisApi.dto.request.MedicamentoRequest;
 import br.com.fiap.java.FidelisApi.dto.response.MedicamentoResponse;

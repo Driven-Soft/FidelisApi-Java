@@ -1,4 +1,4 @@
-package br.com.fiap.java.FidelisApi.controller;
+package br.com.fiap.java.FidelisApi.controller.api;
 
 import br.com.fiap.java.FidelisApi.dto.request.PetRequest;
 import br.com.fiap.java.FidelisApi.dto.response.PetResponse;
