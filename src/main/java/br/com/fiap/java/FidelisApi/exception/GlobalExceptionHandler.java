@@ -78,6 +78,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(org.springframework.data.core.PropertyReferenceException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidSortProperty(org.springframework.data.core.PropertyReferenceException ex, HttpServletRequest request) {
+        ApiErrorResponse error = new ApiErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid sort property",
+                "O campo informado para ordenação (sort) não existe neste recurso.",
+                request.getRequestURI(),
+                List.of(ex.getMessage())
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleUncaught(Exception ex, HttpServletRequest request) {
         log.error("Erro não tratado ao processar a requisição {}", request.getRequestURI(), ex);
