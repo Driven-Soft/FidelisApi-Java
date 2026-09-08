@@ -29,7 +29,7 @@ public class Prescricao {
     @Column(name = "duracao_dias", nullable = false)
     private Integer duracaoDias;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String observacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
