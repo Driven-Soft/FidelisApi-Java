@@ -319,8 +319,10 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 ```
+
+> Nota: até a Sprint 3, o schema ainda é gerado pelo Hibernate (`ddl-auto: update`). A partir da introdução do Flyway, este valor passará para `validate`, com o schema controlado por migrations versionadas em `db/migration`.
 
 ---
 

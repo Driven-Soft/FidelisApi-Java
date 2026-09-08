@@ -1,4 +1,4 @@
-package br.com.fiap.java.FidelisApi.controller;
+package br.com.fiap.java.FidelisApi.controller.api;
 
 import br.com.fiap.java.FidelisApi.dto.request.ClinicaRequest;
 import br.com.fiap.java.FidelisApi.dto.response.ClinicaResponse;
@@ -7,9 +7,8 @@ import br.com.fiap.java.FidelisApi.mapper.ClinicaMapper;
 import br.com.fiap.java.FidelisApi.service.ClinicaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import br.com.fiap.java.FidelisApi.common.PageableUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +34,7 @@ public class ClinicaController {
             @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "ASC") String direction
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.Direction.fromString(direction), sort);
+        Pageable pageable = PageableUtils.build(page, size, sort, direction);
         Page<ClinicaResponse> response = clinicaService.findAll(nome, pageable)
                 .map(ClinicaMapper::toResponse);
         return ResponseEntity.ok(response);

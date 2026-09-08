@@ -2,6 +2,7 @@ package br.com.fiap.java.FidelisApi.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -76,15 +78,29 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(org.springframework.data.core.PropertyReferenceException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidSortProperty(org.springframework.data.core.PropertyReferenceException ex, HttpServletRequest request) {
+        ApiErrorResponse error = new ApiErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid sort property",
+                "O campo informado para ordenação (sort) não existe neste recurso.",
+                request.getRequestURI(),
+                List.of(ex.getMessage())
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleUncaught(Exception ex, HttpServletRequest request) {
+        log.error("Erro não tratado ao processar a requisição {}", request.getRequestURI(), ex);
         ApiErrorResponse error = new ApiErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal server error",
-                ex.getMessage(),
+                "Ocorreu um erro inesperado ao processar a sua requisição. Tente novamente mais tarde.",
                 request.getRequestURI(),
-                List.of(ex.getMessage())
+                List.of()
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
