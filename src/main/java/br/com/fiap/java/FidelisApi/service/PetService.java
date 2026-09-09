@@ -75,4 +75,9 @@ public class PetService {
         Pet existing = findById(id);
         petRepository.delete(existing);
     }
+
+    @Transactional(readOnly = true)
+    public Page<Pet> findAllByClinica(Long clinicaId, Pageable pageable) {
+        return petRepository.findByClinicaIdComTutor(clinicaId, pageable);
+    }
 }
