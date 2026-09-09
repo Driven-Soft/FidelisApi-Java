@@ -18,7 +18,8 @@
 
         <div th:if="${usuario.perfil.name() == 'CLINICA'}">
             <h4>Painel da Clínica</h4>
-            <p>Aqui vão aparecer as ferramentas de gestão de pets, consultas, vacinações e os fluxos completos da clínica (próximos passos da Sprint 3).</p>
+            <a th:href="@{/clinica/pets}" class="btn btn-outline-primary">Gerenciar Pets</a>
+            <p class="mt-2">Consultas, vacinações e os fluxos completos chegam nos próximos passos da Sprint 3.</p>
         </div>
 
         <div th:if="${usuario.perfil.name() == 'TUTOR'}">
