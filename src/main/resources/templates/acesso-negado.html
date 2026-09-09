@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabecalho('Acesso Negado')}" />
+<body>
+    <div class="container" style="text-align: center;">
+        <br><br>
+        <h1><b>Você não tem permissão para acessar este conteúdo.</b></h1>
+        <br><br>
+        <a href="/login">Voltar para o login</a>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+</body>
+</html>

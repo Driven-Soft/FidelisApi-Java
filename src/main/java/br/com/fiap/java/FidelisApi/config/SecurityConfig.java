@@ -22,13 +22,13 @@ public class SecurityConfig {
             )
 
             .headers(headers ->
-                headers.frameOptions(frame -> frame.disable()) // necessário para o H2 Console
+                headers.frameOptions(frame -> frame.sameOrigin()) // necessário para o H2 Console
             )
 
             .authorizeHttpRequests(auth -> auth
                 // --- Público ---
                 .requestMatchers(
-                    "/login",
+                    "/login", "/acesso-negado",
                     "/css/**", "/js/**", "/images/**",
                     "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
                     "/h2-console/**",
@@ -52,13 +52,21 @@ public class SecurityConfig {
 
             .formLogin(form -> form
                 .loginPage("/login")
+                .usernameParameter("email")
                 .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/login?falha=true")
                 .permitAll()
             )
 
             .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
+            )
+
+            .exceptionHandling(exception -> exception
+                .accessDeniedHandler((request, response, accessDeniedException) ->
+                    response.sendRedirect("/acesso-negado"))
             )
 
             .sessionManagement(session ->
