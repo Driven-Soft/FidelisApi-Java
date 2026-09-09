@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabecalho('Fidelis - Meus Pets')}" />
+<body>
+    <div th:replace="~{fragmentos :: funcao-logout}" />
+
+    <div class="container">
+        <br><br>
+        <a href="/dashboard">&larr; Voltar ao dashboard</a>
+        <h2>Meus Pets</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Espécie</th>
+                    <th>Raça</th>
+                    <th>Clínica</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="pet : ${pets}">
+                    <td th:text="${pet.nome}"></td>
+                    <td th:text="${pet.especie}"></td>
+                    <td th:text="${pet.raca}"></td>
+                    <td th:text="${pet.clinica.nome}"></td>
+                    <td th:text="${pet.status}"></td>
+                    <td>
+                        <a th:href="@{/tutor/pets/{id}(id=${pet.id})}">Ver histórico</a>
+                    </td>
+                </tr>
+                <tr th:if="${pets.isEmpty()}">
+                    <td colspan="6">Você ainda não tem pets cadastrados.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+</body>
+</html>

@@ -1,5 +1,7 @@
 package br.com.fiap.java.FidelisApi.repository;
 
+import java.util.List;
+import java.util.Optional;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.SexoPet;
 import org.springframework.data.domain.Page;
@@ -21,4 +23,10 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     @Query("SELECT p FROM Pet p JOIN FETCH p.tutor WHERE p.clinica.id = :clinicaId")
     Page<Pet> findByClinicaIdComTutor(Long clinicaId, Pageable pageable);
+
+    @Query("SELECT p FROM Pet p JOIN FETCH p.clinica WHERE p.tutor.id = :tutorId")
+    List<Pet> findByTutorIdComClinica(Long tutorId);
+
+    @Query("SELECT p FROM Pet p WHERE p.id = :id AND p.tutor.id = :tutorId")
+    Optional<Pet> findByIdAndTutorId(Long id, Long tutorId);
 }

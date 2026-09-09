@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.repository;
 
+import java.util.List;
 import br.com.fiap.java.FidelisApi.entity.Consulta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,7 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
     Page<Consulta> findByDataHoraBetween(@Param("inicio") LocalDateTime inicio,
                                          @Param("fim") LocalDateTime fim,
                                          Pageable pageable);
+
+    @Query("SELECT c FROM Consulta c JOIN FETCH c.veterinario WHERE c.pet.id = :petId ORDER BY c.dataHora DESC")
+    List<Consulta> findByPetIdComVeterinario(Long petId);
 }

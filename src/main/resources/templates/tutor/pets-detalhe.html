@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabecalho('Fidelis - Histórico do Pet')}" />
+<body>
+    <div th:replace="~{fragmentos :: funcao-logout}" />
+
+    <div class="container">
+        <br><br>
+        <a href="/tutor/pets">&larr; Voltar aos meus pets</a>
+        <h2 th:text="${pet.nome}"></h2>
+        <p>
+            <span th:text="${pet.especie}"></span> - <span th:text="${pet.raca}"></span> -
+            Status: <span th:text="${pet.status}"></span>
+        </p>
+
+        <hr>
+
+        <h4>Consultas</h4>
+        <table class="table table-sm">
+            <thead>
+                <tr><th>Data</th><th>Tipo</th><th>Veterinário</th><th>Diagnóstico</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${consultas}">
+                    <td th:text="${#temporals.format(c.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${c.tipo}"></td>
+                    <td th:text="${c.veterinario.nome}"></td>
+                    <td th:text="${c.diagnostico}"></td>
+                </tr>
+                <tr th:if="${consultas.isEmpty()}">
+                    <td colspan="4">Nenhuma consulta registrada.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Vacinações</h4>
+        <table class="table table-sm">
+            <thead>
+                <tr><th>Vacina</th><th>Aplicação</th><th>Próxima dose</th><th>Veterinário</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="v : ${vacinacoes}">
+                    <td th:text="${v.vacinaAplicada}"></td>
+                    <td th:text="${#temporals.format(v.dataAplicacao, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${v.dataProxima != null ? #temporals.format(v.dataProxima, 'dd/MM/yyyy') : '-'}"></td>
+                    <td th:text="${v.veterinario.nome}"></td>
+                </tr>
+                <tr th:if="${vacinacoes.isEmpty()}">
+                    <td colspan="4">Nenhuma vacinação registrada.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Lembretes</h4>
+        <table class="table table-sm">
+            <thead>
+                <tr><th>Tipo</th><th>Descrição</th><th>Data prevista</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr th:each="l : ${lembretes}">
+                    <td th:text="${l.tipo}"></td>
+                    <td th:text="${l.descricao}"></td>
+                    <td th:text="${#temporals.format(l.dataPrevista, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${l.status}"></td>
+                </tr>
+                <tr th:if="${lembretes.isEmpty()}">
+                    <td colspan="4">Nenhum lembrete pendente.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+</body>
+</html>

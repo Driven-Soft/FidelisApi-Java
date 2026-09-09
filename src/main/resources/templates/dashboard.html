@@ -24,7 +24,7 @@
 
         <div th:if="${usuario.perfil.name() == 'TUTOR'}">
             <h4>Meus Pets</h4>
-            <p>Aqui vão aparecer seus pets, histórico clínico, consultas e lembretes (próximos passos da Sprint 3).</p>
+            <a th:href="@{/tutor/pets}" class="btn btn-outline-success">Ver Meus Pets</a>
         </div>
     </div>
 
