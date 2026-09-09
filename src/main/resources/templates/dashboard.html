@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabecalho('Fidelis - Dashboard')}" />
+<body>
+    <div th:replace="~{fragmentos :: funcao-logout}" />
+
+    <div class="container">
+        <br><br>
+        <h2>Olá, <span th:text="${nomeExibicao}"></span>!</h2>
+
+        <p>
+            Perfil:
+            <span class="badge bg-primary" th:if="${usuario.perfil.name() == 'CLINICA'}">Clínica</span>
+            <span class="badge bg-success" th:if="${usuario.perfil.name() == 'TUTOR'}">Tutor</span>
+        </p>
+
+        <hr>
+
+        <div th:if="${usuario.perfil.name() == 'CLINICA'}">
+            <h4>Painel da Clínica</h4>
+            <p>Aqui vão aparecer as ferramentas de gestão de pets, consultas, vacinações e os fluxos completos da clínica (próximos passos da Sprint 3).</p>
+        </div>
+
+        <div th:if="${usuario.perfil.name() == 'TUTOR'}">
+            <h4>Meus Pets</h4>
+            <p>Aqui vão aparecer seus pets, histórico clínico, consultas e lembretes (próximos passos da Sprint 3).</p>
+        </div>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+</body>
+</html>

@@ -21,7 +21,7 @@ public class UsuarioDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email)
+        Usuario usuario = usuarioRepository.findByEmailComVinculo(email)
                 .orElseThrow(() -> new UsernameNotFoundException("E-mail ou senha inválidos."));
 
         validarVinculo(usuario);
