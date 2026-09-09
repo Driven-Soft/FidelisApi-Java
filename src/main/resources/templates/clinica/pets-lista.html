@@ -30,7 +30,7 @@
                     <td th:text="${pet.tutor.nome}"></td>
                     <td th:text="${pet.status}"></td>
                     <td>
-                        <a th:href="@{/clinica/pets/{id}/editar(id=${pet.id})}">Editar</a>
+                        <a th:href="@{/clinica/consultas/nova(petId=${pet.id})}">Registrar Consulta</a> | <a th:href="@{/clinica/pets/{id}/editar(id=${pet.id})}">Editar</a>
                     </td>
                 </tr>
                 <tr th:if="${pets.isEmpty()}">

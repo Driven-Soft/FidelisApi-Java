@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabecalho('Fidelis - Registrar Consulta')}" />
+<body>
+    <div th:replace="~{fragmentos :: funcao-logout}" />
+
+    <div class="container" style="max-width: 500px;">
+        <br><br>
+        <a href="/clinica/pets">&larr; Voltar</a>
+        <h2>Registrar Consulta</h2>
+
+        <form th:action="@{/clinica/consultas}" th:object="${consultaRequest}" method="post">
+
+            <div class="mb-2">
+                <label>Pet</label>
+                <select class="form-control" th:field="*{petId}">
+                    <option th:each="p : ${pets}" th:value="${p.id}" th:text="${p.nome} + ' (' + ${p.tutor.nome} + ')'"></option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label>Veterinário</label>
+                <select class="form-control" th:field="*{veterinarioId}">
+                    <option th:each="v : ${veterinarios}" th:value="${v.id}" th:text="${v.nome}"></option>
+                </select>
+            </div>
+
+            <div class="mb-2">
+                <label>Data e hora</label>
+                <input class="form-control" type="datetime-local" th:field="*{dataHora}">
+                <span class="text-danger" th:if="${#fields.hasErrors('dataHora')}" th:errors="*{dataHora}"></span>
+            </div>
+
+            <div class="mb-2">
+                <label>Tipo</label>
+                <input class="form-control" type="text" th:field="*{tipo}" placeholder="Ex: Checkup, Vacinação, Emergência">
+                <span class="text-danger" th:if="${#fields.hasErrors('tipo')}" th:errors="*{tipo}"></span>
+            </div>
+
+            <div class="mb-2">
+                <label>Diagnóstico</label>
+                <textarea class="form-control" th:field="*{diagnostico}"></textarea>
+            </div>
+
+            <div class="mb-2">
+                <label>Observações</label>
+                <textarea class="form-control" th:field="*{observacoes}"></textarea>
+            </div>
+
+            <div class="mb-2">
+                <label>Data de retorno (opcional — se não preencher, gera lembrete em 30 dias)</label>
+                <input class="form-control" type="date" th:field="*{dataRetorno}">
+            </div>
+
+            <br>
+            <button type="submit" class="btn btn-primary">Registrar Consulta</button>
+        </form>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+</body>
+</html>

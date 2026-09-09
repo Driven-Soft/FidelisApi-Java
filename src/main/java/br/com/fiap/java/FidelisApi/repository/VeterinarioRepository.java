@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.repository;
 
+import java.util.List;
 import br.com.fiap.java.FidelisApi.entity.Veterinario;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,4 +15,6 @@ public interface VeterinarioRepository extends JpaRepository<Veterinario, Long> 
     boolean existsByCmvv(String cmvv);
 
     boolean existsByEmail(String email);
+
+    List<Veterinario> findByClinicaId(Long clinicaId);
 }

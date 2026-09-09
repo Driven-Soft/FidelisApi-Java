@@ -1,6 +1,7 @@
 package br.com.fiap.java.FidelisApi.repository;
 
 import java.util.List;
+import java.util.Optional;
 import br.com.fiap.java.FidelisApi.entity.Lembrete;
 import br.com.fiap.java.FidelisApi.entity.LembreteStatus;
 import org.springframework.data.domain.Page;
@@ -16,4 +17,6 @@ public interface LembreteRepository extends JpaRepository<Lembrete, Long> {
 
     @Query("SELECT l FROM Lembrete l WHERE l.pet.id = :petId ORDER BY l.dataPrevista DESC")
     List<Lembrete> findByPetId(Long petId);
+
+    Optional<Lembrete> findFirstByPetIdOrderByIdDesc(Long petId);
 }
