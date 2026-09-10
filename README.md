@@ -43,6 +43,7 @@ Sistema de gestão para clínicas veterinárias, construído em Spring Boot. O p
 - Autenticação por sessão com dois perfis de acesso: **Clínica** e **Tutor**, cada um com suas próprias telas e permissões
 - Geração automática de **lembrete** e **recomendação** ao registrar uma nova consulta
 - Alerta de **retenção/churn**: identifica pets sem consulta há 90 dias ou mais
+- Página pública de boas-vindas em `/home`, com acesso ao login
 - Documentação interativa via Swagger UI e coleção Postman pronta para uso
 
 ## Estrutura do projeto
@@ -101,7 +102,7 @@ A aplicação estará disponível em: **http://localhost:8080**
 
 ## Login e perfis de acesso
 
-A aplicação exige login para acessar a maioria das rotas. As migrations do Flyway já criam usuários de teste:
+A página inicial pública está disponível em `/home` e a raiz `/` redireciona para ela. Para acessar o dashboard e as áreas protegidas, use o login. As migrations do Flyway já criam usuários de teste:
 
 | Perfil  | E-mail                 | Senha    |
 | ------- | ---------------------- | -------- |
@@ -110,13 +111,15 @@ A aplicação exige login para acessar a maioria das rotas. As migrations do Fly
 
 Após o login você é redirecionado para `/dashboard`. Rotas em `/clinica/**` exigem perfil Clínica e rotas em `/tutor/**` exigem perfil Tutor.
 
+A API REST é administrativa e exige o perfil `CLINICA` para leitura e escrita. O perfil `TUTOR` utiliza as telas web autorizadas.
+
 ## Coleção Postman / Insomnia
 
 Há uma coleção em `documentos/api/postman_collection.json`, cobrindo autenticação, CRUD dos recursos principais e os fluxos de negócio (geração automática de lembrete/recomendação, alerta de retenção).
 
 - Importe `documentos/api/postman_collection.json` no Postman ou Insomnia.
 - Ajuste a variável `baseUrl` para `http://localhost:8080` antes de executar as requisições.
-- Autentique-se antes de chamar endpoints protegidos.
+- Autentique-se como `CLINICA` antes de chamar endpoints protegidos da API. O perfil `TUTOR` recebe `403` na API e utiliza a camada web.
 
 ## Testes
 
@@ -140,7 +143,7 @@ As rotas da API seguem o padrão `/api/v1/{recurso}`. Exemplos:
 - `POST /api/v1/clinicas`
 - `GET /api/v1/clinicas/{id}/retencao` - pets em risco de retenção/churn (perfil Clínica)
 
-Leituras (`GET`) exigem apenas usuário autenticado; escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil Clínica.
+Leituras (`GET`) e escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil `CLINICA`. O perfil `TUTOR` utiliza a camada web autorizada.
 
 ## Validação
 

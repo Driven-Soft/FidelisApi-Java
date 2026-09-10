@@ -2,7 +2,7 @@
 
 ## Visão Geral
 
-Este documento detalha como cada requisito técnico foi implementado na aplicação FidelisApi (Sistema de Gerenciamento de Clínica Veterinária). A aplicação expõe uma **API REST** (`/api/v1/**`) e também uma **camada web com Thymeleaf** (`/login`, `/dashboard`, `/clinica/**`, `/tutor/**`), protegidas por autenticação e autorização baseadas em perfil.
+Este documento detalha como cada requisito técnico foi implementado na aplicação FidelisApi (Sistema de Gerenciamento de Clínica Veterinária). A aplicação expõe uma **API REST** (`/api/v1/**`) e também uma **camada web com Thymeleaf** (`/home`, `/login`, `/dashboard`, `/clinica/**`, `/tutor/**`), protegidas por autenticação e autorização baseadas em perfil.
 
 ---
 
@@ -157,10 +157,11 @@ public Clinica create(Clinica clinica) {
 - `UsuarioDetailsService` (`service/UsuarioDetailsService.java`) implementa `UserDetailsService`, carregando o `Usuario` pelo e-mail e expondo a authority `ROLE_<PERFIL>` (`CLINICA` ou `TUTOR`)
 - Regra de vínculo reforçada em código (além de `CHECK` no banco): um `Usuario` do perfil `CLINICA` precisa estar ligado a uma `Clinica` (e nunca a um `Tutor`), e vice-versa para `TUTOR`
 - Autorização por rota configurada em `config/SecurityConfig.java`:
-  - Rotas públicas: `/login`, `/acesso-negado`, assets estáticos, Swagger, H2 Console, `/actuator/health` e `/actuator/info`
-  - `GET /api/v1/**`: qualquer usuário autenticado
+  - Rotas públicas: `/`, `/home`, `/login`, `/acesso-negado`, assets estáticos, Swagger, H2 Console, `/actuator/health` e `/actuator/info`
+  - `GET /api/v1/**`: exige `ROLE_CLINICA`
   - Escrita (`POST`/`PUT`/`PATCH`/`DELETE`) em `/api/v1/**`: exige `ROLE_CLINICA`
   - `GET /api/v1/clinicas/{id}/retencao`: exige `ROLE_CLINICA`
+  - Perfil `TUTOR`: utiliza as telas web autorizadas e recebe `403` na API administrativa
   - `/clinica/**` (telas MVC): exige `ROLE_CLINICA`
   - `/tutor/**` (telas MVC): exige `ROLE_TUTOR`
 - Acesso negado a uma rota protegida redireciona para `/acesso-negado` (MVC) ou retorna `403` (API)
@@ -331,12 +332,12 @@ public class PetController {
 
 ### Migrations existentes:
 
-| Arquivo | Conteúdo |
-|---|---|
-| `V1__create_domain_tables.sql` | Cria as tabelas de domínio (clínica, tutor, pet, veterinário, consulta, exame, prescrição, medicamento, vacinação, vermifugação, histórico de peso, comportamento, recomendação, lembrete) |
-| `V2__create_security_table.sql` | Cria a tabela `FIDELIS_USUARIO`, com vínculo opcional a `FIDELIS_TUTOR` ou `FIDELIS_CLINICA` |
-| `V3__seed_usuarios_teste.sql` | Insere clínica, tutor e usuários de teste (`clinica@fidelis.com.br` / `tutor@fidelis.com.br`, senha `Senha123`) |
-| `V4__seed_veterinario_teste.sql` | Insere um veterinário de teste vinculado à clínica seed |
+| Arquivo                          | Conteúdo                                                                                                                                                                                   |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `V1__create_domain_tables.sql`   | Cria as tabelas de domínio (clínica, tutor, pet, veterinário, consulta, exame, prescrição, medicamento, vacinação, vermifugação, histórico de peso, comportamento, recomendação, lembrete) |
+| `V2__create_security_table.sql`  | Cria a tabela `FIDELIS_USUARIO`, com vínculo opcional a `FIDELIS_TUTOR` ou `FIDELIS_CLINICA`                                                                                               |
+| `V3__seed_usuarios_teste.sql`    | Insere clínica, tutor e usuários de teste (`clinica@fidelis.com.br` / `tutor@fidelis.com.br`, senha `Senha123`)                                                                            |
+| `V4__seed_veterinario_teste.sql` | Insere um veterinário de teste vinculado à clínica seed                                                                                                                                    |
 
 ### Configuração:
 
@@ -372,15 +373,16 @@ spring:
 
 ### Telas disponíveis:
 
-| Rota | Perfil | Controller |
-|---|---|---|
-| `/login` | Público | `LoginController` |
-| `/acesso-negado` | Público | `LoginController` |
-| `/dashboard` | Autenticado | `DashboardController` |
-| `/clinica/pets`, `/clinica/pets/novo`, `/clinica/pets/{id}/editar` | CLINICA | `PetWebController` |
-| `/clinica/consultas/nova`, `/clinica/consultas/{id}/confirmacao` | CLINICA | `ConsultaWebController` |
-| `/clinica/retencao` | CLINICA | `RetencaoWebController` |
-| `/tutor/pets`, `/tutor/pets/{id}` | TUTOR | `TutorPetWebController` |
+| Rota                                                               | Perfil      | Controller              |
+| ------------------------------------------------------------------ | ----------- | ----------------------- |
+| `/home`                                                            | Público     | `LoginController`       |
+| `/login`                                                           | Público     | `LoginController`       |
+| `/acesso-negado`                                                   | Público     | `LoginController`       |
+| `/dashboard`                                                       | Autenticado | `DashboardController`   |
+| `/clinica/pets`, `/clinica/pets/novo`, `/clinica/pets/{id}/editar` | CLINICA     | `PetWebController`      |
+| `/clinica/consultas/nova`, `/clinica/consultas/{id}/confirmacao`   | CLINICA     | `ConsultaWebController` |
+| `/clinica/retencao`                                                | CLINICA     | `RetencaoWebController` |
+| `/tutor/pets`, `/tutor/pets/{id}`                                  | TUTOR       | `TutorPetWebController` |
 
 ---
 
@@ -496,26 +498,26 @@ spring:
 
 ## Resumo de Conformidade
 
-| Requisito                    | Status | Evidência                                                        |
-| ----------------------------- | ------ | ----------------------------------------------------------------- |
-| Bean Validation                | ✓      | `dto/request/`, `validation/`                                     |
-| Paginação                      | ✓      | `Page<T>`, `Pageable` em controllers                              |
-| Ordenação                      | ✓      | `Sort` implementado                                                |
-| Busca com Parâmetros           | ✓      | `@RequestParam` em endpoints                                       |
-| Cache                          | ✓      | `@Cacheable`, `@CacheEvict`                                        |
-| Autenticação e Autorização     | ✓      | `SecurityConfig`, `UsuarioDetailsService`, perfis `CLINICA`/`TUTOR`|
-| Tratamento de Erros            | ✓      | `GlobalExceptionHandler.java` (escopo `controller.api`)            |
-| DTOs                           | ✓      | `dto/request/`, `dto/response/`                                    |
-| Swagger/OpenAPI                | ✓      | `/swagger-ui.html`, anotações                                      |
-| Testes Postman                 | ✓      | `documentos/api/postman_collection.json`                           |
-| APIs RESTful                   | ✓      | Endpoints seguem padrão REST                                       |
-| Banco de Dados                 | ✓      | 15 tabelas, migrations Flyway, relacionamentos                     |
-| Camada Web (Thymeleaf)         | ✓      | `controller/web`, telas por perfil                                 |
-| Regras de Negócio Automatizadas| ✓      | Geração de lembrete/recomendação, alerta de retenção                |
-| Design Patterns                | ✓      | Repository, Service, Mapper, etc.                                  |
-| Documentação                   | ✓      | README, Cronograma, Requisitos, Como Executar                      |
-| Código no GitHub               | ✓      | Repositório público                                                 |
-| Testes Passando                | ✓      | `./mvnw test` SUCCESS                                               |
+| Requisito                       | Status | Evidência                                                           |
+| ------------------------------- | ------ | ------------------------------------------------------------------- |
+| Bean Validation                 | ✓      | `dto/request/`, `validation/`                                       |
+| Paginação                       | ✓      | `Page<T>`, `Pageable` em controllers                                |
+| Ordenação                       | ✓      | `Sort` implementado                                                 |
+| Busca com Parâmetros            | ✓      | `@RequestParam` em endpoints                                        |
+| Cache                           | ✓      | `@Cacheable`, `@CacheEvict`                                         |
+| Autenticação e Autorização      | ✓      | `SecurityConfig`, `UsuarioDetailsService`, perfis `CLINICA`/`TUTOR` |
+| Tratamento de Erros             | ✓      | `GlobalExceptionHandler.java` (escopo `controller.api`)             |
+| DTOs                            | ✓      | `dto/request/`, `dto/response/`                                     |
+| Swagger/OpenAPI                 | ✓      | `/swagger-ui.html`, anotações                                       |
+| Testes Postman                  | ✓      | `documentos/api/postman_collection.json`                            |
+| APIs RESTful                    | ✓      | Endpoints seguem padrão REST                                        |
+| Banco de Dados                  | ✓      | 15 tabelas, migrations Flyway, relacionamentos                      |
+| Camada Web (Thymeleaf)          | ✓      | `controller/web`, telas por perfil                                  |
+| Regras de Negócio Automatizadas | ✓      | Geração de lembrete/recomendação, alerta de retenção                |
+| Design Patterns                 | ✓      | Repository, Service, Mapper, etc.                                   |
+| Documentação                    | ✓      | README, Cronograma, Requisitos, Como Executar                       |
+| Código no GitHub                | ✓      | Repositório público                                                 |
+| Testes Passando                 | ✓      | `./mvnw test` SUCCESS                                               |
 
 ---
 

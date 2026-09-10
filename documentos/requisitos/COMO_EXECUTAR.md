@@ -51,14 +51,14 @@ A aplicação sobe em **http://localhost:8080**, usando o perfil padrão com ban
 
 ## 4. Login na Aplicação
 
-A aplicação agora tem **autenticação via Spring Security** (form login + senha criptografada com BCrypt), com dois perfis de acesso: `CLINICA` e `TUTOR`. Ao acessar a raiz (`/`) ou qualquer rota protegida sem estar logado, você é redirecionado para `/login`.
+A aplicação agora tem **autenticação via Spring Security** (form login + senha criptografada com BCrypt), com dois perfis de acesso: `CLINICA` e `TUTOR`. Ao acessar a raiz (`/`), você é redirecionado para a página pública `/home`. Rotas protegidas sem login redirecionam para `/login`.
 
 **Usuários de teste (criados pelas migrations Flyway):**
 
-| Perfil  | E-mail                    | Senha      |
-|---------|---------------------------|------------|
-| CLINICA | clinica@fidelis.com.br    | Senha123   |
-| TUTOR   | tutor@fidelis.com.br      | Senha123   |
+| Perfil  | E-mail                 | Senha    |
+| ------- | ---------------------- | -------- |
+| CLINICA | clinica@fidelis.com.br | Senha123 |
+| TUTOR   | tutor@fidelis.com.br   | Senha123 |
 
 Após o login, você é redirecionado para `/dashboard`. As rotas sob `/clinica/**` exigem o perfil `CLINICA` e as rotas sob `/tutor/**` exigem o perfil `TUTOR`; o acesso indevido leva à página `/acesso-negado`.
 
@@ -66,19 +66,20 @@ Após o login, você é redirecionado para `/dashboard`. As rotas sob `/clinica/
 
 Além da API REST, o projeto tem uma camada web com Thymeleaf:
 
-| Rota                              | Perfil   | Descrição                                       |
-|------------------------------------|----------|--------------------------------------------------|
-| `/login`                           | Público  | Tela de login                                     |
-| `/dashboard`                       | Autenticado | Painel inicial pós-login                       |
-| `/clinica/pets`                    | CLINICA  | Listagem de pets da clínica                       |
-| `/clinica/pets/novo`               | CLINICA  | Cadastro de novo pet                              |
-| `/clinica/pets/{id}/editar`        | CLINICA  | Edição de pet existente                           |
-| `/clinica/consultas/nova`          | CLINICA  | Registro de nova consulta                         |
-| `/clinica/consultas/{id}/confirmacao` | CLINICA | Confirmação de consulta registrada             |
-| `/clinica/retencao`                | CLINICA  | Alerta de retenção/churn (pets sem consulta há 90+ dias) |
-| `/tutor/pets`                      | TUTOR    | Listagem dos pets do tutor logado                 |
-| `/tutor/pets/{id}`                 | TUTOR    | Detalhe/histórico de um pet do tutor              |
-| `/acesso-negado`                   | Público  | Página exibida em caso de acesso não autorizado   |
+| Rota                                  | Perfil      | Descrição                                                |
+| ------------------------------------- | ----------- | -------------------------------------------------------- |
+| `/login`                              | Público     | Tela de login                                            |
+| `/home`                               | Público     | Página de boas-vindas                                    |
+| `/dashboard`                          | Autenticado | Painel inicial pós-login                                 |
+| `/clinica/pets`                       | CLINICA     | Listagem de pets da clínica                              |
+| `/clinica/pets/novo`                  | CLINICA     | Cadastro de novo pet                                     |
+| `/clinica/pets/{id}/editar`           | CLINICA     | Edição de pet existente                                  |
+| `/clinica/consultas/nova`             | CLINICA     | Registro de nova consulta                                |
+| `/clinica/consultas/{id}/confirmacao` | CLINICA     | Confirmação de consulta registrada                       |
+| `/clinica/retencao`                   | CLINICA     | Alerta de retenção/churn (pets sem consulta há 90+ dias) |
+| `/tutor/pets`                         | TUTOR       | Listagem dos pets do tutor logado                        |
+| `/tutor/pets/{id}`                    | TUTOR       | Detalhe/histórico de um pet do tutor                     |
+| `/acesso-negado`                      | Público     | Página exibida em caso de acesso não autorizado          |
 
 ## 6. Acessar os Recursos de API e Infraestrutura
 
@@ -112,11 +113,11 @@ http://localhost:8080/actuator/info
 1. Importe o arquivo: `documentos/api/postman_collection.json`
 2. Defina a variável `baseUrl` como: `http://localhost:8080`
 3. A collection já cobre autenticação, perfis e os principais fluxos de CRUD/negócio (ex.: geração automática de lembrete/recomendação, alerta de retenção)
-4. Como a API usa sessão de login (form login), autentique-se primeiro via `/login` (ou use o suporte a Basic Auth já habilitado) antes de chamar os endpoints protegidos
+4. A API exige o perfil `CLINICA`; use Basic Auth com `clinica@fidelis.com.br` / `Senha123` antes de chamar os endpoints protegidos. O perfil `TUTOR` usa as telas web e recebe `403` na API.
 
 ## 8. Estrutura de Endpoints da API
 
-A API segue o padrão: `/api/v1/{recurso}`. Leituras (`GET`) exigem apenas usuário autenticado; escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil `CLINICA`.
+A API segue o padrão: `/api/v1/{recurso}`. Leituras (`GET`) e escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil `CLINICA`. O perfil `TUTOR` usa a camada web autorizada.
 
 - **Clínicas** — `/api/v1/clinicas` (`GET`, `POST`, `GET /{id}`, `PUT /{id}`, `DELETE /{id}`)
 - **Tutores** — `/api/v1/tutores` (`GET`, `POST`, `GET /{id}`, `PUT /{id}`, `DELETE /{id}`)
