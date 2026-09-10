@@ -25,8 +25,8 @@
         method="post"
       >
         <div class="mb-2">
-          <label>Pet</label>
-          <select class="form-control" th:field="*{petId}">
+          <label class="form-label" for="petId">Pet</label>
+          <select class="form-control" th:field="*{petId}" required>
             <option value="">Selecione um pet</option>
             <option
               th:each="p : ${pets}"
@@ -42,8 +42,8 @@
         </div>
 
         <div class="mb-2">
-          <label>Veterinário</label>
-          <select class="form-control" th:field="*{veterinarioId}">
+          <label class="form-label" for="veterinarioId">Veterinário</label>
+          <select class="form-control" th:field="*{veterinarioId}" required>
             <option value="">Selecione um veterinário</option>
             <option
               th:each="v : ${veterinarios}"
@@ -59,12 +59,15 @@
         </div>
 
         <div class="mb-2">
-          <label>Vacina aplicada</label>
+          <label class="form-label" for="vacinaAplicada">Vacina aplicada</label>
           <input
             class="form-control"
             type="text"
             th:field="*{vacinaAplicada}"
             placeholder="Ex: Antirrábica"
+            minlength="3"
+            maxlength="50"
+            required
           />
           <span
             class="text-danger"
@@ -74,8 +77,16 @@
         </div>
 
         <div class="mb-2">
-          <label>Data de aplicação</label>
-          <input class="form-control" type="date" th:field="*{dataAplicacao}" />
+          <label class="form-label" for="dataAplicacao"
+            >Data de aplicação</label
+          >
+          <input
+            class="form-control"
+            type="date"
+            th:field="*{dataAplicacao}"
+            th:attr="max=${dataMaximaVacinacao}"
+            required
+          />
           <span
             class="text-danger"
             th:if="${#fields.hasErrors('dataAplicacao')}"
@@ -84,16 +95,31 @@
         </div>
 
         <div class="mb-2">
-          <label>Próxima dose (opcional)</label>
-          <input class="form-control" type="date" th:field="*{dataProxima}" />
+          <label class="form-label" for="dataProxima"
+            >Próxima dose (opcional)</label
+          >
+          <input
+            class="form-control"
+            type="date"
+            th:field="*{dataProxima}"
+            th:attr="min=${dataMinimaProximaDose}"
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('dataProxima')}"
+            th:errors="*{dataProxima}"
+          ></span>
         </div>
 
         <div class="mb-2">
-          <label>Observação (opcional)</label>
+          <label class="form-label" for="observacao"
+            >Observação (opcional)</label
+          >
           <textarea
             class="form-control"
             th:field="*{observacao}"
             rows="3"
+            maxlength="500"
           ></textarea>
         </div>
 

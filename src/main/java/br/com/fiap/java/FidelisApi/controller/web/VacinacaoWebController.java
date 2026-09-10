@@ -74,6 +74,8 @@ public class VacinacaoWebController {
 
     private void prepararFormulario(Long clinicaId, VacinacaoRequest request, Model model) {
         model.addAttribute("vacinacaoRequest", request);
+        model.addAttribute("dataMaximaVacinacao", java.time.LocalDate.now());
+        model.addAttribute("dataMinimaProximaDose", java.time.LocalDate.now());
         model.addAttribute("pets", petRepository.findByClinicaIdComTutor(
                 clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));
         model.addAttribute("veterinarios", veterinarioRepository.findByClinicaId(clinicaId));
