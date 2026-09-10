@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabecalho('Fidelis - Risco de Retenção')}" />
+<body>
+    <div th:replace="~{fragmentos :: funcao-logout}" />
+
+    <div class="container">
+        <br><br>
+        <a href="/dashboard">&larr; Voltar ao dashboard</a>
+        <h2>Pets em Risco de Retenção</h2>
+        <p>Pets sem consulta há mais de 90 dias (ou que nunca tiveram consulta registrada).</p>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Pet</th>
+                    <th>Tutor</th>
+                    <th>Última consulta</th>
+                    <th>Dias sem consulta</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${petsEmRisco}">
+                    <td th:text="${item.pet.nome}"></td>
+                    <td th:text="${item.pet.tutor.nome}"></td>
+                    <td th:text="${item.ultimaConsulta != null ? #temporals.format(item.ultimaConsulta, 'dd/MM/yyyy') : 'Nunca'}"></td>
+                    <td th:text="${item.ultimaConsulta != null ? item.diasSemConsulta : '-'}"></td>
+                    <td>
+                        <a th:href="@{/clinica/consultas/nova(petId=${item.pet.id})}">Registrar Consulta</a>
+                    </td>
+                </tr>
+                <tr th:if="${petsEmRisco.isEmpty()}">
+                    <td colspan="5">Nenhum pet em risco no momento — ótimo trabalho!</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+</body>
+</html>

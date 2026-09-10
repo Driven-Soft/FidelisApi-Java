@@ -1,7 +1,9 @@
 package br.com.fiap.java.FidelisApi.controller.web;
 
+import br.com.fiap.java.FidelisApi.entity.Perfil;
 import br.com.fiap.java.FidelisApi.entity.Usuario;
 import br.com.fiap.java.FidelisApi.repository.UsuarioRepository;
+import br.com.fiap.java.FidelisApi.service.RetencaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class DashboardController {
 
     private final UsuarioRepository usuarioRepository;
+    private final RetencaoService retencaoService;
 
     @GetMapping("/dashboard")
     public String exibirDashboard(Authentication authentication, Model model) {
@@ -27,6 +30,10 @@ public class DashboardController {
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("nomeExibicao", nomeExibicao);
+
+        if (usuario.getPerfil() == Perfil.CLINICA) {
+            model.addAttribute("qtdPetsEmRisco", retencaoService.contarPetsEmRisco(usuario.getClinica().getId()));
+        }
 
         return "dashboard";
     }

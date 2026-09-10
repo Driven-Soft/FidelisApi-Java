@@ -1,7 +1,5 @@
 package br.com.fiap.java.FidelisApi.repository;
 
-import java.util.List;
-import java.util.Optional;
 import br.com.fiap.java.FidelisApi.entity.Consulta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 
@@ -21,8 +21,11 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
                                          Pageable pageable);
 
     @Query("SELECT c FROM Consulta c JOIN FETCH c.veterinario WHERE c.pet.id = :petId ORDER BY c.dataHora DESC")
-    List<Consulta> findByPetIdComVeterinario(Long petId);
+    List<Consulta> findByPetIdComVeterinario(@Param("petId") Long petId);
 
     @Query("SELECT c FROM Consulta c JOIN FETCH c.pet JOIN FETCH c.veterinario WHERE c.id = :id")
-    Optional<Consulta> findByIdComPetEVeterinario(Long id);
+    Optional<Consulta> findByIdComPetEVeterinario(@Param("id") Long id);
+
+    @Query("SELECT c.pet.id, MAX(c.dataHora) FROM Consulta c WHERE c.pet.id IN :ids GROUP BY c.pet.id")
+    List<Object[]> findUltimaConsultaPorPetIds(@Param("ids") List<Long> ids);
 }

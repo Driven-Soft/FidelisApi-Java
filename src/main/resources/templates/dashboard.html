@@ -19,7 +19,14 @@
         <div th:if="${usuario.perfil.name() == 'CLINICA'}">
             <h4>Painel da Clínica</h4>
             <a th:href="@{/clinica/pets}" class="btn btn-outline-primary">Gerenciar Pets</a>
-            <p class="mt-2">Consultas, vacinações e os fluxos completos chegam nos próximos passos da Sprint 3.</p>
+
+            <div th:if="${qtdPetsEmRisco != null and qtdPetsEmRisco > 0}" class="alert alert-warning mt-3">
+                ⚠️ <b th:text="${qtdPetsEmRisco}"></b> pet(s) sem consulta há mais de 90 dias.
+                <a th:href="@{/clinica/retencao}">Ver detalhes</a>
+            </div>
+            <div th:if="${qtdPetsEmRisco != null and qtdPetsEmRisco == 0}" class="alert alert-success mt-3">
+                ✅ Nenhum pet em risco de retenção no momento.
+            </div>
         </div>
 
         <div th:if="${usuario.perfil.name() == 'TUTOR'}">
