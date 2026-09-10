@@ -35,9 +35,8 @@ public class SecurityConfig {
                     "/actuator/health", "/actuator/info"
                 ).permitAll()
 
-                // --- API: leitura liberada para qualquer perfil autenticado ---
-                .requestMatchers(HttpMethod.GET, "/api/v1/clinicas/*/retencao").hasRole("CLINICA")
-                .requestMatchers(HttpMethod.GET, "/api/v1/**").authenticated()
+                // --- API: operações administrativas restritas à Clínica ---
+                .requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("CLINICA")
 
                 // --- API: escrita (POST/PUT/PATCH/DELETE) só para quem gerencia ---
                 .requestMatchers("/api/v1/**").hasRole("CLINICA")

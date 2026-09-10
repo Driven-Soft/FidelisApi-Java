@@ -66,12 +66,12 @@ class SecurityIntegrationTest {
     }
 
     @Test
-    void ambosPerfisPodemLerApi() throws Exception {
+        void somenteClinicaPodeLerApi() throws Exception {
         mockMvc.perform(get("/api/v1/pets").with(httpBasic(EMAIL_CLINICA, SENHA)))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/v1/pets").with(httpBasic(EMAIL_TUTOR, SENHA)))
-                .andExpect(status().isOk());
+            .andExpect(status().isForbidden());
     }
 
     @Test
