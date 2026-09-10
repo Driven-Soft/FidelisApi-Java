@@ -65,8 +65,13 @@ public class SecurityConfig {
             )
 
             .exceptionHandling(exception -> exception
-                .accessDeniedHandler((request, response, accessDeniedException) ->
-                    response.sendRedirect("/acesso-negado"))
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    if (request.getRequestURI().startsWith("/api/")) {
+                        response.sendError(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN);
+                    } else {
+                        response.sendRedirect("/acesso-negado");
+                    }
+                })
             )
 
             .sessionManagement(session ->
