@@ -26,8 +26,15 @@
         method="post"
       >
         <div class="mb-2">
-          <label>Nome</label>
-          <input class="form-control" type="text" th:field="*{nome}" />
+          <label class="form-label" for="nome">Nome</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{nome}"
+            required
+            minlength="3"
+            maxlength="30"
+          />
           <span
             class="text-danger"
             th:if="${#fields.hasErrors('nome')}"
@@ -36,8 +43,15 @@
         </div>
 
         <div class="mb-2">
-          <label>Espécie</label>
-          <input class="form-control" type="text" th:field="*{especie}" />
+          <label class="form-label" for="especie">Espécie</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{especie}"
+            required
+            minlength="3"
+            maxlength="20"
+          />
           <span
             class="text-danger"
             th:if="${#fields.hasErrors('especie')}"
@@ -46,8 +60,15 @@
         </div>
 
         <div class="mb-2">
-          <label>Raça</label>
-          <input class="form-control" type="text" th:field="*{raca}" />
+          <label class="form-label" for="raca">Raça</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{raca}"
+            required
+            minlength="2"
+            maxlength="20"
+          />
           <span
             class="text-danger"
             th:if="${#fields.hasErrors('raca')}"
@@ -56,8 +77,8 @@
         </div>
 
         <div class="mb-2">
-          <label>Sexo</label>
-          <select class="form-control" th:field="*{sexo}">
+          <label class="form-label" for="sexo">Sexo</label>
+          <select class="form-control" th:field="*{sexo}" required>
             <option
               th:each="s : ${T(br.com.fiap.java.FidelisApi.entity.SexoPet).values()}"
               th:value="${s}"
@@ -67,11 +88,15 @@
         </div>
 
         <div class="mb-2">
-          <label>Data de nascimento</label>
+          <label class="form-label" for="dataNascimento"
+            >Data de nascimento</label
+          >
           <input
             class="form-control"
             type="date"
             th:field="*{dataNascimento}"
+            th:attr="min=${dataMinimaNascimento},max=${dataMaximaNascimento}"
+            required
           />
           <span
             class="text-danger"
@@ -81,8 +106,8 @@
         </div>
 
         <div class="mb-2">
-          <label>Status</label>
-          <select class="form-control" th:field="*{status}">
+          <label class="form-label" for="status">Status</label>
+          <select class="form-control" th:field="*{status}" required>
             <option
               th:each="s : ${T(br.com.fiap.java.FidelisApi.entity.PetStatus).values()}"
               th:value="${s}"
@@ -92,9 +117,10 @@
         </div>
 
         <div class="mb-2">
-          <label>Tutor</label>
-          <select class="form-control" th:field="*{tutorId}">
+          <label class="form-label" for="tutorId">Tutor</label>
+          <select class="form-control" th:field="*{tutorId}" required>
             <option
+              value=""
               th:each="t : ${tutores}"
               th:value="${t.id}"
               th:text="${t.nome}"

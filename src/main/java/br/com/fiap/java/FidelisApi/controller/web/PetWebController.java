@@ -18,6 +18,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @Controller
 @RequestMapping("/clinica/pets")
 @RequiredArgsConstructor
@@ -40,6 +42,8 @@ public class PetWebController {
     public String novoForm(Model model) {
         model.addAttribute("petRequest", new PetRequest());
         model.addAttribute("tutores", tutorRepository.findAll());
+        model.addAttribute("dataMinimaNascimento", LocalDate.now().minusYears(100));
+        model.addAttribute("dataMaximaNascimento", LocalDate.now());
         return "clinica/pets-form";
     }
 
@@ -80,6 +84,8 @@ public class PetWebController {
         model.addAttribute("petId", id);
         model.addAttribute("petRequest", request);
         model.addAttribute("tutores", tutorRepository.findAll());
+        model.addAttribute("dataMinimaNascimento", LocalDate.now().minusYears(100));
+        model.addAttribute("dataMaximaNascimento", LocalDate.now());
         return "clinica/pets-form";
     }
 
