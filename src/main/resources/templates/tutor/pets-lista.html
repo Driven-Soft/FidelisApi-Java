@@ -1,0 +1,59 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Meus Pets')}" />
+  <body>
+    <div class="container pet-list-page">
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
+      >
+        <h2 class="mb-0">Meus Pets</h2>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <a href="/dashboard" class="btn btn-outline-primary"
+          >&larr; Voltar ao dashboard</a
+        >
+      </div>
+
+      <div class="table-panel">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Espécie</th>
+              <th>Raça</th>
+              <th>Clínica</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="pet : ${pets}">
+              <td th:text="${pet.nome}"></td>
+              <td th:text="${pet.especie}"></td>
+              <td th:text="${pet.raca}"></td>
+              <td th:text="${pet.clinica.nome}"></td>
+              <td th:text="${pet.status}"></td>
+              <td>
+                <div class="table-actions">
+                  <a
+                    th:href="@{/tutor/pets/{id}(id=${pet.id})}"
+                    class="btn btn-sm btn-outline-success"
+                    >Ver histórico</a
+                  >
+                </div>
+              </td>
+            </tr>
+            <tr th:if="${pets.isEmpty()}">
+              <td colspan="6">Você ainda não tem pets cadastrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

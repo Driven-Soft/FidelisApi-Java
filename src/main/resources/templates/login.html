@@ -1,0 +1,51 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Login')}" />
+  <body>
+    <main class="login-page">
+      <div class="container d-flex justify-content-center">
+        <section class="login-panel">
+          <img
+            class="brand-logo"
+            th:src="@{/images/fidelis-logo.svg}"
+            alt="Logo Fidelis"
+          />
+          <h1>Fidelis</h1>
+          <p class="subtitle mb-4">Saúde do seu pet</p>
+
+          <div th:if="${param.logout}" class="alert alert-success">
+            Logout efetuado com sucesso.
+          </div>
+
+          <form th:action="@{/login}" method="post">
+            <label class="form-label" for="email">E-mail</label>
+            <input
+              class="form-control mb-3"
+              type="email"
+              id="email"
+              name="email"
+              autocomplete="username"
+              required
+            />
+            <label class="form-label" for="password">Senha</label>
+            <input
+              class="form-control mb-4"
+              type="password"
+              id="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+          </form>
+
+          <div th:if="${param.falha}" class="alert alert-danger mt-3 mb-0">
+            E-mail e/ou senha inválidos.
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

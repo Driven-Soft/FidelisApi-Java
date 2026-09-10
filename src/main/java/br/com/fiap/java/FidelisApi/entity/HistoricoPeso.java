@@ -26,7 +26,7 @@ public class HistoricoPeso {
     @Column(name = "data_medicao", nullable = false)
     private LocalDate dataMedicao;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String observacao;
 
     @ManyToOne(fetch = FetchType.LAZY)

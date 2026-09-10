@@ -22,10 +22,10 @@ public class Exame {
     @Column(nullable = false, length = 50)
     private String tipo;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String descricao;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String resultado;
 
     @Column(nullable = false)

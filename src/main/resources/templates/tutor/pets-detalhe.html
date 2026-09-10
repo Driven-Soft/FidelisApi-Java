@@ -1,0 +1,139 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Histórico do Pet')}" />
+  <body>
+    <div class="container page-shell">
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
+      >
+        <h1 class="mb-0" th:text="${pet.nome}"></h1>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <a href="/tutor/pets" class="btn btn-outline-secondary"
+          >&larr; Voltar aos meus pets</a
+        >
+      </div>
+
+      <section class="history-hero mb-4">
+        <p class="pet-meta mb-1">Resumo do pet</p>
+        <p class="mb-0">
+          <span th:text="${pet.especie}"></span> ·
+          <span th:text="${pet.raca}"></span> · Status:
+          <span th:text="${pet.status}"></span>
+        </p>
+      </section>
+
+      <section class="history-card">
+        <div class="history-card-header">
+          <h2>Consultas</h2>
+          <span
+            class="badge bg-light text-dark"
+            th:text="${consultas.size()} + ' registros'"
+          ></span>
+        </div>
+        <div class="history-card-body">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Veterinário</th>
+                <th>Diagnóstico</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="c : ${consultas}">
+                <td
+                  th:text="${#temporals.format(c.dataHora, 'dd/MM/yyyy HH:mm')}"
+                ></td>
+                <td th:text="${c.tipo}"></td>
+                <td th:text="${c.veterinario.nome}"></td>
+                <td th:text="${c.diagnostico}"></td>
+              </tr>
+              <tr th:if="${consultas.isEmpty()}">
+                <td colspan="4">Nenhuma consulta registrada.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="history-card">
+        <div class="history-card-header">
+          <h2>Vacinações</h2>
+          <span
+            class="badge bg-light text-dark"
+            th:text="${vacinacoes.size()} + ' registros'"
+          ></span>
+        </div>
+        <div class="history-card-body">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Vacina</th>
+                <th>Aplicação</th>
+                <th>Próxima dose</th>
+                <th>Veterinário</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="v : ${vacinacoes}">
+                <td th:text="${v.vacinaAplicada}"></td>
+                <td
+                  th:text="${#temporals.format(v.dataAplicacao, 'dd/MM/yyyy')}"
+                ></td>
+                <td
+                  th:text="${v.dataProxima != null ? #temporals.format(v.dataProxima, 'dd/MM/yyyy') : '-'}"
+                ></td>
+                <td th:text="${v.veterinario.nome}"></td>
+              </tr>
+              <tr th:if="${vacinacoes.isEmpty()}">
+                <td colspan="4">Nenhuma vacinação registrada.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="history-card">
+        <div class="history-card-header">
+          <h2>Lembretes</h2>
+          <span
+            class="badge bg-light text-dark"
+            th:text="${lembretes.size()} + ' registros'"
+          ></span>
+        </div>
+        <div class="history-card-body">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Descrição</th>
+                <th>Data prevista</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="l : ${lembretes}">
+                <td th:text="${l.tipo}"></td>
+                <td th:text="${l.descricao}"></td>
+                <td
+                  th:text="${#temporals.format(l.dataPrevista, 'dd/MM/yyyy')}"
+                ></td>
+                <td th:text="${l.status}"></td>
+              </tr>
+              <tr th:if="${lembretes.isEmpty()}">
+                <td colspan="4">Nenhum lembrete pendente.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

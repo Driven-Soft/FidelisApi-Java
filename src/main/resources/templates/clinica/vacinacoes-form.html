@@ -1,0 +1,135 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{fragmentos :: cabecalho('Fidelis - Registrar Vacinação')}"
+  />
+  <body>
+    <div class="container" style="max-width: 500px">
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
+      >
+        <h2 class="mb-0">Registrar Vacinação</h2>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <a href="/clinica/pets" class="btn btn-outline-secondary"
+          >&larr; Voltar aos pets</a
+        >
+      </div>
+
+      <form
+        th:action="@{/clinica/vacinacoes}"
+        th:object="${vacinacaoRequest}"
+        method="post"
+      >
+        <div class="mb-2">
+          <label class="form-label" for="petId">Pet</label>
+          <select class="form-control" th:field="*{petId}" required>
+            <option value="">Selecione um pet</option>
+            <option
+              th:each="p : ${pets}"
+              th:value="${p.id}"
+              th:text="${p.nome} + ' (' + ${p.tutor.nome} + ')'"
+            />
+          </select>
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('petId')}"
+            th:errors="*{petId}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="veterinarioId">Veterinário</label>
+          <select class="form-control" th:field="*{veterinarioId}" required>
+            <option value="">Selecione um veterinário</option>
+            <option
+              th:each="v : ${veterinarios}"
+              th:value="${v.id}"
+              th:text="${v.nome}"
+            />
+          </select>
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('veterinarioId')}"
+            th:errors="*{veterinarioId}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="vacinaAplicada">Vacina aplicada</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{vacinaAplicada}"
+            placeholder="Ex: Antirrábica"
+            minlength="3"
+            maxlength="50"
+            required
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('vacinaAplicada')}"
+            th:errors="*{vacinaAplicada}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="dataAplicacao"
+            >Data de aplicação</label
+          >
+          <input
+            class="form-control"
+            type="date"
+            th:field="*{dataAplicacao}"
+            th:attr="max=${dataMaximaVacinacao}"
+            required
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('dataAplicacao')}"
+            th:errors="*{dataAplicacao}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="dataProxima"
+            >Próxima dose (opcional)</label
+          >
+          <input
+            class="form-control"
+            type="date"
+            th:field="*{dataProxima}"
+            th:attr="min=${dataMinimaProximaDose}"
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('dataProxima')}"
+            th:errors="*{dataProxima}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="observacao"
+            >Observação (opcional)</label
+          >
+          <textarea
+            class="form-control"
+            th:field="*{observacao}"
+            rows="3"
+            maxlength="500"
+          ></textarea>
+        </div>
+
+        <br />
+        <button type="submit" class="btn btn-primary">
+          Registrar Vacinação
+        </button>
+      </form>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

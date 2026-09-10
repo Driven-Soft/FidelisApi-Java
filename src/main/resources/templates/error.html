@@ -1,0 +1,41 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Erro')}" />
+  <body>
+    <main class="status-page">
+      <div class="container">
+        <section class="status-panel">
+          <img
+            class="brand-mark"
+            th:src="@{/images/fidelis-favicon.svg}"
+            alt="Logo Fidelis"
+          />
+          <span class="status-code" th:if="${status != null}"
+            >ERRO <span th:text="${status}"></span
+          ></span>
+          <h1>Ops! Algo saiu do esperado.</h1>
+          <p class="status-copy" th:if="${status != null and status == 404}">
+            A página que você tentou acessar não existe ou foi movida.
+          </p>
+          <p class="status-copy" th:if="${status != null and status == 403}">
+            Você não tem permissão para acessar este conteúdo.
+          </p>
+          <p
+            class="status-copy"
+            th:if="${status == null or (status != 404 and status != 403)}"
+          >
+            Ocorreu um erro inesperado. Tente novamente ou volte ao início.
+          </p>
+          <div class="status-actions">
+            <a class="btn btn-primary" th:href="@{/home}">Voltar ao início</a>
+            <a class="btn btn-outline-secondary" th:href="@{/login}"
+              >Ir para o login</a
+            >
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

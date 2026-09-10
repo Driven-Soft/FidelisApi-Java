@@ -1,0 +1,31 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragmentos :: cabecalho('Acesso Negado')}" />
+  <body>
+    <main class="status-page">
+      <div class="container">
+        <section class="status-panel">
+          <img
+            class="brand-mark"
+            th:src="@{/images/fidelis-favicon.svg}"
+            alt="Logo Fidelis"
+          />
+          <span class="status-code">ACESSO RESTRITO</span>
+          <h1>Este espaço é reservado</h1>
+          <p class="status-copy">
+            Seu perfil não tem permissão para acessar este conteúdo. Volte ao
+            início ou entre com outra conta.
+          </p>
+          <div class="status-actions">
+            <a class="btn btn-primary" th:href="@{/home}">Voltar ao início</a>
+            <a class="btn btn-outline-secondary" th:href="@{/login}"
+              >Ir para o login</a
+            >
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

@@ -20,7 +20,7 @@ public class Medicamento {
     @Column(nullable = false, length = 50)
     private String nome;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String descricao;
 
     @ManyToOne(fetch = FetchType.LAZY)

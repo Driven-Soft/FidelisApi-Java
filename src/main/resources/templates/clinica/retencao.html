@@ -1,0 +1,70 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{fragmentos :: cabecalho('Fidelis - Risco de Retenção')}"
+  />
+  <body>
+    <div class="container pet-list-page">
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
+      >
+        <h2 class="mb-0">Pets em Risco de Retenção</h2>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <a href="/dashboard" class="btn btn-outline-secondary"
+          >&larr; Voltar ao dashboard</a
+        >
+      </div>
+
+      <p>
+        Pets sem consulta há mais de 90 dias (ou que nunca tiveram consulta
+        registrada).
+      </p>
+
+      <div class="table-panel">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Pet</th>
+              <th>Tutor</th>
+              <th>Última consulta</th>
+              <th>Dias sem consulta</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="item : ${petsEmRisco}">
+              <td th:text="${item.pet.nome}"></td>
+              <td th:text="${item.pet.tutor.nome}"></td>
+              <td
+                th:text="${item.ultimaConsulta != null ? #temporals.format(item.ultimaConsulta, 'dd/MM/yyyy') : 'Nunca'}"
+              ></td>
+              <td
+                th:text="${item.ultimaConsulta != null ? item.diasSemConsulta : '-'}"
+              ></td>
+              <td>
+                <div class="table-actions">
+                  <a
+                    th:href="@{/clinica/consultas/nova(petId=${item.pet.id})}"
+                    class="btn btn-sm btn-outline-primary"
+                    >Registrar Consulta</a
+                  >
+                </div>
+              </td>
+            </tr>
+            <tr th:if="${petsEmRisco.isEmpty()}">
+              <td colspan="5">
+                Nenhum pet em risco no momento — ótimo trabalho!
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

@@ -1,0 +1,128 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{fragmentos :: cabecalho('Fidelis - Registrar Consulta')}"
+  />
+  <body>
+    <div class="container" style="max-width: 500px">
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
+      >
+        <h2 class="mb-0">Registrar Consulta</h2>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <a href="/clinica/pets" class="btn btn-outline-secondary"
+          >&larr; Voltar aos pets</a
+        >
+      </div>
+
+      <form
+        th:action="@{/clinica/consultas}"
+        th:object="${consultaRequest}"
+        method="post"
+      >
+        <div class="mb-2">
+          <label class="form-label" for="petId">Pet</label>
+          <select class="form-control" th:field="*{petId}" required>
+            <option
+              th:each="p : ${pets}"
+              th:value="${p.id}"
+              th:text="${p.nome} + ' (' + ${p.tutor.nome} + ')'"
+            ></option>
+          </select>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="veterinarioId">Veterinário</label>
+          <select class="form-control" th:field="*{veterinarioId}" required>
+            <option
+              th:each="v : ${veterinarios}"
+              th:value="${v.id}"
+              th:text="${v.nome}"
+            ></option>
+          </select>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="dataHora">Data e hora</label>
+          <input
+            class="form-control"
+            type="datetime-local"
+            th:field="*{dataHora}"
+            th:attr="min=${dataHoraMinimaConsulta}"
+            required
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('dataHora')}"
+            th:errors="*{dataHora}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="tipo">Tipo</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{tipo}"
+            placeholder="Ex: Checkup, Vacinação, Emergência"
+            minlength="3"
+            maxlength="50"
+            required
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('tipo')}"
+            th:errors="*{tipo}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="diagnostico">Diagnóstico</label>
+          <textarea
+            class="form-control"
+            th:field="*{diagnostico}"
+            maxlength="500"
+          ></textarea>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="observacoes">Observações</label>
+          <textarea
+            class="form-control"
+            th:field="*{observacoes}"
+            maxlength="500"
+          ></textarea>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label" for="dataRetorno"
+            >Data de retorno (opcional — se não preencher, gera lembrete em 30
+            dias)</label
+          >
+          <input
+            class="form-control"
+            type="date"
+            th:field="*{dataRetorno}"
+            th:attr="min=${dataMinimaRetorno}"
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('dataRetorno')}"
+            th:errors="*{dataRetorno}"
+          ></span>
+        </div>
+
+        <br />
+        <button type="submit" class="btn btn-primary">
+          Registrar Consulta
+        </button>
+      </form>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

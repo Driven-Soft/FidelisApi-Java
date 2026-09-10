@@ -22,7 +22,7 @@ public class Recomendacao {
     @Column(nullable = false, length = 50)
     private String tipo;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String descricao;
 
     @Column(name = "data_recomendacao", nullable = false)

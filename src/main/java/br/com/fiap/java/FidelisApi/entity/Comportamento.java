@@ -22,7 +22,7 @@ public class Comportamento {
     @Column(nullable = false)
     private LocalDate data;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String descricao;
 
     @ManyToOne(fetch = FetchType.LAZY)
