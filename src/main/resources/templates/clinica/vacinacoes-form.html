@@ -1,0 +1,101 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{fragmentos :: cabecalho('Fidelis - Registrar Vacinação')}"
+  />
+  <body>
+    <div th:replace="~{fragmentos :: funcao-logout}" />
+
+    <div class="container" style="max-width: 500px">
+      <br /><br />
+      <a href="/clinica/pets">&larr; Voltar</a>
+      <h2>Registrar Vacinação</h2>
+
+      <form
+        th:action="@{/clinica/vacinacoes}"
+        th:object="${vacinacaoRequest}"
+        method="post"
+      >
+        <div class="mb-2">
+          <label>Pet</label>
+          <select class="form-control" th:field="*{petId}">
+            <option value="">Selecione um pet</option>
+            <option
+              th:each="p : ${pets}"
+              th:value="${p.id}"
+              th:text="${p.nome} + ' (' + ${p.tutor.nome} + ')'"
+            />
+          </select>
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('petId')}"
+            th:errors="*{petId}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label>Veterinário</label>
+          <select class="form-control" th:field="*{veterinarioId}">
+            <option value="">Selecione um veterinário</option>
+            <option
+              th:each="v : ${veterinarios}"
+              th:value="${v.id}"
+              th:text="${v.nome}"
+            />
+          </select>
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('veterinarioId')}"
+            th:errors="*{veterinarioId}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label>Vacina aplicada</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{vacinaAplicada}"
+            placeholder="Ex: Antirrábica"
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('vacinaAplicada')}"
+            th:errors="*{vacinaAplicada}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label>Data de aplicação</label>
+          <input class="form-control" type="date" th:field="*{dataAplicacao}" />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('dataAplicacao')}"
+            th:errors="*{dataAplicacao}"
+          ></span>
+        </div>
+
+        <div class="mb-2">
+          <label>Próxima dose (opcional)</label>
+          <input class="form-control" type="date" th:field="*{dataProxima}" />
+        </div>
+
+        <div class="mb-2">
+          <label>Observação (opcional)</label>
+          <textarea
+            class="form-control"
+            th:field="*{observacao}"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <br />
+        <button type="submit" class="btn btn-primary">
+          Registrar Vacinação
+        </button>
+      </form>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>
