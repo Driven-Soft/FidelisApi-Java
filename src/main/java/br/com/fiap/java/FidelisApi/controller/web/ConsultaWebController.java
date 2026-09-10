@@ -29,6 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Controller
 @RequestMapping("/clinica/consultas")
 @RequiredArgsConstructor
@@ -54,6 +57,8 @@ public class ConsultaWebController {
         request.setPetId(petId);
 
         model.addAttribute("consultaRequest", request);
+        model.addAttribute("dataHoraMinimaConsulta", LocalDateTime.now().withSecond(0).withNano(0));
+        model.addAttribute("dataMinimaRetorno", LocalDate.now());
         model.addAttribute("pets", petRepository.findByClinicaIdComTutor(clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));
         model.addAttribute("veterinarios", veterinarioRepository.findByClinicaId(clinicaId));
         return "clinica/consultas-form";
@@ -69,6 +74,8 @@ public class ConsultaWebController {
 
         if (bindingResult.hasErrors()) {
             Long clinicaId = clinicaLogada(authentication).getId();
+            model.addAttribute("dataHoraMinimaConsulta", LocalDateTime.now().withSecond(0).withNano(0));
+            model.addAttribute("dataMinimaRetorno", LocalDate.now());
             model.addAttribute("pets", petRepository.findByClinicaIdComTutor(clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));
             model.addAttribute("veterinarios", veterinarioRepository.findByClinicaId(clinicaId));
             return "clinica/consultas-form";

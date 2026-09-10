@@ -25,8 +25,8 @@
         method="post"
       >
         <div class="mb-2">
-          <label>Pet</label>
-          <select class="form-control" th:field="*{petId}">
+          <label class="form-label" for="petId">Pet</label>
+          <select class="form-control" th:field="*{petId}" required>
             <option
               th:each="p : ${pets}"
               th:value="${p.id}"
@@ -36,8 +36,8 @@
         </div>
 
         <div class="mb-2">
-          <label>Veterinário</label>
-          <select class="form-control" th:field="*{veterinarioId}">
+          <label class="form-label" for="veterinarioId">Veterinário</label>
+          <select class="form-control" th:field="*{veterinarioId}" required>
             <option
               th:each="v : ${veterinarios}"
               th:value="${v.id}"
@@ -47,11 +47,13 @@
         </div>
 
         <div class="mb-2">
-          <label>Data e hora</label>
+          <label class="form-label" for="dataHora">Data e hora</label>
           <input
             class="form-control"
             type="datetime-local"
             th:field="*{dataHora}"
+            th:attr="min=${dataHoraMinimaConsulta}"
+            required
           />
           <span
             class="text-danger"
@@ -61,12 +63,15 @@
         </div>
 
         <div class="mb-2">
-          <label>Tipo</label>
+          <label class="form-label" for="tipo">Tipo</label>
           <input
             class="form-control"
             type="text"
             th:field="*{tipo}"
             placeholder="Ex: Checkup, Vacinação, Emergência"
+            minlength="3"
+            maxlength="50"
+            required
           />
           <span
             class="text-danger"
@@ -76,21 +81,39 @@
         </div>
 
         <div class="mb-2">
-          <label>Diagnóstico</label>
-          <textarea class="form-control" th:field="*{diagnostico}"></textarea>
+          <label class="form-label" for="diagnostico">Diagnóstico</label>
+          <textarea
+            class="form-control"
+            th:field="*{diagnostico}"
+            maxlength="500"
+          ></textarea>
         </div>
 
         <div class="mb-2">
-          <label>Observações</label>
-          <textarea class="form-control" th:field="*{observacoes}"></textarea>
+          <label class="form-label" for="observacoes">Observações</label>
+          <textarea
+            class="form-control"
+            th:field="*{observacoes}"
+            maxlength="500"
+          ></textarea>
         </div>
 
         <div class="mb-2">
-          <label
+          <label class="form-label" for="dataRetorno"
             >Data de retorno (opcional — se não preencher, gera lembrete em 30
             dias)</label
           >
-          <input class="form-control" type="date" th:field="*{dataRetorno}" />
+          <input
+            class="form-control"
+            type="date"
+            th:field="*{dataRetorno}"
+            th:attr="min=${dataMinimaRetorno}"
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('dataRetorno')}"
+            th:errors="*{dataRetorno}"
+          ></span>
         </div>
 
         <br />
