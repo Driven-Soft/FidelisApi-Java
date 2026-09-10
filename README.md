@@ -24,7 +24,7 @@ Sistema de gestão para clínicas veterinárias, construído em Spring Boot. O p
 
 ## Vídeo de demonstração
 
-> **Link:** [.]
+> **Link:** [Demonstração da solução FidelisApi - Driven Soft (Challenge - 2026)](https://www.youtube.com/watch?v=BTbOPOLEyM0)
 
 O vídeo apresenta a página inicial, autenticação com os dois perfis, cadastro de pet, registro de consulta, geração de lembrete e recomendação, vacinação, retenção, histórico do Tutor e bloqueio de acesso entre perfis.
 
