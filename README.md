@@ -22,6 +22,12 @@ Sistema de gestão para clínicas veterinárias, construído em Spring Boot. O p
 
 **Repositório GitHub:** [https://github.com/Driven-Soft/FidelisApi-Java](https://github.com/Driven-Soft/FidelisApi-Java)
 
+## Vídeo de demonstração
+
+> **Link:** [.]
+
+O vídeo apresenta a página inicial, autenticação com os dois perfis, cadastro de pet, registro de consulta, geração de lembrete e recomendação, vacinação, retenção, histórico do Tutor e bloqueio de acesso entre perfis.
+
 ## Tecnologias
 
 - Java 17
@@ -29,7 +35,8 @@ Sistema de gestão para clínicas veterinárias, construído em Spring Boot. O p
 - Spring Data JPA / Hibernate
 - Spring Security (login por formulário, senhas com BCrypt, autorização por perfil)
 - Flyway (versionamento e migração do schema do banco)
-- H2 Database (memória) para desenvolvimento — driver Oracle (`ojdbc11`) já disponível para produção
+- H2 Database em memória para desenvolvimento e demonstração
+- Driver Oracle `ojdbc11` declarado no `pom.xml` para uma futura configuração Oracle; a execução atual utiliza H2 e as migrations não foram validadas como implantação Oracle
 - Thymeleaf (telas web)
 - SpringDoc OpenAPI / Swagger UI
 - Bean Validation (Jakarta Validation), com validadores customizados de CPF e CNPJ
@@ -59,7 +66,7 @@ Sistema de gestão para clínicas veterinárias, construído em Spring Boot. O p
   - `mapper/` - conversão entre entidades e DTOs
   - `exception/` - tratamento global de exceções (escopo restrito à API)
   - `config/` - configuração de cache, Swagger/OpenAPI e segurança
-  - `validation/` - validação personalizada de CPF e CNPJ
+  - `validation/` - validações de CPF, CNPJ, datas, textos e regras entre campos
 - `src/main/resources`
   - `application.yaml` - configuração da aplicação (datasource, JPA, Flyway, Swagger, Actuator)
   - `db/migration/` - scripts versionados do Flyway (schema + dados de teste)
@@ -72,6 +79,7 @@ O projeto já está configurado para rodar com H2 em memória no arquivo `src/ma
 - Console H2: `http://localhost:8080/h2-console`
 - Swagger UI: `http://localhost:8080/swagger-ui.html`
 - Tela de login: `http://localhost:8080/login`
+- Página pública: `http://localhost:8080/home`
 
 ## Como executar
 
@@ -129,7 +137,7 @@ Para executar a suíte de testes automatizados do projeto:
 ./mvnw test
 ```
 
-Os testes cobrem mappers, services, repositórios, controllers, segurança (login/perfis/proteção de rotas) e os fluxos de negócio, e usam H2 em memória.
+Os testes cobrem contexto da aplicação, mappers, services, repositórios, segurança (login/perfis/proteção de rotas), fluxos de negócio e validações de Pet, Vacinação, Consulta, Clínica, Tutor e Veterinário. A suíte atual possui 79 testes aprovados e utiliza H2 em memória.
 
 ## Endpoints principais
 
@@ -149,7 +157,12 @@ Leituras (`GET`) e escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil `CLINI
 
 - `@Cpf` - valida CPF
 - `@Cnpj` - valida CNPJ
-- Campos obrigatórios e formatos de texto são validados pelo Bean Validation
+- Campos obrigatórios, tamanhos e formatos de texto são validados pelo Bean Validation
+- Pets: nome, espécie, raça, data de nascimento plausível e campos obrigatórios
+- Vacinações: vacina, data de aplicação, próxima dose e coerência entre datas
+- Consultas: tipo, datas de retorno, diagnóstico, observações e vínculos obrigatórios
+- Clínica, Tutor e Veterinário: nomes, e-mails, telefones, endereços, identificadores e datas
+- Os formulários web também possuem validação nativa do navegador, mas o backend permanece como validação definitiva
 
 ## Documentação adicional
 
@@ -163,4 +176,4 @@ Leituras (`GET`) e escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil `CLINI
 
 - A aplicação usa H2 em memória para facilitar testes e desenvolvimento, com schema controlado por migrations Flyway versionadas em `db/migration`.
 - A organização do código segue um padrão de camadas para manter separação entre API, negócio e persistência.
-- O projeto está preparado para evoluir para conexão com um banco de dados real (Oracle), bastando ajustar `spring.datasource` em `application.yaml` — o driver já está incluído no `pom.xml`.
+- O driver Oracle `ojdbc11` está incluído no `pom.xml`, mas a aplicação desta Sprint utiliza H2 em memória. Uma futura migração para Oracle exigirá configurar o datasource, revisar as migrations conforme o dialeto Oracle e validar o ambiente de implantação.
