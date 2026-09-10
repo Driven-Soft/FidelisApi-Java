@@ -1,42 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos :: cabecalho('Fidelis - Consulta Registrada')}" />
-<body>
-    <div th:replace="~{fragmentos :: funcao-logout}" />
-
+  <head
+    th:replace="~{fragmentos :: cabecalho('Fidelis - Consulta Registrada')}"
+  />
+  <body>
     <div class="container">
-        <br><br>
-        <div class="alert alert-success">
-            <h4>Consulta registrada com sucesso!</h4>
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-4"
+      >
+        <h2 class="mb-0">Consulta Registrada</h2>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
+
+      <div class="alert alert-success">
+        <h4 class="mb-0">Consulta registrada com sucesso!</h4>
+      </div>
+
+      <p>
+        <b th:text="${consulta.pet.nome}"></b> —
+        <span th:text="${consulta.tipo}"></span> com
+        <span th:text="${consulta.veterinario.nome}"></span>
+      </p>
+
+      <hr />
+
+      <div th:if="${lembrete != null}" class="card mb-2">
+        <div class="card-body">
+          <h5>📅 Lembrete gerado automaticamente</h5>
+          <p th:text="${lembrete.descricao}"></p>
+          <p>
+            Data prevista:
+            <span
+              th:text="${#temporals.format(lembrete.dataPrevista, 'dd/MM/yyyy')}"
+            ></span>
+          </p>
         </div>
+      </div>
 
-        <p>
-            <b th:text="${consulta.pet.nome}"></b> —
-            <span th:text="${consulta.tipo}"></span> com
-            <span th:text="${consulta.veterinario.nome}"></span>
-        </p>
-
-        <hr>
-
-        <div th:if="${lembrete != null}" class="card mb-2">
-            <div class="card-body">
-                <h5>📅 Lembrete gerado automaticamente</h5>
-                <p th:text="${lembrete.descricao}"></p>
-                <p>Data prevista: <span th:text="${#temporals.format(lembrete.dataPrevista, 'dd/MM/yyyy')}"></span></p>
-            </div>
+      <div th:if="${recomendacao != null}" class="card mb-2">
+        <div class="card-body">
+          <h5>💡 Recomendação gerada automaticamente</h5>
+          <p th:text="${recomendacao.descricao}"></p>
         </div>
+      </div>
 
-        <div th:if="${recomendacao != null}" class="card mb-2">
-            <div class="card-body">
-                <h5>💡 Recomendação gerada automaticamente</h5>
-                <p th:text="${recomendacao.descricao}"></p>
-            </div>
-        </div>
-
-        <br>
-        <a th:href="@{/clinica/pets}" class="btn btn-primary">Voltar aos Pets</a>
+      <div class="d-flex justify-content-end mt-4">
+        <a th:href="@{/clinica/pets}" class="btn btn-primary"
+          >Voltar aos Pets</a
+        >
+      </div>
     </div>
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />
-</body>
+  </body>
 </html>

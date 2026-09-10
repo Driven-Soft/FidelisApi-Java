@@ -1,69 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos :: cabecalho('Fidelis - Cadastro de Pet')}" />
-<body>
-    <div th:replace="~{fragmentos :: funcao-logout}" />
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Cadastro de Pet')}" />
+  <body>
+    <div class="container" style="max-width: 500px">
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
+      >
+        <h2
+          class="mb-0"
+          th:text="${petId} != null ? 'Editar Pet' : 'Novo Pet'"
+        ></h2>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
 
-    <div class="container" style="max-width: 500px;">
-        <br><br>
-        <a href="/clinica/pets">&larr; Voltar</a>
-        <h2 th:text="${petId} != null ? 'Editar Pet' : 'Novo Pet'"></h2>
+      <div class="d-flex justify-content-end mb-3">
+        <a href="/clinica/pets" class="btn btn-outline-secondary"
+          >&larr; Voltar aos pets</a
+        >
+      </div>
 
-        <form th:action="${petId} != null ? @{/clinica/pets/{id}(id=${petId})} : @{/clinica/pets}"
-              th:object="${petRequest}" method="post">
+      <form
+        th:action="${petId} != null ? @{/clinica/pets/{id}(id=${petId})} : @{/clinica/pets}"
+        th:object="${petRequest}"
+        method="post"
+      >
+        <div class="mb-2">
+          <label>Nome</label>
+          <input class="form-control" type="text" th:field="*{nome}" />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('nome')}"
+            th:errors="*{nome}"
+          ></span>
+        </div>
 
-            <div class="mb-2">
-                <label>Nome</label>
-                <input class="form-control" type="text" th:field="*{nome}">
-                <span class="text-danger" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
-            </div>
+        <div class="mb-2">
+          <label>Espécie</label>
+          <input class="form-control" type="text" th:field="*{especie}" />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('especie')}"
+            th:errors="*{especie}"
+          ></span>
+        </div>
 
-            <div class="mb-2">
-                <label>Espécie</label>
-                <input class="form-control" type="text" th:field="*{especie}">
-                <span class="text-danger" th:if="${#fields.hasErrors('especie')}" th:errors="*{especie}"></span>
-            </div>
+        <div class="mb-2">
+          <label>Raça</label>
+          <input class="form-control" type="text" th:field="*{raca}" />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('raca')}"
+            th:errors="*{raca}"
+          ></span>
+        </div>
 
-            <div class="mb-2">
-                <label>Raça</label>
-                <input class="form-control" type="text" th:field="*{raca}">
-                <span class="text-danger" th:if="${#fields.hasErrors('raca')}" th:errors="*{raca}"></span>
-            </div>
+        <div class="mb-2">
+          <label>Sexo</label>
+          <select class="form-control" th:field="*{sexo}">
+            <option
+              th:each="s : ${T(br.com.fiap.java.FidelisApi.entity.SexoPet).values()}"
+              th:value="${s}"
+              th:text="${s}"
+            ></option>
+          </select>
+        </div>
 
-            <div class="mb-2">
-                <label>Sexo</label>
-                <select class="form-control" th:field="*{sexo}">
-                    <option th:each="s : ${T(br.com.fiap.java.FidelisApi.entity.SexoPet).values()}"
-                            th:value="${s}" th:text="${s}"></option>
-                </select>
-            </div>
+        <div class="mb-2">
+          <label>Data de nascimento</label>
+          <input
+            class="form-control"
+            type="date"
+            th:field="*{dataNascimento}"
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('dataNascimento')}"
+            th:errors="*{dataNascimento}"
+          ></span>
+        </div>
 
-            <div class="mb-2">
-                <label>Data de nascimento</label>
-                <input class="form-control" type="date" th:field="*{dataNascimento}">
-                <span class="text-danger" th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}"></span>
-            </div>
+        <div class="mb-2">
+          <label>Status</label>
+          <select class="form-control" th:field="*{status}">
+            <option
+              th:each="s : ${T(br.com.fiap.java.FidelisApi.entity.PetStatus).values()}"
+              th:value="${s}"
+              th:text="${s}"
+            ></option>
+          </select>
+        </div>
 
-            <div class="mb-2">
-                <label>Status</label>
-                <select class="form-control" th:field="*{status}">
-                    <option th:each="s : ${T(br.com.fiap.java.FidelisApi.entity.PetStatus).values()}"
-                            th:value="${s}" th:text="${s}"></option>
-                </select>
-            </div>
+        <div class="mb-2">
+          <label>Tutor</label>
+          <select class="form-control" th:field="*{tutorId}">
+            <option
+              th:each="t : ${tutores}"
+              th:value="${t.id}"
+              th:text="${t.nome}"
+            ></option>
+          </select>
+        </div>
 
-            <div class="mb-2">
-                <label>Tutor</label>
-                <select class="form-control" th:field="*{tutorId}">
-                    <option th:each="t : ${tutores}" th:value="${t.id}" th:text="${t.nome}"></option>
-                </select>
-            </div>
-
-            <br>
-            <button type="submit" class="btn btn-primary">Salvar</button>
-        </form>
+        <br />
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </form>
     </div>
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />
-</body>
+  </body>
 </html>

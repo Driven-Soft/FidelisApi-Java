@@ -2,52 +2,69 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{fragmentos :: cabecalho('Fidelis - Pets')}" />
   <body>
-    <div th:replace="~{fragmentos :: funcao-logout}" />
-
-    <div class="container">
-      <br /><br />
-      <a href="/dashboard">&larr; Voltar ao dashboard</a>
-      <h2>Pets da Clínica</h2>
-
-      <a th:href="@{/clinica/pets/novo}" class="btn btn-primary mb-3"
-        >+ Novo Pet</a
+    <div class="container pet-list-page">
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
       >
+        <h2 class="mb-0">Pets da Clínica</h2>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Espécie</th>
-            <th>Raça</th>
-            <th>Tutor</th>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="pet : ${pets}">
-            <td th:text="${pet.nome}"></td>
-            <td th:text="${pet.especie}"></td>
-            <td th:text="${pet.raca}"></td>
-            <td th:text="${pet.tutor.nome}"></td>
-            <td th:text="${pet.status}"></td>
-            <td>
-              <a th:href="@{/clinica/consultas/nova(petId=${pet.id})}"
-                >Registrar Consulta</a
-              >
-              |
-              <a th:href="@{/clinica/vacinacoes/nova(petId=${pet.id})}"
-                >Registrar Vacinação</a
-              >
-              |
-              <a th:href="@{/clinica/pets/{id}/editar(id=${pet.id})}">Editar</a>
-            </td>
-          </tr>
-          <tr th:if="${pets.isEmpty()}">
-            <td colspan="6">Nenhum pet cadastrado ainda.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="d-flex flex-wrap justify-content-end gap-2 mb-3">
+        <a href="/dashboard" class="btn btn-outline-primary"
+          >&larr; Voltar ao dashboard</a
+        >
+        <a th:href="@{/clinica/pets/novo}" class="btn btn-primary"
+          >+ Novo Pet</a
+        >
+      </div>
+
+      <div class="table-panel">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Espécie</th>
+              <th>Raça</th>
+              <th>Tutor</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="pet : ${pets}">
+              <td th:text="${pet.nome}"></td>
+              <td th:text="${pet.especie}"></td>
+              <td th:text="${pet.raca}"></td>
+              <td th:text="${pet.tutor.nome}"></td>
+              <td th:text="${pet.status}"></td>
+              <td>
+                <div class="table-actions">
+                  <a
+                    th:href="@{/clinica/consultas/nova(petId=${pet.id})}"
+                    class="btn btn-sm btn-outline-primary"
+                    >Registrar Consulta</a
+                  >
+                  <a
+                    th:href="@{/clinica/vacinacoes/nova(petId=${pet.id})}"
+                    class="btn btn-sm btn-outline-success"
+                    >Registrar Vacinação</a
+                  >
+                  <a
+                    th:href="@{/clinica/pets/{id}/editar(id=${pet.id})}"
+                    class="btn btn-sm btn-outline-secondary"
+                    >Editar</a
+                  >
+                </div>
+              </td>
+            </tr>
+            <tr th:if="${pets.isEmpty()}">
+              <td colspan="6">Nenhum pet cadastrado ainda.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />

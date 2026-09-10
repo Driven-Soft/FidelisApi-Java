@@ -1,34 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragmentos :: cabecalho('Fidelis - Login')}" />
-<body>
-    <div class="container" style="text-align: center;">
-        <br><br>
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Login')}" />
+  <body>
+    <main class="login-page">
+      <div class="container d-flex justify-content-center">
+        <section class="login-panel">
+          <img
+            class="brand-logo"
+            th:src="@{/images/fidelis-logo.svg}"
+            alt="Logo Fidelis"
+          />
+          <h1>Fidelis</h1>
+          <p class="subtitle mb-4">Saúde do seu pet</p>
 
-        <div class="row">
-            <h2>Fidelis</h2>
-            <p>Sistema inteligente de retenção e cuidado contínuo veterinário</p>
-        </div>
+          <div th:if="${param.logout}" class="alert alert-success">
+            Logout efetuado com sucesso.
+          </div>
 
-        <br>
+          <form th:action="@{/login}" method="post">
+            <label class="form-label" for="email">E-mail</label>
+            <input
+              class="form-control mb-3"
+              type="email"
+              id="email"
+              name="email"
+              autocomplete="username"
+              required
+            />
+            <label class="form-label" for="password">Senha</label>
+            <input
+              class="form-control mb-4"
+              type="password"
+              id="password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+          </form>
 
-        <div th:if="${param.logout}">
-            <p style="color: green;"><b>Logout efetuado com sucesso</b></p>
-        </div>
-
-        <form th:action="@{/login}" method="post" style="max-width: 320px; margin: 0 auto;">
-            E-mail: <input class="form-control" type="text" id="email" name="email"><br>
-            Senha: <input class="form-control" type="password" id="password" name="password"><br><br>
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </form>
-
-        <br>
-
-        <div th:if="${param.falha}">
-            <p style="color: red;"><b>E-mail e/ou senha inválidos</b></p>
-        </div>
-    </div>
+          <div th:if="${param.falha}" class="alert alert-danger mt-3 mb-0">
+            E-mail e/ou senha inválidos.
+          </div>
+        </section>
+      </div>
+    </main>
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />
-</body>
+  </body>
 </html>

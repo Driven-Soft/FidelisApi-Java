@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="1024" height="1024">
+    <path data-dc-tpl="164" d="M60 9.5c2 0 3.7.4 5.5 1.2l39 17.3c5.4 2.4 7.5 5.6 7.5 12 0 36-20.5 62.5-45.5 71.8-4.2 1.6-8.8 1.6-13 0C28.5 102.3 8 75.8 8 40c0-6.4 2.1-9.6 7.5-12l39-17.3c1.8-.8 3.5-1.2 5.5-1.2z" fill="#0A6B50" data-om-id="9b295e54:169"></path>
+    <g data-dc-tpl="165" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="8" stroke-linejoin="round" data-om-id="9b295e54:170">
+      <path data-dc-tpl="166" d="M36 28 L32 49 L54 45 Z" data-om-id="9b295e54:171"></path>
+      <path data-dc-tpl="167" d="M84 28 L88 49 L66 45 Z" data-om-id="9b295e54:172"></path>
+    </g>
+    <rect data-dc-tpl="168" x="32" y="42" width="56" height="50" rx="24" fill="#FFFFFF" data-om-id="9b295e54:173"></rect>
+    <g data-dc-tpl="169" fill="#0A6B50" data-om-id="9b295e54:174">
+      <circle data-dc-tpl="170" cx="48" cy="64" r="6" data-om-id="9b295e54:175"></circle>
+      <circle data-dc-tpl="171" cx="72" cy="64" r="6" data-om-id="9b295e54:176"></circle>
+    </g>
+  </svg>

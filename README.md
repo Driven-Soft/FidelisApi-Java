@@ -1,19 +1,19 @@
 # FidelisApi
 
-<p>
-  <img src="src/main/resources/static/images/favicon.png" alt="Logo Fidelis" width="180">
+<p align="center">
+  <img src="src/main/resources/static/images/fidelis-logo.svg" alt="Logo Fidelis" width="180">
 </p>
 
 ## Equipe Driven Soft
 
 ### Integrantes
 
-| Nome | RM |
-| --- | --- |
-| Felipe Bezerra Beatrici | RM 564723 |
-| Max Hayashi Batista | RM 563717 |
-| Henrique Cunha Torres | RM 565119 |
-| Lucas da Silva Lima | RM 562118 |
+| Nome                               | RM        |
+| ---------------------------------- | --------- |
+| Felipe Bezerra Beatrici            | RM 564723 |
+| Max Hayashi Batista                | RM 563717 |
+| Henrique Cunha Torres              | RM 565119 |
+| Lucas da Silva Lima                | RM 562118 |
 | Yasmin Nathalin Miranda dos Santos | RM 561365 |
 
 <hr/>
@@ -103,10 +103,10 @@ A aplicação estará disponível em: **http://localhost:8080**
 
 A aplicação exige login para acessar a maioria das rotas. As migrations do Flyway já criam usuários de teste:
 
-| Perfil | E-mail | Senha |
-| --- | --- | --- |
+| Perfil  | E-mail                 | Senha    |
+| ------- | ---------------------- | -------- |
 | Clínica | clinica@fidelis.com.br | Senha123 |
-| Tutor | tutor@fidelis.com.br | Senha123 |
+| Tutor   | tutor@fidelis.com.br   | Senha123 |
 
 Após o login você é redirecionado para `/dashboard`. Rotas em `/clinica/**` exigem perfil Clínica e rotas em `/tutor/**` exigem perfil Tutor.
 

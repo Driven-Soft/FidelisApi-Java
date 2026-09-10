@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="1024" height="1024">
+    <path data-dc-tpl="15" d="M60 9.5c2 0 3.7.4 5.5 1.2l39 17.3c5.4 2.4 7.5 5.6 7.5 12 0 36-20.5 62.5-45.5 71.8-4.2 1.6-8.8 1.6-13 0C28.5 102.3 8 75.8 8 40c0-6.4 2.1-9.6 7.5-12l39-17.3c1.8-.8 3.5-1.2 5.5-1.2z" fill="#0A6B50" data-om-id="9b295e54:20"></path>
+    <g data-dc-tpl="16" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="7" stroke-linejoin="round" data-om-id="9b295e54:21">
+      <path data-dc-tpl="17" d="M38 31 L35 48 L53 45 Z" data-om-id="9b295e54:22"></path>
+      <path data-dc-tpl="18" d="M82 31 L85 48 L67 45 Z" data-om-id="9b295e54:23"></path>
+    </g>
+    <g data-dc-tpl="19" fill="#FFFFFF" data-om-id="9b295e54:24">
+      <rect data-dc-tpl="20" x="35" y="44" width="50" height="44" rx="21" data-om-id="9b295e54:25"></rect>
+      <rect data-dc-tpl="21" x="46" y="66" width="28" height="26" rx="13" data-om-id="9b295e54:26"></rect>
+    </g>
+    <g data-dc-tpl="22" fill="#0A6B50" data-om-id="9b295e54:27">
+      <circle data-dc-tpl="23" cx="49" cy="59" r="4.6" data-om-id="9b295e54:28"></circle>
+      <circle data-dc-tpl="24" cx="71" cy="59" r="4.6" data-om-id="9b295e54:29"></circle>
+      <rect data-dc-tpl="25" x="52" y="72" width="16" height="10" rx="5" data-om-id="9b295e54:30"></rect>
+    </g>
+  </svg>

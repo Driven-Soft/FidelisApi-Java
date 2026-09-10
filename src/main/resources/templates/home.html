@@ -1,0 +1,40 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Saúde do seu pet')}" />
+  <body>
+    <main class="welcome-page">
+      <div class="container">
+        <section class="welcome-panel">
+          <div>
+            <img
+              class="welcome-logo"
+              th:src="@{/images/fidelis-logo.svg}"
+              alt="Logo Fidelis"
+            />
+          </div>
+          <div class="welcome-copy">
+            <p
+              class="text-uppercase small fw-semibold mb-2"
+              style="color: var(--fidelis-green)"
+            >
+              Fidelis
+            </p>
+            <h1>Saúde do seu pet</h1>
+            <p class="lead">
+              Cuidado contínuo, histórico organizado e mais proximidade entre
+              clínicas, tutores e seus pets.
+            </p>
+            <p>
+              Acompanhe consultas, vacinações, lembretes e alertas de retenção
+              em um só lugar.
+            </p>
+            <a class="btn btn-primary btn-lg mt-3" th:href="@{/login}"
+              >Acessar minha conta</a
+            >
+          </div>
+        </section>
+      </div>
+    </main>
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

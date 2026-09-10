@@ -28,7 +28,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // --- Público ---
                 .requestMatchers(
-                    "/login", "/acesso-negado",
+                    "/", "/home", "/login", "/acesso-negado",
                     "/css/**", "/js/**", "/images/**",
                     "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
                     "/h2-console/**",

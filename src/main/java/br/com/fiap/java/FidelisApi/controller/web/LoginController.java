@@ -8,7 +8,12 @@ public class LoginController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/dashboard";
+        return "redirect:/home";
+    }
+
+    @GetMapping("/home")
+    public String exibirHome() {
+        return "home";
     }
 
     @GetMapping("/login")
