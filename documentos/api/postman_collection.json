@@ -1,472 +1,1517 @@
 {
-  "info": {
-    "name": "Fidelis API - Collection",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Coleção com requisições para validar a API Fidelis - ORDEM LÓGICA: Clínica → Tutor → Veterinário → Pet → Consultas/Vacinas/etc"
-  },
-  "item": [
-    {
-      "name": "1. SETUP - Clínica",
-      "item": [
-        {
-          "name": "1.1 Criar Clínica",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nome\": \"PetCare Veterinária\",\n  \"cnpj\": \"11.222.333/0001-81\",\n  \"telefone\": \"(11) 3333-4444\",\n  \"email\": \"contato@petcare.com\",\n  \"endereco\": \"Av. Paulista, 1000, São Paulo - SP\"\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/clinicas"
-          }
-        },
-        {
-          "name": "1.2 Listar Clínicas",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/clinicas?page=0&size=5&sort=id&direction=ASC"
-          }
-        },
-        {
-          "name": "1.3 Buscar Clínica por ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/clinicas/1"
-          }
-        }
-      ]
-    },
-    {
-      "name": "2. SETUP - Tutores",
-      "item": [
-        {
-          "name": "2.1 Criar Tutor",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cpf\": \"123.456.789-09\",\n  \"nome\": \"João Silva\",\n  \"email\": \"joao.silva@email.com\",\n  \"senha\": \"SenhaSegura123\",\n  \"telefone\": \"(11) 98888-7777\",\n  \"endereco\": \"Rua das Flores, 100, São Paulo - SP\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/tutores"
-          }
-        },
-        {
-          "name": "2.2 Criar Tutor 2",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cpf\": \"987.654.321-00\",\n  \"nome\": \"Maria Santos\",\n  \"email\": \"maria.santos@email.com\",\n  \"senha\": \"OutraSenha456\",\n  \"telefone\": \"(11) 97777-6666\",\n  \"endereco\": \"Rua das Acácias, 200, São Paulo - SP\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/tutores"
-          }
-        },
-        {
-          "name": "2.3 Listar Tutores",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/tutores?page=0&size=10"
-          }
-        },
-        {
-          "name": "2.4 Buscar Tutor por ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/tutores/1"
-          }
-        }
-      ]
-    },
-    {
-      "name": "3. SETUP - Veterinários",
-      "item": [
-        {
-          "name": "3.1 Criar Veterinário",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cmvv\": \"1234567\",\n  \"nome\": \"Dr. Veterinário Silva\",\n  \"email\": \"dr.silva@petcare.com\",\n  \"senha\": \"SenhaVet123\",\n  \"especialidade\": \"Clínica Geral\",\n  \"clinicaId\": 1,\n  \"dataCriacao\": \"2026-05-22\"\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/veterinarios"
-          }
-        },
-        {
-          "name": "3.2 Criar Veterinário 2",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cmvv\": \"7654321\",\n  \"nome\": \"Dra. Veterinária Costa\",\n  \"email\": \"dra.costa@petcare.com\",\n  \"senha\": \"SenhaVet456\",\n  \"especialidade\": \"Cirurgia Veterinária\",\n  \"clinicaId\": 1,\n  \"dataCriacao\": \"2026-05-22\"\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/veterinarios"
-          }
-        },
-        {
-          "name": "3.3 Listar Veterinários",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/veterinarios?page=0&size=10"
-          }
-        },
-        {
-          "name": "3.4 Buscar Veterinário por ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/veterinarios/1"
-          }
-        }
-      ]
-    },
-    {
-      "name": "4. CORE - Pets",
-      "item": [
-        {
-          "name": "4.1 Criar Pet - Cachorro",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nome\": \"Rex\",\n  \"especie\": \"Cachorro\",\n  \"raca\": \"Vira-lata\",\n  \"sexo\": \"M\",\n  \"dataNascimento\": \"2020-01-15\",\n  \"status\": \"ATIVO\",\n  \"fotoUrl\": \"https://example.com/rex.jpg\",\n  \"tutorId\": 1,\n  \"clinicaId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/pets"
-          }
-        },
-        {
-          "name": "4.2 Criar Pet - Gato",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nome\": \"Miau\",\n  \"especie\": \"Gato\",\n  \"raca\": \"Siamês\",\n  \"sexo\": \"F\",\n  \"dataNascimento\": \"2021-06-20\",\n  \"status\": \"ATIVO\",\n  \"fotoUrl\": \"https://example.com/miau.jpg\",\n  \"tutorId\": 2,\n  \"clinicaId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/pets"
-          }
-        },
-        {
-          "name": "4.3 Listar Pets",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/pets?page=0&size=10"
-          }
-        },
-        {
-          "name": "4.4 Buscar Pet por ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/pets/1"
-          }
-        },
-        {
-          "name": "4.5 Buscar Pets por Espécie",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/pets?especie=Cachorro&page=0&size=10"
-          }
-        },
-        {
-          "name": "4.6 Atualizar Pet",
-          "request": {
-            "method": "PUT",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nome\": \"Rex Atualizado\",\n  \"especie\": \"Cachorro\",\n  \"raca\": \"Vira-lata\",\n  \"sexo\": \"M\",\n  \"dataNascimento\": \"2020-01-15\",\n  \"status\": \"ATIVO\",\n  \"fotoUrl\": \"https://example.com/rex-novo.jpg\",\n  \"tutorId\": 1,\n  \"clinicaId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/pets/2"
-          }
-        },
-        {
-          "name": "4.7 Deletar Pet",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/pets/2"
-          }
-        }
-      ]
-    },
-    {
-      "name": "5. Consultas",
-      "item": [
-        {
-          "name": "5.1 Criar Consulta",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"dataHora\": \"2026-06-01T09:00:00\",\n  \"tipo\": \"CONSULTA_INICIAL\",\n  \"diagnostico\": \"Saúde em dia\",\n  \"observacoes\": \"Pet em bom estado de saúde\",\n  \"dataRetorno\": \"2026-12-01\",\n  \"veterinarioId\": 1,\n  \"petId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/consultas"
-          }
-        },
-        {
-          "name": "5.2 Listar Consultas",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/consultas?page=0&size=10"
-          }
-        },
-        {
-          "name": "5.3 Buscar Consulta por ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/consultas/1"
-          }
-        }
-      ]
-    },
-    {
-      "name": "6. Vacinações",
-      "item": [
-        {
-          "name": "6.1 Criar Vacinação",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"dataAplicacao\": \"2026-05-23\",\n  \"dataProxima\": \"2026-05-23\",\n  \"vacinaAplicada\": \"Vacina V8\",\n  \"observacao\": \"Aplicada sem problemas\",\n  \"petId\": 1,\n  \"veterinarioId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/vacinacoes"
-          }
-        },
-        {
-          "name": "6.2 Listar Vacinações",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/vacinacoes?page=0&size=10"
-          }
-        },
-        {
-          "name": "6.3 Buscar Vacinação por ID",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/vacinacoes/1"
-          }
-        }
-      ]
-    },
-    {
-      "name": "7. Vermifugações",
-      "item": [
-        {
-          "name": "7.1 Criar Vermifugação",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"produto\": \"Verm-Plus\",\n  \"dataAplicacao\": \"2026-05-23\",\n  \"dataProxima\": \"2026-08-23\",\n  \"petId\": 1,\n  \"veterinarioId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/vermifugacoes"
-          }
-        },
-        {
-          "name": "7.2 Listar Vermifugações",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/vermifugacoes?page=0&size=10"
-          }
-        }
-      ]
-    },
-    {
-      "name": "8. Histórico de Peso",
-      "item": [
-        {
-          "name": "8.1 Criar Registro de Peso",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"pesoKg\": 25,\n  \"dataMedicao\": \"2026-05-23\",\n  \"observacao\": \"Pet em peso ideal\",\n  \"petId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/historico-pesos"
-          }
-        },
-        {
-          "name": "8.2 Listar Histórico de Peso",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/historico-pesos?page=0&size=10"
-          }
-        }
-      ]
-    },
-    {
-      "name": "9. Recomendações",
-      "item": [
-        {
-          "name": "9.1 Criar Recomendação",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"tipo\": \"Vacinação\",\n  \"descricao\": \"Aumentar ingestão de água\",\n  \"dataRecomendacao\": \"2026-05-23\",\n  \"petId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/recomendacoes"
-          }
-        },
-        {
-          "name": "9.2 Listar Recomendações",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/recomendacoes?page=0&size=10"
-          }
-        }
-      ]
-    },
-    {
-      "name": "10. Comportamentos",
-      "item": [
-        {
-          "name": "10.1 Criar Comportamento",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"data\": \"2026-05-23\",\n  \"descricao\": \"Pet apresenta comportamento agressivo com estranhos\",\n  \"petId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/comportamentos"
-          }
-        },
-        {
-          "name": "10.2 Listar Comportamentos",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/comportamentos?page=0&size=10"
-          }
-        }
-      ]
-    },
-    {
-      "name": "11. Exames",
-      "item": [
-        {
-          "name": "11.1 Criar Exame",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"tipo\": \"HEMOGRAMA\",\n  \"descricao\": \"Hemograma completo\",\n  \"resultado\": \"Normal\",\n  \"data\": \"2026-05-23\",\n  \"consultaId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/exames"
-          }
-        },
-        {
-          "name": "11.2 Listar Exames",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/exames?page=0&size=10"
-          }
-        }
-      ]
-    },
-    {
-      "name": "12. Prescrições",
-      "item": [
-        {
-          "name": "12.1 Criar Prescrição",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"dosagem\": \"500mg\",\n  \"frequencia\": \"A cada 12 horas\",\n  \"duracaoDias\": 7,\n  \"observacao\": \"Administrar com alimento\",\n  \"consultaId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/prescricoes"
-          }
-        },
-        {
-          "name": "12.2 Listar Prescrições",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/prescricoes?page=0&size=10"
-          }
-        }
-      ]
-    },
-    {
-      "name": "13. Medicamentos",
-      "item": [
-        {
-          "name": "13.1 Criar Medicamento",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"nome\": \"Amoxicilina 500mg\",\n  \"descricao\": \"Antibiótico de amplo espectro\",\n  \"prescricaoId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/medicamentos"
-          }
-        },
-        {
-          "name": "13.2 Listar Medicamentos",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/medicamentos?page=0&size=10"
-          }
-        }
-      ]
-    },
-    {
-      "name": "14. Lembretes",
-      "item": [
-        {
-          "name": "14.1 Criar Lembrete",
-          "request": {
-            "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"tipo\": \"Vacinação\",\n  \"descricao\": \"Reforço da vacina V8\",\n  \"dataPrevista\": \"2027-05-23\",\n  \"status\": \"PENDENTE\",\n  \"tutorId\": 1,\n  \"petId\": 1\n}"
-            },
-            "url": "{{baseUrl}}/api/v1/lembretes"
-          }
-        },
-        {
-          "name": "14.2 Listar Lembretes",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": "{{baseUrl}}/api/v1/lembretes?page=0&size=10"
-          }
-        }
-      ]
-    }
-  ],
-  "variable": [{ "key": "baseUrl", "value": "http://localhost:8080" }]
+	"info": {
+		"name": "Fidelis API - Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"description": "Coleção com requisições para validar a API Fidelis - ORDEM LÓGICA: Clínica → Tutor → Veterinário → Pet → Consultas/Vacinas/etc\n\nAUTENTICAÇÃO: a partir da Sprint 3, a API usa Spring Security (Basic Auth). A coleção já vem configurada para autenticar automaticamente como CLINICA, usando as variáveis {{clinicaEmail}} / {{clinicaSenha}} (usuário de teste semeado pelo Flyway). Leitura (GET) funciona para qualquer perfil autenticado; escrita (POST/PUT/PATCH/DELETE) exige perfil CLINICA. Veja a pasta '0. Autenticação' para exemplos de acesso negado e não autenticado."
+	},
+	"item": [
+		{
+			"name": "0. Autenticação",
+			"item": [
+				{
+					"name": "0.1 GET Pets SEM autenticação (esperado: 401)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/pets"
+					}
+				},
+				{
+					"name": "0.2 GET Pets como TUTOR (esperado: 200 - leitura liberada)",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{tutorEmail}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{tutorSenha}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/pets"
+					}
+				},
+				{
+					"name": "0.3 POST Pet como TUTOR (esperado: 403 - somente CLINICA pode escrever)",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{tutorEmail}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{tutorSenha}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Teste Bloqueado\",\n  \"especie\": \"Cachorro\",\n  \"raca\": \"Vira-lata\",\n  \"sexo\": \"M\",\n  \"dataNascimento\": \"2020-01-15\",\n  \"status\": \"ATIVO\",\n  \"tutorId\": 1,\n  \"clinicaId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/pets"
+					}
+				},
+				{
+					"name": "0.4 POST Login MVC (formLogin) - CLINICA",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "{{clinicaEmail}}"
+								},
+								{
+									"key": "password",
+									"value": "{{clinicaSenha}}"
+								}
+							]
+						},
+						"url": "{{baseUrl}}/login",
+						"description": "Demonstra o login por sessão usado pelas telas (Thymeleaf). Não é o mecanismo usado pelos outros requests desta coleção (que usam Basic Auth direto na API)."
+					}
+				}
+			]
+		},
+		{
+			"name": "1. SETUP - Clínica",
+			"item": [
+				{
+					"name": "1.1 Criar Clínica",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"PetCare Veterinária\",\n  \"cnpj\": \"11.222.333/0001-81\",\n  \"telefone\": \"(11) 3333-4444\",\n  \"email\": \"contato@petcare.com\",\n  \"endereco\": \"Av. Paulista, 1000, São Paulo - SP\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/clinicas"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Resposta contem id e nome\", function () {",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData).to.have.property(\"nome\", \"PetCare Veterinária\");",
+									"});",
+									"pm.collectionVariables.set(\"clinicaId\", jsonData.id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.2 Listar Clínicas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/clinicas?page=0&size=5&sort=id&direction=ASC"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.3 Buscar Clínica por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/clinicas/{{clinicaId}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });",
+									"pm.test(\"ID bate com o esperado\", function () {",
+									"    pm.expect(pm.response.json().id).to.eql(parseInt(pm.collectionVariables.get(\"clinicaId\")));",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.4 Atualizar Clínica",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"PetCare Veterinária - Atualizada\",\n  \"cnpj\": \"11.222.333/0001-81\",\n  \"telefone\": \"(11) 3333-5555\",\n  \"email\": \"contato@petcare.com\",\n  \"endereco\": \"Av. Paulista, 1000, São Paulo - SP\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/clinicas/{{clinicaId}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });",
+									"pm.test(\"Nome foi atualizado\", function () {",
+									"    pm.expect(pm.response.json().nome).to.eql(\"PetCare Veterinária - Atualizada\");",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.5 [Negativo] CNPJ inválido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Clínica Inválida\",\n  \"cnpj\": \"11.111.111/1111-11\",\n  \"telefone\": \"(11) 3333-4444\",\n  \"email\": \"invalida@petcare.com\",\n  \"endereco\": \"Rua Teste, 1\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/clinicas"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 400 Bad Request (CNPJ invalido)\", function () { pm.response.to.have.status(400); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.6 [Negativo] Campo obrigatório ausente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cnpj\": \"22.333.444/0001-55\",\n  \"telefone\": \"(11) 3333-4444\",\n  \"email\": \"semnome@petcare.com\",\n  \"endereco\": \"Rua Teste, 2\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/clinicas",
+						"description": "Corpo sem o campo 'nome', que e obrigatorio."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 400 Bad Request (nome ausente)\", function () { pm.response.to.have.status(400); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.7 [Negativo] Buscar Clínica inexistente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/clinicas/999999"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 404 Not Found\", function () { pm.response.to.have.status(404); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.8 Criar Clínica para deletar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Clínica Descartável\",\n  \"cnpj\": \"44.555.666/0001-22\",\n  \"telefone\": \"(11) 4444-5555\",\n  \"email\": \"descartavel@petcare.com\",\n  \"endereco\": \"Rua Provisória, 1\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/clinicas"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });",
+									"pm.collectionVariables.set(\"clinicaIdDemo\", pm.response.json().id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "1.9 Deletar Clínica",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/clinicas/{{clinicaIdDemo}}",
+						"description": "Deleta a clinica descartavel criada em 1.8 - nao afeta {{clinicaId}} usada no resto da colecao."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 204 No Content\", function () { pm.response.to.have.status(204); });"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "2. SETUP - Tutores",
+			"item": [
+				{
+					"name": "2.1 Criar Tutor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cpf\": \"123.456.789-09\",\n  \"nome\": \"João Silva\",\n  \"email\": \"joao.silva@email.com\",\n  \"senha\": \"SenhaSegura123\",\n  \"telefone\": \"(11) 98888-7777\",\n  \"endereco\": \"Rua das Flores, 100, São Paulo - SP\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/tutores"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Resposta contem id e nome\", function () {",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData).to.have.property(\"nome\", \"João Silva\");",
+									"});",
+									"pm.collectionVariables.set(\"tutorId\", jsonData.id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.2 Criar Tutor 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cpf\": \"987.654.321-00\",\n  \"nome\": \"Maria Santos\",\n  \"email\": \"maria.santos@email.com\",\n  \"senha\": \"OutraSenha456\",\n  \"telefone\": \"(11) 97777-6666\",\n  \"endereco\": \"Rua das Acácias, 200, São Paulo - SP\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/tutores"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.3 Listar Tutores",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/tutores?page=0&size=10"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.4 Buscar Tutor por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/tutores/{{tutorId}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.5 Atualizar Tutor",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cpf\": \"123.456.789-09\",\n  \"nome\": \"João Silva Atualizado\",\n  \"email\": \"joao.silva@email.com\",\n  \"senha\": \"SenhaSegura123\",\n  \"telefone\": \"(11) 98888-9999\",\n  \"endereco\": \"Rua das Flores, 100, São Paulo - SP\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/tutores/{{tutorId}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });",
+									"pm.test(\"Nome foi atualizado\", function () {",
+									"    pm.expect(pm.response.json().nome).to.eql(\"João Silva Atualizado\");",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.6 [Negativo] CPF inválido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cpf\": \"111.111.111-11\",\n  \"nome\": \"Tutor Inválido\",\n  \"email\": \"invalido@email.com\",\n  \"senha\": \"Senha12345\",\n  \"telefone\": \"(11) 90000-0000\",\n  \"endereco\": \"Rua Teste, 1\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/tutores"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 400 Bad Request (CPF invalido)\", function () { pm.response.to.have.status(400); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.7 [Negativo] E-mail inválido",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cpf\": \"111.444.777-35\",\n  \"nome\": \"Tutor Email Invalido\",\n  \"email\": \"nao-e-um-email\",\n  \"senha\": \"Senha12345\",\n  \"telefone\": \"(11) 90000-0000\",\n  \"endereco\": \"Rua Teste, 2\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/tutores"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 400 Bad Request (email invalido)\", function () { pm.response.to.have.status(400); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.8 [Negativo] Campo obrigatório ausente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Tutor Sem CPF\",\n  \"email\": \"semcpf@email.com\",\n  \"senha\": \"Senha12345\",\n  \"telefone\": \"(11) 90000-0000\",\n  \"endereco\": \"Rua Teste, 3\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/tutores",
+						"description": "Corpo sem o campo 'cpf', que e obrigatorio."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 400 Bad Request (cpf ausente)\", function () { pm.response.to.have.status(400); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.9 [Negativo] Buscar Tutor inexistente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/tutores/999999"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 404 Not Found\", function () { pm.response.to.have.status(404); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.10 Criar Tutor para deletar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cpf\": \"529.982.247-25\",\n  \"nome\": \"Tutor Descartável\",\n  \"email\": \"descartavel@email.com\",\n  \"senha\": \"Senha12345\",\n  \"telefone\": \"(11) 90000-1111\",\n  \"endereco\": \"Rua Provisória, 2\",\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/tutores"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });",
+									"pm.collectionVariables.set(\"tutorIdDemo\", pm.response.json().id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "2.11 Deletar Tutor",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/tutores/{{tutorIdDemo}}",
+						"description": "Deleta o tutor descartavel criado em 2.10 - nao afeta {{tutorId}} usado no resto da colecao."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 204 No Content\", function () { pm.response.to.have.status(204); });"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "3. SETUP - Veterinários",
+			"item": [
+				{
+					"name": "3.1 Criar Veterinário",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cmvv\": \"1234567\",\n  \"nome\": \"Dr. Veterinário Silva\",\n  \"email\": \"dr.silva@petcare.com\",\n  \"senha\": \"SenhaVet123\",\n  \"especialidade\": \"Clínica Geral\",\n  \"clinicaId\": {{clinicaId}},\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/veterinarios"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"veterinarioId\", jsonData.id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "3.2 Criar Veterinário 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cmvv\": \"7654321\",\n  \"nome\": \"Dra. Veterinária Costa\",\n  \"email\": \"dra.costa@petcare.com\",\n  \"senha\": \"SenhaVet456\",\n  \"especialidade\": \"Cirurgia Veterinária\",\n  \"clinicaId\": {{clinicaId}},\n  \"dataCriacao\": \"2026-05-22\"\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/veterinarios"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "3.3 Listar Veterinários",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/veterinarios?page=0&size=10"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "3.4 Buscar Veterinário por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/veterinarios/{{veterinarioId}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "4. CORE - Pets",
+			"item": [
+				{
+					"name": "4.1 Criar Pet - Cachorro (principal)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Rex\",\n  \"especie\": \"Cachorro\",\n  \"raca\": \"Vira-lata\",\n  \"sexo\": \"M\",\n  \"dataNascimento\": \"2020-01-15\",\n  \"status\": \"ATIVO\",\n  \"fotoUrl\": \"https://example.com/rex.jpg\",\n  \"tutorId\": {{tutorId}},\n  \"clinicaId\": {{clinicaId}}\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/pets",
+						"description": "Este e o pet usado no restante da colecao (Consultas, Fluxo 1, etc)."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Resposta contem id e nome\", function () {",
+									"    pm.expect(jsonData).to.have.property(\"id\");",
+									"    pm.expect(jsonData).to.have.property(\"nome\", \"Rex\");",
+									"});",
+									"pm.collectionVariables.set(\"petId\", jsonData.id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "4.2 Criar Pet - Gato (descartável)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Miau\",\n  \"especie\": \"Gato\",\n  \"raca\": \"Siamês\",\n  \"sexo\": \"F\",\n  \"dataNascimento\": \"2021-06-20\",\n  \"status\": \"ATIVO\",\n  \"fotoUrl\": \"https://example.com/miau.jpg\",\n  \"tutorId\": {{tutorId}},\n  \"clinicaId\": {{clinicaId}}\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/pets",
+						"description": "Pet descartavel, usado so para demonstrar Atualizar/Deletar sem afetar o {{petId}} principal."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });",
+									"pm.collectionVariables.set(\"petIdDemo\", pm.response.json().id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "4.3 Listar Pets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/pets?page=0&size=10"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "4.4 Buscar Pet por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/pets/{{petId}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "4.5 Buscar Pets por Espécie",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/pets?especie=Cachorro&page=0&size=10"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "4.6 [Negativo] Buscar Pet inexistente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/pets/999999"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 404 Not Found\", function () { pm.response.to.have.status(404); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "4.7 Atualizar Pet (descartável)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Miau Atualizado\",\n  \"especie\": \"Gato\",\n  \"raca\": \"Siamês\",\n  \"sexo\": \"F\",\n  \"dataNascimento\": \"2021-06-20\",\n  \"status\": \"ATIVO\",\n  \"fotoUrl\": \"https://example.com/miau-novo.jpg\",\n  \"tutorId\": {{tutorId}},\n  \"clinicaId\": {{clinicaId}}\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/pets/{{petIdDemo}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });",
+									"pm.test(\"Nome foi atualizado\", function () {",
+									"    pm.expect(pm.response.json().nome).to.eql(\"Miau Atualizado\");",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "4.8 Deletar Pet (descartável)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/pets/{{petIdDemo}}",
+						"description": "Deleta o pet descartavel (Miau) - nao afeta o {{petId}} (Rex) usado no restante da colecao."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 204 No Content\", function () { pm.response.to.have.status(204); });"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "5. Consultas",
+			"item": [
+				{
+					"name": "5.1 Criar Consulta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dataHora\": \"2026-06-01T09:00:00\",\n  \"tipo\": \"Checkup\",\n  \"diagnostico\": \"Saúde em dia\",\n  \"observacoes\": \"Pet em bom estado de saúde\",\n  \"dataRetorno\": \"2026-12-01\",\n  \"veterinarioId\": {{veterinarioId}},\n  \"petId\": {{petId}}\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/consultas"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 201 Created\", function () { pm.response.to.have.status(201); });",
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"consultaId\", jsonData.id);"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "5.2 Listar Consultas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/consultas?page=0&size=10"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "5.3 Buscar Consulta por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/consultas/{{consultaId}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "5.4 Atualizar Consulta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dataHora\": \"2026-06-01T09:00:00\",\n  \"tipo\": \"Checkup\",\n  \"diagnostico\": \"Saúde em dia - revisado\",\n  \"observacoes\": \"Pet em bom estado de saúde\",\n  \"dataRetorno\": \"2026-12-01\",\n  \"veterinarioId\": {{veterinarioId}},\n  \"petId\": {{petId}}\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/consultas/{{consultaId}}"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "5.5 [Fluxo 1] Verificar Lembrete gerado automaticamente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/lembretes?tipo=Retorno&size=100",
+						"description": "Confirma o Fluxo 1: registrar consulta deve ter gerado automaticamente um Lembrete de Retorno para o pet."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });",
+									"var petId = parseInt(pm.collectionVariables.get(\"petId\"));",
+									"var lembretes = pm.response.json().content;",
+									"pm.test(\"Existe um lembrete de Retorno gerado para o pet da consulta\", function () {",
+									"    var encontrado = lembretes.some(function (l) { return l.petId === petId; });",
+									"    pm.expect(encontrado).to.be.true;",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "5.6 [Fluxo 1] Verificar Recomendação gerada automaticamente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/recomendacoes?tipo=Cuidado&size=100",
+						"description": "Confirma o Fluxo 1: registrar consulta deve ter gerado automaticamente uma Recomendacao de Cuidado Pos-Consulta para o pet."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });",
+									"var petId = parseInt(pm.collectionVariables.get(\"petId\"));",
+									"var recomendacoes = pm.response.json().content;",
+									"pm.test(\"Existe uma recomendação de Cuidado gerada para o pet da consulta\", function () {",
+									"    var encontrado = recomendacoes.some(function (r) { return r.petId === petId; });",
+									"    pm.expect(encontrado).to.be.true;",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "6. Vacinações",
+			"item": [
+				{
+					"name": "6.1 Criar Vacinação",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dataAplicacao\": \"2026-05-23\",\n  \"dataProxima\": \"2026-05-23\",\n  \"vacinaAplicada\": \"Vacina V8\",\n  \"observacao\": \"Aplicada sem problemas\",\n  \"petId\": 1,\n  \"veterinarioId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/vacinacoes"
+					}
+				},
+				{
+					"name": "6.2 Listar Vacinações",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/vacinacoes?page=0&size=10"
+					}
+				},
+				{
+					"name": "6.3 Buscar Vacinação por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/vacinacoes/1"
+					}
+				}
+			]
+		},
+		{
+			"name": "7. Vermifugações",
+			"item": [
+				{
+					"name": "7.1 Criar Vermifugação",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"produto\": \"Verm-Plus\",\n  \"dataAplicacao\": \"2026-05-23\",\n  \"dataProxima\": \"2026-08-23\",\n  \"petId\": 1,\n  \"veterinarioId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/vermifugacoes"
+					}
+				},
+				{
+					"name": "7.2 Listar Vermifugações",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/vermifugacoes?page=0&size=10"
+					}
+				}
+			]
+		},
+		{
+			"name": "8. Histórico de Peso",
+			"item": [
+				{
+					"name": "8.1 Criar Registro de Peso",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"pesoKg\": 25,\n  \"dataMedicao\": \"2026-05-23\",\n  \"observacao\": \"Pet em peso ideal\",\n  \"petId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/historico-pesos"
+					}
+				},
+				{
+					"name": "8.2 Listar Histórico de Peso",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/historico-pesos?page=0&size=10"
+					}
+				}
+			]
+		},
+		{
+			"name": "9. Recomendações",
+			"item": [
+				{
+					"name": "9.1 Criar Recomendação",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tipo\": \"Vacinação\",\n  \"descricao\": \"Aumentar ingestão de água\",\n  \"dataRecomendacao\": \"2026-05-23\",\n  \"petId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/recomendacoes"
+					}
+				},
+				{
+					"name": "9.2 Listar Recomendações",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/recomendacoes?page=0&size=10"
+					}
+				}
+			]
+		},
+		{
+			"name": "10. Comportamentos",
+			"item": [
+				{
+					"name": "10.1 Criar Comportamento",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"data\": \"2026-05-23\",\n  \"descricao\": \"Pet apresenta comportamento agressivo com estranhos\",\n  \"petId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/comportamentos"
+					}
+				},
+				{
+					"name": "10.2 Listar Comportamentos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/comportamentos?page=0&size=10"
+					}
+				}
+			]
+		},
+		{
+			"name": "11. Exames",
+			"item": [
+				{
+					"name": "11.1 Criar Exame",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tipo\": \"HEMOGRAMA\",\n  \"descricao\": \"Hemograma completo\",\n  \"resultado\": \"Normal\",\n  \"data\": \"2026-05-23\",\n  \"consultaId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/exames"
+					}
+				},
+				{
+					"name": "11.2 Listar Exames",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/exames?page=0&size=10"
+					}
+				}
+			]
+		},
+		{
+			"name": "12. Prescrições",
+			"item": [
+				{
+					"name": "12.1 Criar Prescrição",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dosagem\": \"500mg\",\n  \"frequencia\": \"A cada 12 horas\",\n  \"duracaoDias\": 7,\n  \"observacao\": \"Administrar com alimento\",\n  \"consultaId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/prescricoes"
+					}
+				},
+				{
+					"name": "12.2 Listar Prescrições",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/prescricoes?page=0&size=10"
+					}
+				}
+			]
+		},
+		{
+			"name": "13. Medicamentos",
+			"item": [
+				{
+					"name": "13.1 Criar Medicamento",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nome\": \"Amoxicilina 500mg\",\n  \"descricao\": \"Antibiótico de amplo espectro\",\n  \"prescricaoId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/medicamentos"
+					}
+				},
+				{
+					"name": "13.2 Listar Medicamentos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/medicamentos?page=0&size=10"
+					}
+				}
+			]
+		},
+		{
+			"name": "14. Lembretes",
+			"item": [
+				{
+					"name": "14.1 Criar Lembrete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tipo\": \"Vacinação\",\n  \"descricao\": \"Reforço da vacina V8\",\n  \"dataPrevista\": \"2027-05-23\",\n  \"status\": \"PENDENTE\",\n  \"tutorId\": 1,\n  \"petId\": 1\n}"
+						},
+						"url": "{{baseUrl}}/api/v1/lembretes"
+					}
+				},
+				{
+					"name": "14.2 Listar Lembretes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/lembretes?page=0&size=10"
+					}
+				}
+			]
+		},
+		{
+			"name": "15. [Fluxo 2] Retenção / Churn",
+			"item": [
+				{
+					"name": "15.1 Listar pets em risco (como CLINICA)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/clinicas/{{clinicaId}}/retencao",
+						"description": "Usa a autenticacao padrao da colecao (CLINICA)."
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 200 OK\", function () { pm.response.to.have.status(200); });",
+									"pm.test(\"Resposta e uma lista\", function () {",
+									"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "15.2 [Security] Tutor não pode ver retenção de outros (esperado: 403)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{baseUrl}}/api/v1/clinicas/{{clinicaId}}/retencao",
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{tutorEmail}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{tutorSenha}}",
+									"type": "string"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Status 403 Forbidden\", function () { pm.response.to.have.status(403); });"
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "clinicaEmail",
+			"value": "clinica@fidelis.com.br"
+		},
+		{
+			"key": "clinicaSenha",
+			"value": "Senha123"
+		},
+		{
+			"key": "tutorEmail",
+			"value": "tutor@fidelis.com.br"
+		},
+		{
+			"key": "tutorSenha",
+			"value": "Senha123"
+		},
+		{
+			"key": "clinicaId",
+			"value": ""
+		},
+		{
+			"key": "clinicaIdDemo",
+			"value": ""
+		},
+		{
+			"key": "tutorId",
+			"value": ""
+		},
+		{
+			"key": "tutorIdDemo",
+			"value": ""
+		},
+		{
+			"key": "veterinarioId",
+			"value": ""
+		},
+		{
+			"key": "petId",
+			"value": ""
+		},
+		{
+			"key": "petIdDemo",
+			"value": ""
+		},
+		{
+			"key": "consultaId",
+			"value": ""
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "{{clinicaEmail}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "{{clinicaSenha}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Tempo de resposta menor que 1000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+					"});",
+					"",
+					"if (pm.response.code !== 204 && pm.response.text().length > 0) {",
+					"    var contentType = pm.response.headers.get(\"Content-Type\");",
+					"    if (contentType) {",
+					"        pm.test(\"Content-Type e application/json\", function () {",
+					"            pm.expect(contentType).to.include(\"application/json\");",
+					"        });",
+					"    }",
+					"}"
+				]
+			}
+		}
+	]
 }
