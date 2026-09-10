@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragmentos :: cabecalho('Fidelis - Erro')}" />
+<body>
+    <div class="container" style="text-align: center;">
+        <br><br>
+
+        <h2>Ops! Algo deu errado.</h2>
+
+        <p th:if="${status != null}">
+            Código: <b th:text="${status}"></b>
+        </p>
+
+        <p th:if="${status != null and status == 404}">
+            A página que você tentou acessar não existe.
+        </p>
+        <p th:if="${status != null and status == 403}">
+            Você não tem permissão para acessar este conteúdo.
+        </p>
+        <p th:if="${status != null and status == 500}">
+            Ocorreu um erro inesperado no servidor. Já estamos cientes.
+        </p>
+
+        <br>
+        <a href="/dashboard" class="btn btn-primary">Voltar ao dashboard</a>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+</body>
+</html>
