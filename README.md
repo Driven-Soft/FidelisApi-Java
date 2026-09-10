@@ -1,5 +1,9 @@
 # FidelisApi
 
+<p>
+  <img src="src/main/resources/static/images/favicon.png" alt="Logo Fidelis" width="180">
+</p>
+
 ## Equipe Driven Soft
 
 ### Integrantes
