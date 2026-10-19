@@ -62,23 +62,9 @@
           ></span>
         </div>
 
-        <div class="mb-2">
-          <label class="form-label" for="tipo">Tipo</label>
-          <input
-            class="form-control"
-            type="text"
-            th:field="*{tipo}"
-            placeholder="Ex: Checkup, Vacinação, Emergência"
-            minlength="3"
-            maxlength="50"
-            required
-          />
-          <span
-            class="text-danger"
-            th:if="${#fields.hasErrors('tipo')}"
-            th:errors="*{tipo}"
-          ></span>
-        </div>
+        <div
+          th:replace="~{fragmentos :: combo-opcoes('tipo', 'Tipo', ${tiposConsulta}, '')}"
+        />
 
         <div class="mb-2">
           <label class="form-label" for="diagnostico">Diagnóstico</label>
@@ -124,5 +110,6 @@
     </div>
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />
+    <script th:replace="~{fragmentos :: combo-script}" />
   </body>
 </html>

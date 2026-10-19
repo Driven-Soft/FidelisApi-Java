@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.controller.web;
 
+import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.ConsultaRequest;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.Consulta;
@@ -56,11 +57,7 @@ public class ConsultaWebController {
         ConsultaRequest request = new ConsultaRequest();
         request.setPetId(petId);
 
-        model.addAttribute("consultaRequest", request);
-        model.addAttribute("dataHoraMinimaConsulta", LocalDateTime.now().withSecond(0).withNano(0));
-        model.addAttribute("dataMinimaRetorno", LocalDate.now());
-        model.addAttribute("pets", petRepository.findByClinicaIdComTutor(clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));
-        model.addAttribute("veterinarios", veterinarioRepository.findByClinicaId(clinicaId));
+        prepararFormulario(clinicaId, request, model);
         return "clinica/consultas-form";
     }
 
@@ -74,10 +71,7 @@ public class ConsultaWebController {
 
         if (bindingResult.hasErrors()) {
             Long clinicaId = clinicaLogada(authentication).getId();
-            model.addAttribute("dataHoraMinimaConsulta", LocalDateTime.now().withSecond(0).withNano(0));
-            model.addAttribute("dataMinimaRetorno", LocalDate.now());
-            model.addAttribute("pets", petRepository.findByClinicaIdComTutor(clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));
-            model.addAttribute("veterinarios", veterinarioRepository.findByClinicaId(clinicaId));
+            prepararFormulario(clinicaId, request, model);
             return "clinica/consultas-form";
         }
 
@@ -101,6 +95,15 @@ public class ConsultaWebController {
         model.addAttribute("lembrete", lembrete);
         model.addAttribute("recomendacao", recomendacao);
         return "clinica/consultas-confirmacao";
+    }
+
+    private void prepararFormulario(Long clinicaId, ConsultaRequest request, Model model) {
+        model.addAttribute("consultaRequest", request);
+        model.addAttribute("dataHoraMinimaConsulta", LocalDateTime.now().withSecond(0).withNano(0));
+        model.addAttribute("dataMinimaRetorno", LocalDate.now());
+        model.addAttribute("tiposConsulta", CatalogoOpcoes.tiposConsulta());
+        model.addAttribute("pets", petRepository.findByClinicaIdComTutor(clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));
+        model.addAttribute("veterinarios", veterinarioRepository.findByClinicaId(clinicaId));
     }
 
     private Clinica clinicaLogada(Authentication authentication) {

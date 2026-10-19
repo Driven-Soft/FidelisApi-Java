@@ -32,6 +32,7 @@
               th:each="p : ${pets}"
               th:value="${p.id}"
               th:text="${p.nome} + ' (' + ${p.tutor.nome} + ')'"
+              th:attr="data-grupo=${T(br.com.fiap.java.FidelisApi.common.CatalogoOpcoes).grupoDaEspecie(p.especie)}"
             />
           </select>
           <span
@@ -58,23 +59,9 @@
           ></span>
         </div>
 
-        <div class="mb-2">
-          <label class="form-label" for="vacinaAplicada">Vacina aplicada</label>
-          <input
-            class="form-control"
-            type="text"
-            th:field="*{vacinaAplicada}"
-            placeholder="Ex: Antirrábica"
-            minlength="3"
-            maxlength="50"
-            required
-          />
-          <span
-            class="text-danger"
-            th:if="${#fields.hasErrors('vacinaAplicada')}"
-            th:errors="*{vacinaAplicada}"
-          ></span>
-        </div>
+        <div
+          th:replace="~{fragmentos :: combo-opcoes('vacinaAplicada', 'Vacina aplicada', ${vacinas}, 'petId')}"
+        />
 
         <div class="mb-2">
           <label class="form-label" for="dataAplicacao"
@@ -131,5 +118,6 @@
     </div>
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />
+    <script th:replace="~{fragmentos :: combo-script}" />
   </body>
 </html>

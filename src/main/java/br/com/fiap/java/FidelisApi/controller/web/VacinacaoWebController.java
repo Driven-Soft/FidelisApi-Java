@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.controller.web;
 
+import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.VacinacaoRequest;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.Pet;
@@ -76,6 +77,7 @@ public class VacinacaoWebController {
         model.addAttribute("vacinacaoRequest", request);
         model.addAttribute("dataMaximaVacinacao", java.time.LocalDate.now());
         model.addAttribute("dataMinimaProximaDose", java.time.LocalDate.now());
+        model.addAttribute("vacinas", CatalogoOpcoes.vacinas());
         model.addAttribute("pets", petRepository.findByClinicaIdComTutor(
                 clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));
         model.addAttribute("veterinarios", veterinarioRepository.findByClinicaId(clinicaId));
