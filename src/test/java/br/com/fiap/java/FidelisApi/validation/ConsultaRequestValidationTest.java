@@ -46,7 +46,8 @@ class ConsultaRequestValidationTest {
     @Test
     void deveRejeitarDataDeRetornoAnteriorAConsulta() {
         ConsultaRequest request = requestBase();
-        request.setDataRetorno(LocalDate.of(2026, 9, 9));
+        request.setDataHora(LocalDateTime.now().plusDays(10));
+        request.setDataRetorno(LocalDate.now().plusDays(5));
 
         assertThat(validator.validate(request))
                 .extracting("message")
@@ -66,11 +67,11 @@ class ConsultaRequestValidationTest {
 
     private ConsultaRequest requestBase() {
         ConsultaRequest request = new ConsultaRequest();
-        request.setDataHora(LocalDateTime.of(2026, 9, 10, 10, 0));
+        request.setDataHora(LocalDateTime.now().minusDays(1));
         request.setTipo("Checkup");
         request.setDiagnostico("Animal saudável");
         request.setObservacoes("Retorno anual");
-        request.setDataRetorno(LocalDate.of(2026, 9, 20));
+        request.setDataRetorno(LocalDate.now().plusDays(10));
         request.setPetId(1L);
         request.setVeterinarioId(1L);
         return request;
