@@ -40,3 +40,43 @@
 >
   <button type="submit" class="btn btn-outline-danger">Sair da conta</button>
 </form>
+
+<script th:fragment="combo-script" th:src="@{/js/combo-opcoes.js}"></script>
+
+<div
+  th:fragment="combo-opcoes(campo, rotulo, opcoes, dependeDe)"
+  class="mb-2"
+  data-combo
+  th:attr="data-depende-de=${dependeDe}"
+>
+  <label class="form-label" th:for="${campo}" th:text="${rotulo}">Rótulo</label>
+  <select
+    class="form-control d-none"
+    data-combo-select
+    th:attr="aria-label=${rotulo}"
+  >
+    <option value="">Selecione uma opção</option>
+    <option
+      th:each="o : ${opcoes}"
+      th:value="${o.nome}"
+      th:text="${o.nome}"
+      th:attr="data-grupo=${o.grupo}"
+    ></option>
+    <option value="#outro">Outro (digitar)</option>
+  </select>
+  <input
+    class="form-control mt-2"
+    type="text"
+    th:field="*{__${campo}__}"
+    placeholder="Digite outro valor"
+    minlength="3"
+    maxlength="50"
+    required
+    data-combo-input
+  />
+  <span
+    class="text-danger"
+    th:if="${#fields.hasErrors(campo)}"
+    th:errors="*{__${campo}__}"
+  ></span>
+</div>

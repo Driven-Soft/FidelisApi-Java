@@ -4,19 +4,8 @@ import java.text.Normalizer;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Catálogo de opções predefinidas usadas nos formulários (tipo de consulta e
- * vacina aplicada).
- *
- * As listas servem de apoio à digitação: o usuário pode escolher uma opção ou
- * informar outro valor manualmente. Por isso os campos continuam sendo texto
- * livre no banco, e o catálogo também é usado para padronizar a grafia quando o
- * texto digitado corresponde a uma opção existente (ex.: "check-up" vira
- * "Check-up"), evitando valores duplicados.
- */
 public final class CatalogoOpcoes {
 
-    /** Grupo de espécies a que uma opção se aplica. */
     public enum GrupoEspecie {
         TODOS,
         CAES,
@@ -67,11 +56,6 @@ public final class CatalogoOpcoes {
         return VACINAS;
     }
 
-    /**
-     * Converte o nome da espécie do pet no grupo usado para filtrar opções.
-     * Espécies desconhecidas (ou nulas) retornam {@link GrupoEspecie#TODOS},
-     * ou seja, nenhuma opção é escondida.
-     */
     public static GrupoEspecie grupoDaEspecie(String especie) {
         if (especie == null) {
             return GrupoEspecie.TODOS;
@@ -94,11 +78,6 @@ public final class CatalogoOpcoes {
         return normalizar(valor, VACINAS);
     }
 
-    /**
-     * Remove espaços extras e, se o texto equivaler a uma opção do catálogo
-     * (ignorando maiúsculas, minúsculas e acentos), devolve a grafia oficial
-     * da opção. Textos que não constam no catálogo são mantidos como digitados.
-     */
     private static String normalizar(String valor, List<Opcao> catalogo) {
         if (valor == null) {
             return null;
