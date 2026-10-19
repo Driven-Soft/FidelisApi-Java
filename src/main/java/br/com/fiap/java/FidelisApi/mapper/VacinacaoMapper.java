@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.mapper;
 
+import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.VacinacaoRequest;
 import br.com.fiap.java.FidelisApi.dto.response.VacinacaoResponse;
 import br.com.fiap.java.FidelisApi.entity.Vacinacao;
@@ -13,7 +14,7 @@ public final class VacinacaoMapper {
         return Vacinacao.builder()
                 .dataAplicacao(request.getDataAplicacao())
                 .dataProxima(request.getDataProxima())
-                .vacinaAplicada(request.getVacinaAplicada())
+                .vacinaAplicada(CatalogoOpcoes.normalizarVacina(request.getVacinaAplicada()))
                 .observacao(request.getObservacao())
                 .build();
     }

@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.mapper;
 
+import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.ConsultaRequest;
 import br.com.fiap.java.FidelisApi.dto.response.ConsultaResponse;
 import br.com.fiap.java.FidelisApi.entity.Consulta;
@@ -12,7 +13,7 @@ public final class ConsultaMapper {
     public static Consulta toEntity(ConsultaRequest request) {
         return Consulta.builder()
                 .dataHora(request.getDataHora())
-                .tipo(request.getTipo())
+                .tipo(CatalogoOpcoes.normalizarTipoConsulta(request.getTipo()))
                 .diagnostico(request.getDiagnostico())
                 .observacoes(request.getObservacoes())
                 .dataRetorno(request.getDataRetorno())
