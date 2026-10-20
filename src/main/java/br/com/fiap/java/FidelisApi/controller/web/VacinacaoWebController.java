@@ -14,6 +14,7 @@ import br.com.fiap.java.FidelisApi.repository.UsuarioRepository;
 import br.com.fiap.java.FidelisApi.repository.VeterinarioRepository;
 import br.com.fiap.java.FidelisApi.service.VacinacaoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/clinica/vacinacoes")
@@ -74,12 +77,16 @@ public class VacinacaoWebController {
     }
 
     private void prepararFormulario(Long clinicaId, VacinacaoRequest request, Model model) {
+        Page<Pet> pets = petRepository.findByClinicaIdComTutor(
+                clinicaId, PageRequest.of(0, 100, Sort.by("nome")));
+
         model.addAttribute("vacinacaoRequest", request);
         model.addAttribute("dataMaximaVacinacao", java.time.LocalDate.now());
         model.addAttribute("dataMinimaProximaDose", java.time.LocalDate.now());
         model.addAttribute("vacinas", CatalogoOpcoes.vacinas());
-        model.addAttribute("pets", petRepository.findByClinicaIdComTutor(
-                clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));
+        model.addAttribute("pets", pets);
+        model.addAttribute("gruposPorPet", pets.stream().collect(Collectors.toMap(
+                Pet::getId, pet -> CatalogoOpcoes.grupoDaEspecie(pet.getEspecie()))));
         model.addAttribute("veterinarios", veterinarioRepository.findByClinicaId(clinicaId));
     }
 

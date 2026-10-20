@@ -32,7 +32,7 @@
               th:each="p : ${pets}"
               th:value="${p.id}"
               th:text="${p.nome} + ' (' + ${p.tutor.nome} + ')'"
-              th:attr="data-grupo=${T(br.com.fiap.java.FidelisApi.common.CatalogoOpcoes).grupoDaEspecie(p.especie)}"
+              th:attr="data-grupo=${gruposPorPet[p.id]}"
             />
           </select>
           <span
