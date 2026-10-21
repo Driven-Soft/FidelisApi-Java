@@ -12,6 +12,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -41,6 +42,7 @@ public class PetRequest {
     @NotNull(message = "Data de nascimento é obrigatória")
     @PastOrPresent(message = "Data de nascimento não pode ser futura")
     @DataNascimentoPlausivel
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataNascimento;
 
     @NotNull(message = "Status do pet é obrigatório")

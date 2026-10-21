@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -20,8 +21,10 @@ public class VacinacaoRequest {
 
     @NotNull(message = "Data de aplicação é obrigatória")
     @PastOrPresent(message = "Data de aplicação não pode ser futura")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataAplicacao;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataProxima;
 
     @NotBlank(message = "Vacina aplicada é obrigatória")

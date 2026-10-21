@@ -36,6 +36,7 @@ public class ConsultaRequest {
     private String observacoes;
 
     @FutureOrPresent(message = "Data de retorno deve ser hoje ou futura")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataRetorno;
 
     @NotNull(message = "ID do veterinário é obrigatório")
