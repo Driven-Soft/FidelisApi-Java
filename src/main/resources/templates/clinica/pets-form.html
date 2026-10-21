@@ -44,14 +44,15 @@
 
         <div class="mb-2">
           <label class="form-label" for="especie">Espécie</label>
-          <input
-            class="form-control"
-            type="text"
-            th:field="*{especie}"
-            required
-            minlength="3"
-            maxlength="20"
-          />
+          <select class="form-control" th:field="*{especie}" required>
+            <option value="">Selecione a espécie</option>
+            <option
+              th:each="e : ${especies}"
+              th:value="${e.nome}"
+              th:text="${e.nome}"
+              th:attr="data-grupo=${e.grupo}"
+            ></option>
+          </select>
           <span
             class="text-danger"
             th:if="${#fields.hasErrors('especie')}"
@@ -59,22 +60,9 @@
           ></span>
         </div>
 
-        <div class="mb-2">
-          <label class="form-label" for="raca">Raça</label>
-          <input
-            class="form-control"
-            type="text"
-            th:field="*{raca}"
-            required
-            minlength="2"
-            maxlength="20"
-          />
-          <span
-            class="text-danger"
-            th:if="${#fields.hasErrors('raca')}"
-            th:errors="*{raca}"
-          ></span>
-        </div>
+        <div
+          th:replace="~{fragmentos :: combo-opcoes('raca', 'Raça', ${racas}, 'especie')}"
+        />
 
         <div class="mb-2">
           <label class="form-label" for="sexo">Sexo</label>
@@ -134,5 +122,6 @@
     </div>
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />
+    <script th:replace="~{fragmentos :: combo-script}" />
   </body>
 </html>
