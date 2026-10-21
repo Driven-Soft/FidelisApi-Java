@@ -24,10 +24,11 @@ public class Pet {
     @Column(nullable = false, length = 30)
     private String nome;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private String especie;
+    private EspeciePet especie;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 50)
     private String raca;
 
     @Enumerated(EnumType.STRING)

@@ -1,6 +1,7 @@
 package br.com.fiap.java.FidelisApi.service;
 
 import br.com.fiap.java.FidelisApi.entity.*;
+import br.com.fiap.java.FidelisApi.exception.BusinessException;
 import br.com.fiap.java.FidelisApi.exception.ResourceNotFoundException;
 import br.com.fiap.java.FidelisApi.repository.ClinicaRepository;
 import br.com.fiap.java.FidelisApi.repository.PetRepository;
@@ -48,7 +49,7 @@ class PetServiceTest {
         pet = Pet.builder()
                 .id(1L)
                 .nome("Rex")
-                .especie("Cachorro")
+                .especie(EspeciePet.CACHORRO)
                 .raca("Labrador")
                 .sexo(SexoPet.M)
                 .dataNascimento(LocalDate.of(2020, 1, 1))
@@ -85,24 +86,43 @@ class PetServiceTest {
     @Test
     void findAll_filtrandoPorEspecie_deveUsarQueryMethod() {
         Page<Pet> page = new PageImpl<>(List.of(pet));
-        when(petRepository.findByEspecieContainingIgnoreCase("Cachorro", pageable)).thenReturn(page);
+        when(petRepository.findByEspecie(EspeciePet.CACHORRO, pageable)).thenReturn(page);
 
         Page<Pet> result = petService.findAll(null, "Cachorro", pageable);
 
-        assertThat(result.getContent().get(0).getEspecie()).isEqualTo("Cachorro");
-        verify(petRepository).findByEspecieContainingIgnoreCase("Cachorro", pageable);
+        assertThat(result.getContent().get(0).getEspecie()).isEqualTo(EspeciePet.CACHORRO);
+        verify(petRepository).findByEspecie(EspeciePet.CACHORRO, pageable);
+    }
+
+    @Test
+    void findAll_filtrandoPorEspecieIgnorandoMaiusculas_deveConverterParaEnum() {
+        Page<Pet> page = new PageImpl<>(List.of(pet));
+        when(petRepository.findByEspecie(EspeciePet.GATO, pageable)).thenReturn(page);
+
+        petService.findAll(null, "gato", pageable);
+
+        verify(petRepository).findByEspecie(EspeciePet.GATO, pageable);
     }
 
     @Test
     void findAll_filtrandoPorNomeEEspecie_deveUsarQueryMethodCombinado() {
         Page<Pet> page = new PageImpl<>(List.of(pet));
-        when(petRepository.findByNomeContainingIgnoreCaseAndEspecieContainingIgnoreCase("Rex", "Cachorro", pageable))
+        when(petRepository.findByNomeContainingIgnoreCaseAndEspecie("Rex", EspeciePet.CACHORRO, pageable))
                 .thenReturn(page);
 
         Page<Pet> result = petService.findAll("Rex", "Cachorro", pageable);
 
         assertThat(result.getContent()).hasSize(1);
-        verify(petRepository).findByNomeContainingIgnoreCaseAndEspecieContainingIgnoreCase("Rex", "Cachorro", pageable);
+        verify(petRepository).findByNomeContainingIgnoreCaseAndEspecie("Rex", EspeciePet.CACHORRO, pageable);
+    }
+
+    @Test
+    void findAll_comEspecieNaoSuportada_deveLancarBusinessException() {
+        assertThatThrownBy(() -> petService.findAll(null, "Coelho", pageable))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("Cachorro ou Gato");
+
+        verifyNoInteractions(petRepository);
     }
 
     @Test
@@ -133,7 +153,7 @@ class PetServiceTest {
 
         Pet newPet = Pet.builder()
                 .nome("Rex")
-                .especie("Cachorro")
+                .especie(EspeciePet.CACHORRO)
                 .raca("Labrador")
                 .sexo(SexoPet.M)
                 .dataNascimento(LocalDate.of(2020, 1, 1))
@@ -175,7 +195,7 @@ class PetServiceTest {
     void update_existente_deveAtualizarCampos() {
         Pet updated = Pet.builder()
                 .nome("Max")
-                .especie("Gato")
+                .especie(EspeciePet.GATO)
                 .raca("Siamês")
                 .sexo(SexoPet.F)
                 .dataNascimento(LocalDate.of(2021, 6, 15))
@@ -188,7 +208,7 @@ class PetServiceTest {
         Pet result = petService.update(1L, updated);
 
         assertThat(result.getNome()).isEqualTo("Max");
-        assertThat(result.getEspecie()).isEqualTo("Gato");
+        assertThat(result.getEspecie()).isEqualTo(EspeciePet.GATO);
         verify(petRepository).save(pet);
     }
 

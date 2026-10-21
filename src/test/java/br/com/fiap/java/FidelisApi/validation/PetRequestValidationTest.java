@@ -70,6 +70,52 @@ class PetRequestValidationTest {
     }
 
     @Test
+    void deveAceitarEspecieIgnorandoMaiusculas() {
+        PetRequest request = requestBase();
+        request.setEspecie("gato");
+
+        assertThat(validator.validate(request)).isEmpty();
+    }
+
+    @Test
+    void deveRejeitarEspecieNaoSuportada() {
+        PetRequest request = requestBase();
+        request.setEspecie("Coelho");
+
+        assertThat(validator.validate(request))
+                .extracting("message")
+                .contains("Espécie deve ser Cachorro ou Gato");
+    }
+
+    @Test
+    void deveRejeitarEspecieEmBranco() {
+        PetRequest request = requestBase();
+        request.setEspecie(" ");
+
+        assertThat(validator.validate(request))
+                .extracting("message")
+                .contains("Espécie é obrigatória");
+    }
+
+    @Test
+    void deveAceitarRacaComAte50Caracteres() {
+        PetRequest request = requestBase();
+        request.setRaca("A".repeat(50));
+
+        assertThat(validator.validate(request)).isEmpty();
+    }
+
+    @Test
+    void deveRejeitarRacaComMaisDe50Caracteres() {
+        PetRequest request = requestBase();
+        request.setRaca("A".repeat(51));
+
+        assertThat(validator.validate(request))
+                .extracting("message")
+                .contains("Raça deve ter entre 2 e 50 caracteres");
+    }
+
+    @Test
     void deveAceitarPetComCamposTextuaisValidos() {
         assertThat(validator.validate(requestBase())).isEmpty();
     }

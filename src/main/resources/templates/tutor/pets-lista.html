@@ -32,7 +32,7 @@
           <tbody>
             <tr th:each="pet : ${pets}">
               <td th:text="${pet.nome}"></td>
-              <td th:text="${pet.especie}"></td>
+              <td th:text="${pet.especie.rotulo}"></td>
               <td th:text="${pet.raca}"></td>
               <td th:text="${pet.clinica.nome}"></td>
               <td th:text="${pet.status}"></td>

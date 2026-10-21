@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.controller.web;
 
+import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.PetRequest;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.Pet;
@@ -41,9 +42,7 @@ public class PetWebController {
     @GetMapping("/novo")
     public String novoForm(Model model) {
         model.addAttribute("petRequest", new PetRequest());
-        model.addAttribute("tutores", tutorRepository.findAll());
-        model.addAttribute("dataMinimaNascimento", LocalDate.now().minusYears(100));
-        model.addAttribute("dataMaximaNascimento", LocalDate.now());
+        prepararFormulario(model);
         return "clinica/pets-form";
     }
 
@@ -57,7 +56,7 @@ public class PetWebController {
         validator.validate(petRequest, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("tutores", tutorRepository.findAll());
+            prepararFormulario(model);
             return "clinica/pets-form";
         }
 
@@ -73,7 +72,7 @@ public class PetWebController {
 
         PetRequest request = new PetRequest();
         request.setNome(pet.getNome());
-        request.setEspecie(pet.getEspecie());
+        request.setEspecie(pet.getEspecie().getRotulo());
         request.setRaca(pet.getRaca());
         request.setSexo(pet.getSexo());
         request.setDataNascimento(pet.getDataNascimento());
@@ -83,9 +82,7 @@ public class PetWebController {
 
         model.addAttribute("petId", id);
         model.addAttribute("petRequest", request);
-        model.addAttribute("tutores", tutorRepository.findAll());
-        model.addAttribute("dataMinimaNascimento", LocalDate.now().minusYears(100));
-        model.addAttribute("dataMaximaNascimento", LocalDate.now());
+        prepararFormulario(model);
         return "clinica/pets-form";
     }
 
@@ -101,7 +98,7 @@ public class PetWebController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("petId", id);
-            model.addAttribute("tutores", tutorRepository.findAll());
+            prepararFormulario(model);
             return "clinica/pets-form";
         }
 
@@ -109,6 +106,14 @@ public class PetWebController {
         petService.update(id, update);
 
         return "redirect:/clinica/pets";
+    }
+
+    private void prepararFormulario(Model model) {
+        model.addAttribute("tutores", tutorRepository.findAll());
+        model.addAttribute("especies", CatalogoOpcoes.especies());
+        model.addAttribute("racas", CatalogoOpcoes.racas());
+        model.addAttribute("dataMinimaNascimento", LocalDate.now().minusYears(100));
+        model.addAttribute("dataMaximaNascimento", LocalDate.now());
     }
 
     private Clinica clinicaLogada(Authentication authentication) {

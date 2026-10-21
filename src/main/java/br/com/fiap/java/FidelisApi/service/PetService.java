@@ -1,8 +1,10 @@
 package br.com.fiap.java.FidelisApi.service;
 
 import br.com.fiap.java.FidelisApi.entity.Clinica;
+import br.com.fiap.java.FidelisApi.entity.EspeciePet;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Tutor;
+import br.com.fiap.java.FidelisApi.exception.BusinessException;
 import br.com.fiap.java.FidelisApi.exception.ResourceNotFoundException;
 import br.com.fiap.java.FidelisApi.repository.ClinicaRepository;
 import br.com.fiap.java.FidelisApi.repository.PetRepository;
@@ -26,13 +28,16 @@ public class PetService {
     @Cacheable(value = "pets", key = "(#nome != null ? #nome : '') + '_' + (#especie != null ? #especie : '') + '_' + #pageable.pageNumber + '_' + #pageable.pageSize + '_' + #pageable.sort")
     @Transactional(readOnly = true)
     public Page<Pet> findAll(String nome, String especie, Pageable pageable) {
-        if (nome != null && !nome.isBlank() && especie != null && !especie.isBlank()) {
-            return petRepository.findByNomeContainingIgnoreCaseAndEspecieContainingIgnoreCase(nome, especie, pageable);
+        boolean filtraNome = nome != null && !nome.isBlank();
+        EspeciePet filtroEspecie = converterEspecie(especie);
+
+        if (filtraNome && filtroEspecie != null) {
+            return petRepository.findByNomeContainingIgnoreCaseAndEspecie(nome, filtroEspecie, pageable);
         }
-        if (especie != null && !especie.isBlank()) {
-            return petRepository.findByEspecieContainingIgnoreCase(especie, pageable);
+        if (filtroEspecie != null) {
+            return petRepository.findByEspecie(filtroEspecie, pageable);
         }
-        if (nome != null && !nome.isBlank()) {
+        if (filtraNome) {
             return petRepository.findByNomeContainingIgnoreCase(nome, pageable);
         }
         return petRepository.findAll(pageable);
@@ -79,5 +84,13 @@ public class PetService {
     @Transactional(readOnly = true)
     public Page<Pet> findAllByClinica(Long clinicaId, Pageable pageable) {
         return petRepository.findByClinicaIdComTutor(clinicaId, pageable);
+    }
+
+    private EspeciePet converterEspecie(String especie) {
+        if (especie == null || especie.isBlank()) {
+            return null;
+        }
+        return EspeciePet.fromTexto(especie)
+                .orElseThrow(() -> new BusinessException("Espécie inválida. Use Cachorro ou Gato."));
     }
 }

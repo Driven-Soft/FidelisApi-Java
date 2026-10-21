@@ -1,6 +1,9 @@
 package br.com.fiap.java.FidelisApi.common;
 
+import br.com.fiap.java.FidelisApi.entity.EspeciePet;
+
 import java.text.Normalizer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,6 +48,56 @@ public final class CatalogoOpcoes {
             new Opcao("FeLV (leucemia felina)", GrupoEspecie.GATOS)
     );
 
+    private static final List<Opcao> RACAS = List.of(
+            new Opcao("SRD (sem raça definida)", GrupoEspecie.TODOS),
+            new Opcao("Akita", GrupoEspecie.CAES),
+            new Opcao("Beagle", GrupoEspecie.CAES),
+            new Opcao("Border Collie", GrupoEspecie.CAES),
+            new Opcao("Boxer", GrupoEspecie.CAES),
+            new Opcao("Bulldog Francês", GrupoEspecie.CAES),
+            new Opcao("Bulldog Inglês", GrupoEspecie.CAES),
+            new Opcao("Cavalier King Charles Spaniel", GrupoEspecie.CAES),
+            new Opcao("Chihuahua", GrupoEspecie.CAES),
+            new Opcao("Cocker Spaniel", GrupoEspecie.CAES),
+            new Opcao("Dachshund (Salsicha)", GrupoEspecie.CAES),
+            new Opcao("Dálmata", GrupoEspecie.CAES),
+            new Opcao("Doberman", GrupoEspecie.CAES),
+            new Opcao("Golden Retriever", GrupoEspecie.CAES),
+            new Opcao("Husky Siberiano", GrupoEspecie.CAES),
+            new Opcao("Labrador Retriever", GrupoEspecie.CAES),
+            new Opcao("Lhasa Apso", GrupoEspecie.CAES),
+            new Opcao("Maltês", GrupoEspecie.CAES),
+            new Opcao("Pastor Alemão", GrupoEspecie.CAES),
+            new Opcao("Pastor de Shetland", GrupoEspecie.CAES),
+            new Opcao("Pinscher", GrupoEspecie.CAES),
+            new Opcao("Pit Bull", GrupoEspecie.CAES),
+            new Opcao("Poodle", GrupoEspecie.CAES),
+            new Opcao("Pug", GrupoEspecie.CAES),
+            new Opcao("Rottweiler", GrupoEspecie.CAES),
+            new Opcao("Schnauzer", GrupoEspecie.CAES),
+            new Opcao("Shih Tzu", GrupoEspecie.CAES),
+            new Opcao("Spitz Alemão (Lulu da Pomerânia)", GrupoEspecie.CAES),
+            new Opcao("Staffordshire Bull Terrier", GrupoEspecie.CAES),
+            new Opcao("Weimaraner", GrupoEspecie.CAES),
+            new Opcao("Yorkshire Terrier", GrupoEspecie.CAES),
+            new Opcao("Abissínio", GrupoEspecie.GATOS),
+            new Opcao("Angorá", GrupoEspecie.GATOS),
+            new Opcao("Azul Russo", GrupoEspecie.GATOS),
+            new Opcao("Bengal", GrupoEspecie.GATOS),
+            new Opcao("Birmanês", GrupoEspecie.GATOS),
+            new Opcao("British Shorthair", GrupoEspecie.GATOS),
+            new Opcao("Exótico", GrupoEspecie.GATOS),
+            new Opcao("Himalaio", GrupoEspecie.GATOS),
+            new Opcao("Maine Coon", GrupoEspecie.GATOS),
+            new Opcao("Norueguês da Floresta", GrupoEspecie.GATOS),
+            new Opcao("Persa", GrupoEspecie.GATOS),
+            new Opcao("Ragdoll", GrupoEspecie.GATOS),
+            new Opcao("Scottish Fold", GrupoEspecie.GATOS),
+            new Opcao("Siamês", GrupoEspecie.GATOS),
+            new Opcao("Siberiano", GrupoEspecie.GATOS),
+            new Opcao("Sphynx", GrupoEspecie.GATOS)
+    );
+
     private CatalogoOpcoes() {
     }
 
@@ -56,18 +109,24 @@ public final class CatalogoOpcoes {
         return VACINAS;
     }
 
-    public static GrupoEspecie grupoDaEspecie(String especie) {
+    public static List<Opcao> racas() {
+        return RACAS;
+    }
+
+    public static List<Opcao> especies() {
+        return Arrays.stream(EspeciePet.values())
+                .map(especie -> new Opcao(especie.getRotulo(), grupoDaEspecie(especie)))
+                .toList();
+    }
+
+    public static GrupoEspecie grupoDaEspecie(EspeciePet especie) {
         if (especie == null) {
             return GrupoEspecie.TODOS;
         }
-        String chave = chaveDeComparacao(especie);
-        if (chave.startsWith("gat")) {
-            return GrupoEspecie.GATOS;
-        }
-        if (chave.startsWith("cach") || chave.equals("cao") || chave.equals("caes")) {
-            return GrupoEspecie.CAES;
-        }
-        return GrupoEspecie.TODOS;
+        return switch (especie) {
+            case CACHORRO -> GrupoEspecie.CAES;
+            case GATO -> GrupoEspecie.GATOS;
+        };
     }
 
     public static String normalizarTipoConsulta(String valor) {
@@ -76,6 +135,10 @@ public final class CatalogoOpcoes {
 
     public static String normalizarVacina(String valor) {
         return normalizar(valor, VACINAS);
+    }
+
+    public static String normalizarRaca(String valor) {
+        return normalizar(valor, RACAS);
     }
 
     private static String normalizar(String valor, List<Opcao> catalogo) {

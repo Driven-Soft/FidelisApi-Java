@@ -3,6 +3,7 @@ package br.com.fiap.java.FidelisApi.dto.request;
 import br.com.fiap.java.FidelisApi.entity.PetStatus;
 import br.com.fiap.java.FidelisApi.entity.SexoPet;
 import br.com.fiap.java.FidelisApi.validation.DataNascimentoPlausivel;
+import br.com.fiap.java.FidelisApi.validation.EspecieSuportada;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -25,12 +26,12 @@ public class PetRequest {
     private String nome;
 
     @NotBlank(message = "Espécie é obrigatória")
-    @Size(min = 3, max = 20, message = "Espécie deve ter entre 3 e 20 caracteres")
-    @Pattern(regexp = "^[\\p{L}][\\p{L} .'-]*$", message = "Espécie deve conter apenas letras, espaços, ponto ou hífen")
+    @EspecieSuportada
+    @Schema(description = "Espécie do pet", allowableValues = {"Cachorro", "Gato"})
     private String especie;
 
     @NotBlank(message = "Raça é obrigatória")
-    @Size(min = 2, max = 20, message = "Raça deve ter entre 2 e 20 caracteres")
+    @Size(min = 2, max = 50, message = "Raça deve ter entre 2 e 50 caracteres")
     @Pattern(regexp = "^[\\p{L}0-9][\\p{L}0-9 .'/()-]*$", message = "Raça contém caracteres inválidos")
     private String raca;
 

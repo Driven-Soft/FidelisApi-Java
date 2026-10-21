@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.repository;
 
+import br.com.fiap.java.FidelisApi.entity.EspeciePet;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.SexoPet;
 import org.springframework.data.domain.Page;
@@ -16,11 +17,11 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     Page<Pet> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
 
-    Page<Pet> findByEspecieContainingIgnoreCase(String especie, Pageable pageable);
+    Page<Pet> findByEspecie(EspeciePet especie, Pageable pageable);
 
     Page<Pet> findBySexo(SexoPet sexo, Pageable pageable);
 
-    Page<Pet> findByNomeContainingIgnoreCaseAndEspecieContainingIgnoreCase(String nome, String especie, Pageable pageable);
+    Page<Pet> findByNomeContainingIgnoreCaseAndEspecie(String nome, EspeciePet especie, Pageable pageable);
 
     @Query("SELECT p FROM Pet p JOIN FETCH p.tutor WHERE p.clinica.id = :clinicaId")
     Page<Pet> findByClinicaIdComTutor(@Param("clinicaId") Long clinicaId, Pageable pageable);

@@ -1,8 +1,11 @@
 package br.com.fiap.java.FidelisApi.mapper;
 
+import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.PetRequest;
 import br.com.fiap.java.FidelisApi.dto.response.PetResponse;
+import br.com.fiap.java.FidelisApi.entity.EspeciePet;
 import br.com.fiap.java.FidelisApi.entity.Pet;
+import br.com.fiap.java.FidelisApi.exception.BusinessException;
 
 public final class PetMapper {
 
@@ -12,8 +15,9 @@ public final class PetMapper {
     public static Pet toEntity(PetRequest request) {
         return Pet.builder()
                 .nome(request.getNome())
-                .especie(request.getEspecie())
-                .raca(request.getRaca())
+                .especie(EspeciePet.fromTexto(request.getEspecie())
+                        .orElseThrow(() -> new BusinessException("Espécie não suportada: " + request.getEspecie())))
+                .raca(CatalogoOpcoes.normalizarRaca(request.getRaca()))
                 .sexo(request.getSexo())
                 .dataNascimento(request.getDataNascimento())
                 .status(request.getStatus())
@@ -25,7 +29,7 @@ public final class PetMapper {
         return PetResponse.builder()
                 .id(entity.getId())
                 .nome(entity.getNome())
-                .especie(entity.getEspecie())
+                .especie(entity.getEspecie() != null ? entity.getEspecie().getRotulo() : null)
                 .raca(entity.getRaca())
                 .sexo(entity.getSexo())
                 .dataNascimento(entity.getDataNascimento())
