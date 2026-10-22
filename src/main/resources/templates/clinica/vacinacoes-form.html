@@ -45,7 +45,6 @@
         <div class="mb-2">
           <label class="form-label" for="veterinarioId">Veterinário</label>
           <select class="form-control" th:field="*{veterinarioId}" required>
-            <option value="">Selecione um veterinário</option>
             <option
               th:each="v : ${veterinarios}"
               th:value="${v.id}"
