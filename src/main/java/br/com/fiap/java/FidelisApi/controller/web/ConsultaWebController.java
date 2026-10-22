@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping("/clinica/consultas")
@@ -99,7 +98,6 @@ public class ConsultaWebController {
 
     private void prepararFormulario(Long clinicaId, ConsultaRequest request, Model model) {
         model.addAttribute("consultaRequest", request);
-        model.addAttribute("dataHoraMinimaConsulta", LocalDateTime.now().withSecond(0).withNano(0));
         model.addAttribute("dataMinimaRetorno", LocalDate.now());
         model.addAttribute("tiposConsulta", CatalogoOpcoes.tiposConsulta());
         model.addAttribute("pets", petRepository.findByClinicaIdComTutor(clinicaId, PageRequest.of(0, 100, Sort.by("nome"))));

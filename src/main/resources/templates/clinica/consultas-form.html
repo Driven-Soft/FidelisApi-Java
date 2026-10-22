@@ -46,15 +46,28 @@
           </select>
         </div>
 
-        <div class="mb-2">
-          <label class="form-label" for="dataHora">Data e hora</label>
-          <input
-            class="form-control"
-            type="datetime-local"
-            th:field="*{dataHora}"
-            th:attr="min=${dataHoraMinimaConsulta}"
-            required
-          />
+        <div class="mb-2" data-data-hora data-minimo-hoje="true">
+          <label class="form-label" for="dataHoraData">Data e hora</label>
+          <div class="row g-2">
+            <div class="col-7">
+              <input
+                class="form-control"
+                type="date"
+                id="dataHoraData"
+                data-data-hora-data
+                required
+              />
+            </div>
+            <div class="col-5">
+              <select
+                class="form-control"
+                aria-label="Horário"
+                data-data-hora-hora
+                required
+              ></select>
+            </div>
+          </div>
+          <input type="hidden" th:field="*{dataHora}" data-data-hora-valor />
           <span
             class="text-danger"
             th:if="${#fields.hasErrors('dataHora')}"
@@ -111,5 +124,6 @@
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />
     <script th:replace="~{fragmentos :: combo-script}" />
+    <script th:src="@{/js/data-hora.js}"></script>
   </body>
 </html>
