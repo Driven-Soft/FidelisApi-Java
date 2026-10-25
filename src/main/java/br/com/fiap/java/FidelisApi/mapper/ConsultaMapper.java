@@ -20,6 +20,18 @@ public final class ConsultaMapper {
                 .build();
     }
 
+    public static ConsultaRequest toRequest(Consulta entity) {
+        ConsultaRequest request = new ConsultaRequest();
+        request.setDataHora(entity.getDataHora());
+        request.setTipo(entity.getTipo());
+        request.setDiagnostico(entity.getDiagnostico());
+        request.setObservacoes(entity.getObservacoes());
+        request.setDataRetorno(entity.getDataRetorno());
+        request.setVeterinarioId(entity.getVeterinario() != null ? entity.getVeterinario().getId() : null);
+        request.setPetId(entity.getPet() != null ? entity.getPet().getId() : null);
+        return request;
+    }
+
     public static ConsultaResponse toResponse(Consulta entity) {
         return ConsultaResponse.builder()
                 .id(entity.getId())

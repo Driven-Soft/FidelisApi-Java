@@ -26,6 +26,9 @@ public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
     @Query("SELECT c FROM Consulta c JOIN FETCH c.pet JOIN FETCH c.veterinario WHERE c.id = :id")
     Optional<Consulta> findByIdComPetEVeterinario(@Param("id") Long id);
 
+    @Query("SELECT c FROM Consulta c JOIN FETCH c.pet JOIN FETCH c.veterinario WHERE c.id = :id AND c.pet.clinica.id = :clinicaId")
+    Optional<Consulta> findByIdAndPetClinicaId(@Param("id") Long id, @Param("clinicaId") Long clinicaId);
+
     @Query("SELECT c.pet.id, MAX(c.dataHora) FROM Consulta c WHERE c.pet.id IN :ids GROUP BY c.pet.id")
     List<Object[]> findUltimaConsultaPorPetIds(@Param("ids") List<Long> ids);
 }

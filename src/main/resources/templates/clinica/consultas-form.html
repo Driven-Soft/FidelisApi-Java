@@ -1,30 +1,33 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-  <head
-    th:replace="~{fragmentos :: cabecalho('Fidelis - Registrar Consulta')}"
-  />
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Consulta')}" />
   <body>
     <div class="container" style="max-width: 500px">
       <br />
       <div
         class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
       >
-        <h2 class="mb-0">Registrar Consulta</h2>
+        <h2
+          class="mb-0"
+          th:text="${consultaId} != null ? 'Editar Consulta' : 'Registrar Consulta'"
+        ></h2>
         <div th:replace="~{fragmentos :: botao-logout}" />
       </div>
 
       <div class="d-flex justify-content-end mb-3">
-        <a href="/clinica/pets" class="btn btn-outline-secondary"
-          >&larr; Voltar aos pets</a
-        >
+        <a
+          th:href="${consultaId} != null ? @{/clinica/consultas/pet/{id}(id=${consultaRequest.petId})} : @{/clinica/pets}"
+          class="btn btn-outline-secondary"
+          th:text="${consultaId} != null ? '← Voltar às consultas' : '← Voltar aos pets'"
+        ></a>
       </div>
 
       <form
-        th:action="@{/clinica/consultas}"
+        th:action="${consultaId} != null ? @{/clinica/consultas/{id}(id=${consultaId})} : @{/clinica/consultas}"
         th:object="${consultaRequest}"
         method="post"
       >
-        <div class="mb-2">
+        <div class="mb-2" th:if="${consultaId == null}">
           <label class="form-label" for="petId">Pet</label>
           <select class="form-control" th:field="*{petId}" required>
             <option
@@ -33,6 +36,22 @@
               th:text="${p.nome} + ' (' + ${p.tutor.nome} + ')'"
             ></option>
           </select>
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('petId')}"
+            th:errors="*{petId}"
+          ></span>
+        </div>
+
+        <div class="mb-2" th:if="${consultaId != null}">
+          <label class="form-label">Pet</label>
+          <input
+            class="form-control"
+            type="text"
+            th:value="${petNome}"
+            disabled
+          />
+          <input type="hidden" th:field="*{petId}" />
         </div>
 
         <div class="mb-2">
@@ -44,9 +63,18 @@
               th:text="${v.nome}"
             ></option>
           </select>
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('veterinarioId')}"
+            th:errors="*{veterinarioId}"
+          ></span>
         </div>
 
-        <div class="mb-2" data-data-hora data-minimo-hoje="true">
+        <div
+          class="mb-2"
+          data-data-hora
+          th:attr="data-minimo-hoje=${consultaId == null}"
+        >
           <label class="form-label" for="dataHoraData">Data e hora</label>
           <div class="row g-2">
             <div class="col-7">
@@ -116,9 +144,11 @@
         </div>
 
         <br />
-        <button type="submit" class="btn btn-primary">
-          Registrar Consulta
-        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          th:text="${consultaId} != null ? 'Salvar alterações' : 'Registrar Consulta'"
+        ></button>
       </form>
     </div>
 

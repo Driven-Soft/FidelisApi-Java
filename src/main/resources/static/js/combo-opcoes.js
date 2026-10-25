@@ -12,7 +12,13 @@
     var origem = origemDoFiltro(combo);
 
     function grupoAtual() {
-      if (!origem || origem.selectedIndex < 0) {
+      if (!origem) {
+        return null;
+      }
+      if (origem.tagName !== "SELECT") {
+        return origem.getAttribute("data-grupo");
+      }
+      if (origem.selectedIndex < 0) {
         return null;
       }
       return origem.options[origem.selectedIndex].getAttribute("data-grupo");
@@ -84,13 +90,11 @@
         reconstruirOpcoes();
 
         if (estavaEmOutro) {
-          // Texto digitado manualmente vale para qualquer pet.
           select.value = OUTRO;
           mostrarTexto(true);
         } else if (estaVisivel(valor)) {
           select.value = valor;
         } else {
-          // A opção escolhida não se aplica à espécie do novo pet.
           select.value = "";
           input.value = "";
         }

@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,19 +47,35 @@ public class VacinacaoService {
         return vacinacaoRepository.save(vacinacao);
     }
 
+    @Transactional
     @CacheEvict(value = "vacinacoes", allEntries = true)
     public Vacinacao update(Long id, Vacinacao update) {
         Vacinacao existing = findById(id);
-        existing.setDataAplicacao(update.getDataAplicacao());
-        existing.setDataProxima(update.getDataProxima());
-        existing.setVacinaAplicada(update.getVacinaAplicada());
-        existing.setObservacao(update.getObservacao());
+        aplicarAlteracoes(existing, update);
         return vacinacaoRepository.save(existing);
     }
 
+    @Transactional
+    @CacheEvict(value = "vacinacoes", allEntries = true)
+    public Vacinacao update(Long id, Vacinacao update, Long veterinarioId) {
+        Vacinacao existing = findById(id);
+        existing.setVeterinario(veterinarioRepository.findById(veterinarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinário não encontrado com id " + veterinarioId)));
+        aplicarAlteracoes(existing, update);
+        return vacinacaoRepository.save(existing);
+    }
+
+    @Transactional
     @CacheEvict(value = "vacinacoes", allEntries = true)
     public void delete(Long id) {
         Vacinacao existing = findById(id);
         vacinacaoRepository.delete(existing);
+    }
+
+    private void aplicarAlteracoes(Vacinacao existing, Vacinacao update) {
+        existing.setDataAplicacao(update.getDataAplicacao());
+        existing.setDataProxima(update.getDataProxima());
+        existing.setVacinaAplicada(update.getVacinaAplicada());
+        existing.setObservacao(update.getObservacao());
     }
 }

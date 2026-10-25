@@ -89,20 +89,36 @@ public class ConsultaService {
         recomendacaoRepository.save(recomendacao);
     }
 
+    @Transactional
     @CacheEvict(value = "consultas", allEntries = true)
     public Consulta update(Long id, Consulta update) {
         Consulta existing = findById(id);
+        aplicarAlteracoes(existing, update);
+        return consultaRepository.save(existing);
+    }
+
+    @Transactional
+    @CacheEvict(value = "consultas", allEntries = true)
+    public Consulta update(Long id, Consulta update, Long veterinarioId) {
+        Consulta existing = findById(id);
+        existing.setVeterinario(veterinarioRepository.findById(veterinarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinário não encontrado com id " + veterinarioId)));
+        aplicarAlteracoes(existing, update);
+        return consultaRepository.save(existing);
+    }
+
+    @Transactional
+    @CacheEvict(value = "consultas", allEntries = true)
+    public void delete(Long id) {
+        Consulta existing = findById(id);
+        consultaRepository.delete(existing);
+    }
+
+    private void aplicarAlteracoes(Consulta existing, Consulta update) {
         existing.setDataHora(update.getDataHora());
         existing.setTipo(update.getTipo());
         existing.setDiagnostico(update.getDiagnostico());
         existing.setObservacoes(update.getObservacoes());
         existing.setDataRetorno(update.getDataRetorno());
-        return consultaRepository.save(existing);
-    }
-
-    @CacheEvict(value = "consultas", allEntries = true)
-    public void delete(Long id) {
-        Consulta existing = findById(id);
-        consultaRepository.delete(existing);
     }
 }

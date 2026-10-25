@@ -19,6 +19,17 @@ public final class VacinacaoMapper {
                 .build();
     }
 
+    public static VacinacaoRequest toRequest(Vacinacao entity) {
+        VacinacaoRequest request = new VacinacaoRequest();
+        request.setDataAplicacao(entity.getDataAplicacao());
+        request.setDataProxima(entity.getDataProxima());
+        request.setVacinaAplicada(entity.getVacinaAplicada());
+        request.setObservacao(entity.getObservacao());
+        request.setPetId(entity.getPet() != null ? entity.getPet().getId() : null);
+        request.setVeterinarioId(entity.getVeterinario() != null ? entity.getVeterinario().getId() : null);
+        return request;
+    }
+
     public static VacinacaoResponse toResponse(Vacinacao entity) {
         return VacinacaoResponse.builder()
                 .id(entity.getId())

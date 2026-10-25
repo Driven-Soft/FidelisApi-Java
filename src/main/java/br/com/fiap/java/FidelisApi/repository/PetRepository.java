@@ -23,6 +23,8 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     Page<Pet> findByNomeContainingIgnoreCaseAndEspecie(String nome, EspeciePet especie, Pageable pageable);
 
+    Optional<Pet> findByIdAndClinicaId(Long id, Long clinicaId);
+
     @Query("SELECT p FROM Pet p JOIN FETCH p.tutor WHERE p.clinica.id = :clinicaId")
     Page<Pet> findByClinicaIdComTutor(@Param("clinicaId") Long clinicaId, Pageable pageable);
 
