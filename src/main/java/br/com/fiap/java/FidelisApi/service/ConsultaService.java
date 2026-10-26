@@ -63,37 +63,12 @@ public class ConsultaService {
         return salva;
     }
 
-    private void gerarLembreteERecomendacao(Consulta consulta, Pet pet) {
-        LocalDate dataRetorno = consulta.getDataRetorno() != null
-                ? consulta.getDataRetorno()
-                : consulta.getDataHora().toLocalDate().plusDays(30);
-
-        Lembrete lembrete = Lembrete.builder()
-                .tipo("Retorno")
-                .descricao("Retorno da consulta de " + consulta.getTipo()
-                        + " realizada em " + consulta.getDataHora().toLocalDate())
-                .dataPrevista(dataRetorno)
-                .status(LembreteStatus.PENDENTE)
-                .tutor(pet.getTutor())
-                .pet(pet)
-                .build();
-        lembreteRepository.save(lembrete);
-
-        Recomendacao recomendacao = Recomendacao.builder()
-                .tipo("Cuidado Pós-Consulta")
-                .descricao("Acompanhar " + pet.getNome() + " após consulta de " + consulta.getTipo() + "."
-                        + (consulta.getObservacoes() != null ? " " + consulta.getObservacoes() : ""))
-                .dataRecomendacao(LocalDate.now())
-                .pet(pet)
-                .build();
-        recomendacaoRepository.save(recomendacao);
-    }
-
     @Transactional
     @CacheEvict(value = "consultas", allEntries = true)
     public Consulta update(Long id, Consulta update) {
         Consulta existing = findById(id);
         aplicarAlteracoes(existing, update);
+        sincronizarGerados(existing);
         return consultaRepository.save(existing);
     }
 
@@ -104,6 +79,7 @@ public class ConsultaService {
         existing.setVeterinario(veterinarioRepository.findById(veterinarioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinário não encontrado com id " + veterinarioId)));
         aplicarAlteracoes(existing, update);
+        sincronizarGerados(existing);
         return consultaRepository.save(existing);
     }
 
@@ -120,5 +96,56 @@ public class ConsultaService {
         existing.setDiagnostico(update.getDiagnostico());
         existing.setObservacoes(update.getObservacoes());
         existing.setDataRetorno(update.getDataRetorno());
+    }
+
+    private void gerarLembreteERecomendacao(Consulta consulta, Pet pet) {
+        Lembrete lembrete = Lembrete.builder()
+                .tipo("Retorno")
+                .descricao(descricaoDoLembrete(consulta))
+                .dataPrevista(dataPrevistaDoRetorno(consulta))
+                .status(LembreteStatus.PENDENTE)
+                .tutor(pet.getTutor())
+                .pet(pet)
+                .consulta(consulta)
+                .build();
+        lembreteRepository.save(lembrete);
+
+        Recomendacao recomendacao = Recomendacao.builder()
+                .tipo("Cuidado Pós-Consulta")
+                .descricao(descricaoDaRecomendacao(consulta, pet))
+                .dataRecomendacao(LocalDate.now())
+                .pet(pet)
+                .consulta(consulta)
+                .build();
+        recomendacaoRepository.save(recomendacao);
+    }
+
+    private void sincronizarGerados(Consulta consulta) {
+        lembreteRepository.findByConsultaId(consulta.getId()).stream()
+                .filter(lembrete -> lembrete.getStatus() == LembreteStatus.PENDENTE)
+                .forEach(lembrete -> {
+                    lembrete.setDescricao(descricaoDoLembrete(consulta));
+                    lembrete.setDataPrevista(dataPrevistaDoRetorno(consulta));
+                });
+
+        recomendacaoRepository.findByConsultaId(consulta.getId())
+                .forEach(recomendacao -> recomendacao.setDescricao(
+                        descricaoDaRecomendacao(consulta, consulta.getPet())));
+    }
+
+    private LocalDate dataPrevistaDoRetorno(Consulta consulta) {
+        return consulta.getDataRetorno() != null
+                ? consulta.getDataRetorno()
+                : consulta.getDataHora().toLocalDate().plusDays(30);
+    }
+
+    private String descricaoDoLembrete(Consulta consulta) {
+        return "Retorno da consulta de " + consulta.getTipo()
+                + " realizada em " + consulta.getDataHora().toLocalDate();
+    }
+
+    private String descricaoDaRecomendacao(Consulta consulta, Pet pet) {
+        return "Acompanhar " + pet.getNome() + " após consulta de " + consulta.getTipo() + "."
+                + (consulta.getObservacoes() != null ? " " + consulta.getObservacoes() : "");
     }
 }

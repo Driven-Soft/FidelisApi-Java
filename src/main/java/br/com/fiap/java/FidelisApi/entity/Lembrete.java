@@ -41,4 +41,9 @@ public class Lembrete {
     @JoinColumn(name = "FIDELIS_PET_id", nullable = false)
     @JsonIgnoreProperties("lembretes")
     private Pet pet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FIDELIS_CONSULTA_id")
+    @JsonIgnoreProperties("lembretes")
+    private Consulta consulta;
 }

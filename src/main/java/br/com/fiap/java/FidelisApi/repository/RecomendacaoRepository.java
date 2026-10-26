@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.repository;
 
+import java.util.List;
 import java.util.Optional;
 import br.com.fiap.java.FidelisApi.entity.Recomendacao;
 import org.springframework.data.domain.Page;
@@ -11,4 +12,8 @@ public interface RecomendacaoRepository extends JpaRepository<Recomendacao, Long
     Page<Recomendacao> findByTipoContainingIgnoreCase(String tipo, Pageable pageable);
 
     Optional<Recomendacao> findFirstByPetIdOrderByIdDesc(Long petId);
+
+    List<Recomendacao> findByConsultaId(Long consultaId);
+
+    Optional<Recomendacao> findFirstByConsultaIdOrderByIdDesc(Long consultaId);
 }

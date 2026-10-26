@@ -101,10 +101,8 @@ public class ConsultaWebController {
         Long clinicaId = clinicaLogada(authentication).getId();
         Consulta consulta = consultaDaClinica(id, clinicaId);
 
-        Lembrete lembrete = lembreteRepository.findFirstByPetIdOrderByIdDesc(consulta.getPet().getId())
-                .orElse(null);
-        Recomendacao recomendacao = recomendacaoRepository.findFirstByPetIdOrderByIdDesc(consulta.getPet().getId())
-                .orElse(null);
+        Lembrete lembrete = lembreteRepository.findFirstByConsultaIdOrderByIdDesc(id).orElse(null);
+        Recomendacao recomendacao = recomendacaoRepository.findFirstByConsultaIdOrderByIdDesc(id).orElse(null);
 
         model.addAttribute("consulta", consulta);
         model.addAttribute("lembrete", lembrete);

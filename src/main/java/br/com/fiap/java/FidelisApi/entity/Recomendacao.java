@@ -32,4 +32,9 @@ public class Recomendacao {
     @JoinColumn(name = "FIDELIS_PET_id", nullable = false)
     @JsonIgnoreProperties("recomendacoes")
     private Pet pet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "FIDELIS_CONSULTA_id")
+    @JsonIgnoreProperties("recomendacoes")
+    private Consulta consulta;
 }

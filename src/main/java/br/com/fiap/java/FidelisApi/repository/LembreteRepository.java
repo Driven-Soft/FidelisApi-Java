@@ -19,4 +19,8 @@ public interface LembreteRepository extends JpaRepository<Lembrete, Long> {
     List<Lembrete> findByPetId(Long petId);
 
     Optional<Lembrete> findFirstByPetIdOrderByIdDesc(Long petId);
+
+    List<Lembrete> findByConsultaId(Long consultaId);
+
+    Optional<Lembrete> findFirstByConsultaIdOrderByIdDesc(Long consultaId);
 }

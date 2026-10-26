@@ -56,4 +56,14 @@ public class Consulta {
     @JsonIgnoreProperties("consulta")
     @Builder.Default
     private Set<Prescricao> prescricoes = new HashSet<>();
+
+    @OneToMany(mappedBy = "consulta", cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties("consulta")
+    @Builder.Default
+    private Set<Lembrete> lembretes = new HashSet<>();
+
+    @OneToMany(mappedBy = "consulta", cascade = CascadeType.REMOVE)
+    @JsonIgnoreProperties("consulta")
+    @Builder.Default
+    private Set<Recomendacao> recomendacoes = new HashSet<>();
 }
