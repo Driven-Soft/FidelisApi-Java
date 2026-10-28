@@ -392,3 +392,28 @@ p {
     padding: 0 0.75rem;
   }
 }
+
+.pet-list-page .table-panel {
+  overflow: visible;
+}
+
+.pet-list-page .table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.pet-list-page .table thead th:first-child {
+  border-top-left-radius: 11px;
+}
+
+.pet-list-page .table thead th:last-child {
+  border-top-right-radius: 11px;
+}
+
+.pet-list-page .table tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 11px;
+}
+
+.pet-list-page .table tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 11px;
+}
