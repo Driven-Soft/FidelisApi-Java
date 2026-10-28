@@ -14,7 +14,8 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   LoginSucessoHandler loginSucessoHandler) throws Exception {
 
         http
             .csrf(csrf -> csrf
@@ -22,38 +23,34 @@ public class SecurityConfig {
             )
 
             .headers(headers ->
-                headers.frameOptions(frame -> frame.sameOrigin()) // necessário para o H2 Console
+                headers.frameOptions(frame -> frame.sameOrigin())
             )
 
             .authorizeHttpRequests(auth -> auth
-                // --- Público ---
                 .requestMatchers(
-                    "/", "/home", "/login", "/acesso-negado",
+                    "/", "/home",
+                    "/login", "/acesso-negado",
                     "/css/**", "/js/**", "/images/**",
                     "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
                     "/h2-console/**",
                     "/actuator/health", "/actuator/info"
                 ).permitAll()
 
-                // --- API: operações administrativas restritas à Clínica ---
                 .requestMatchers(HttpMethod.GET, "/api/v1/**").hasRole("CLINICA")
 
-                // --- API: escrita (POST/PUT/PATCH/DELETE) só para quem gerencia ---
                 .requestMatchers("/api/v1/**").hasRole("CLINICA")
 
-                // --- Telas MVC por perfil ---
                 .requestMatchers("/clinica/**").hasRole("CLINICA")
                 .requestMatchers("/tutor/**").hasRole("TUTOR")
                 .requestMatchers("/dashboard/**").authenticated()
 
-                // --- Qualquer outra rota: precisa estar autenticado ---
                 .anyRequest().authenticated()
             )
 
             .formLogin(form -> form
                 .loginPage("/login")
                 .usernameParameter("email")
-                .defaultSuccessUrl("/dashboard", true)
+                .successHandler(loginSucessoHandler)
                 .failureUrl("/login?falha=true")
                 .permitAll()
             )

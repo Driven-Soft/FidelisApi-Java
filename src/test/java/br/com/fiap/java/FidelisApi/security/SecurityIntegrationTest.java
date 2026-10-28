@@ -2,16 +2,17 @@ package br.com.fiap.java.FidelisApi.security;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,10 +33,17 @@ class SecurityIntegrationTest {
     }
 
     @Test
-    void deveAutenticarClinicaComSucesso() throws Exception {
+    void deveAutenticarClinicaEIrParaListaDePets() throws Exception {
         mockMvc.perform(formLogin("/login").user("email", EMAIL_CLINICA).password(SENHA))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/dashboard"));
+                .andExpect(redirectedUrl("/clinica/pets"));
+    }
+
+    @Test
+    void deveAutenticarTutorEIrParaMeusPets() throws Exception {
+        mockMvc.perform(formLogin("/login").user("email", EMAIL_TUTOR).password(SENHA))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/tutor/pets"));
     }
 
     @Test
@@ -66,12 +74,15 @@ class SecurityIntegrationTest {
     }
 
     @Test
-        void somenteClinicaPodeLerApi() throws Exception {
+    void clinicaPodeLerApi() throws Exception {
         mockMvc.perform(get("/api/v1/pets").with(httpBasic(EMAIL_CLINICA, SENHA)))
                 .andExpect(status().isOk());
+    }
 
+    @Test
+    void tutorNaoPodeLerApi() throws Exception {
         mockMvc.perform(get("/api/v1/pets").with(httpBasic(EMAIL_TUTOR, SENHA)))
-            .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden());
     }
 
     @Test
