@@ -7,16 +7,16 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
 @Constraint(validatedBy = DataNascimentoPlausivelValidator.class)
-@Target(FIELD)
+@Target(TYPE)
 @Retention(RUNTIME)
 public @interface DataNascimentoPlausivel {
 
-    String message() default "Data de nascimento não pode indicar idade superior a 100 anos";
+    String message() default "Data de nascimento excede a idade máxima para a espécie informada";
 
     Class<?>[] groups() default {};
 

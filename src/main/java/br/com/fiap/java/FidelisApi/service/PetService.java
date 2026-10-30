@@ -71,6 +71,10 @@ public class PetService {
         existing.setDataNascimento(update.getDataNascimento());
         existing.setStatus(update.getStatus());
         existing.setFotoUrl(update.getFotoUrl());
+        update.getHistoricoPeso().forEach(historico -> {
+            historico.setPet(existing);
+            existing.getHistoricoPeso().add(historico);
+        });
         return petRepository.save(existing);
     }
 

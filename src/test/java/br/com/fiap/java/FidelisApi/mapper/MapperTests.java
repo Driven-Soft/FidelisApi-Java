@@ -1,11 +1,14 @@
 package br.com.fiap.java.FidelisApi.mapper;
 
 import br.com.fiap.java.FidelisApi.dto.request.ConsultaRequest;
+import br.com.fiap.java.FidelisApi.dto.request.PetRequest;
 import br.com.fiap.java.FidelisApi.dto.request.TutorRequest;
 import br.com.fiap.java.FidelisApi.dto.response.ConsultaResponse;
 import br.com.fiap.java.FidelisApi.dto.response.TutorResponse;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.Consulta;
+import br.com.fiap.java.FidelisApi.entity.PetStatus;
+import br.com.fiap.java.FidelisApi.entity.SexoPet;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Tutor;
 import br.com.fiap.java.FidelisApi.entity.Veterinario;
@@ -13,10 +16,33 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MapperTests {
+
+    @Test
+    void shouldMapInitialPetWeightToHistory() {
+        PetRequest request = new PetRequest();
+        request.setNome("Rex");
+        request.setEspecie("Cachorro");
+        request.setRaca("Vira-lata");
+        request.setSexo(SexoPet.M);
+        request.setDataNascimento(LocalDate.of(2020, 1, 1));
+        request.setPesoKg(new BigDecimal("8.50"));
+        request.setStatus(PetStatus.ATIVO);
+
+        Pet pet = PetMapper.toEntity(request);
+
+        assertThat(pet.getHistoricoPeso()).hasSize(1);
+        assertThat(pet.getHistoricoPeso().iterator().next())
+                .satisfies(historico -> {
+                    assertThat(historico.getPesoKg()).isEqualByComparingTo("8.50");
+                    assertThat(historico.getDataMedicao()).isEqualTo(LocalDate.now());
+                    assertThat(historico.getPet()).isSameAs(pet);
+                });
+    }
 
     @Test
     void shouldMapTutorRequestToEntityAndResponse() {

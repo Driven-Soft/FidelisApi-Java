@@ -4,8 +4,11 @@ import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.PetRequest;
 import br.com.fiap.java.FidelisApi.dto.response.PetResponse;
 import br.com.fiap.java.FidelisApi.entity.EspeciePet;
+import br.com.fiap.java.FidelisApi.entity.HistoricoPeso;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.exception.BusinessException;
+
+import java.time.LocalDate;
 
 public final class PetMapper {
 
@@ -13,7 +16,7 @@ public final class PetMapper {
     }
 
     public static Pet toEntity(PetRequest request) {
-        return Pet.builder()
+        Pet pet = Pet.builder()
                 .nome(request.getNome())
                 .especie(EspeciePet.fromTexto(request.getEspecie())
                         .orElseThrow(() -> new BusinessException("Espécie não suportada: " + request.getEspecie())))
@@ -23,6 +26,15 @@ public final class PetMapper {
                 .status(request.getStatus())
                 .fotoUrl(request.getFotoUrl())
                 .build();
+
+        if (request.getPesoKg() != null) {
+            pet.getHistoricoPeso().add(HistoricoPeso.builder()
+                    .pesoKg(request.getPesoKg())
+                    .dataMedicao(LocalDate.now())
+                    .pet(pet)
+                    .build());
+        }
+        return pet;
     }
 
     public static PetResponse toResponse(Pet entity) {

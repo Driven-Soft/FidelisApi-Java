@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,13 +41,41 @@ class PetRequestValidationTest {
     }
 
     @Test
-    void deveRejeitarDataDeNascimentoComMaisDeCemAnos() {
+    void deveRejeitarDataDeNascimentoDeCachorroComMaisDeTrintaEUmAnos() {
         PetRequest request = requestBase();
-        request.setDataNascimento(LocalDate.now().minusYears(100).minusDays(1));
+        request.setDataNascimento(LocalDate.now().minusYears(31).minusDays(1));
 
         assertThat(validator.validate(request))
                 .extracting("message")
-                .contains("Data de nascimento não pode indicar idade superior a 100 anos");
+                .contains("Data de nascimento excede a idade máxima para a espécie informada");
+    }
+
+    @Test
+    void deveAceitarDataDeNascimentoNoLimiteDeIdadeDeCachorro() {
+        PetRequest request = requestBase();
+        request.setDataNascimento(LocalDate.now().minusYears(31));
+
+        assertThat(validator.validate(request)).isEmpty();
+    }
+
+    @Test
+    void deveAceitarDataDeNascimentoNoLimiteDeIdadeDeGato() {
+        PetRequest request = requestBase();
+        request.setEspecie("Gato");
+        request.setDataNascimento(LocalDate.now().minusYears(39));
+
+        assertThat(validator.validate(request)).isEmpty();
+    }
+
+    @Test
+    void deveRejeitarDataDeNascimentoDeGatoComMaisDeTrintaENoveAnos() {
+        PetRequest request = requestBase();
+        request.setEspecie("Gato");
+        request.setDataNascimento(LocalDate.now().minusYears(39).minusDays(1));
+
+        assertThat(validator.validate(request))
+                .extracting("message")
+                .contains("Data de nascimento excede a idade máxima para a espécie informada");
     }
 
     @Test
@@ -118,6 +147,24 @@ class PetRequestValidationTest {
     @Test
     void deveAceitarPetComCamposTextuaisValidos() {
         assertThat(validator.validate(requestBase())).isEmpty();
+    }
+
+    @Test
+    void devePermitirPesoInicialOpcional() {
+        PetRequest request = requestBase();
+        request.setPesoKg(null);
+
+        assertThat(validator.validate(request)).isEmpty();
+    }
+
+    @Test
+    void deveRejeitarPesoInicialIgualAZero() {
+        PetRequest request = requestBase();
+        request.setPesoKg(BigDecimal.ZERO);
+
+        assertThat(validator.validate(request))
+                .extracting("message")
+                .contains("Peso deve ser maior que zero");
     }
 
     private PetRequest requestBase() {

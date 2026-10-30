@@ -6,17 +6,23 @@ import java.util.Optional;
 
 public enum EspeciePet {
 
-    CACHORRO("Cachorro"),
-    GATO("Gato");
+    CACHORRO("Cachorro", 31),
+    GATO("Gato", 39);
 
     private final String rotulo;
+    private final int idadeMaximaAnos;
 
-    EspeciePet(String rotulo) {
+    EspeciePet(String rotulo, int idadeMaximaAnos) {
         this.rotulo = rotulo;
+        this.idadeMaximaAnos = idadeMaximaAnos;
     }
 
     public String getRotulo() {
         return rotulo;
+    }
+
+    public int getIdadeMaximaAnos() {
+        return idadeMaximaAnos;
     }
 
     public static Optional<EspeciePet> fromTexto(String texto) {

@@ -3,6 +3,7 @@ package br.com.fiap.java.FidelisApi.controller.web;
 import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.PetRequest;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
+import br.com.fiap.java.FidelisApi.entity.EspeciePet;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Usuario;
 import br.com.fiap.java.FidelisApi.mapper.PetMapper;
@@ -140,7 +141,10 @@ public class PetWebController {
         model.addAttribute("tutores", tutorRepository.findAll());
         model.addAttribute("especies", CatalogoOpcoes.especies());
         model.addAttribute("racas", CatalogoOpcoes.racas());
-        model.addAttribute("dataMinimaNascimento", LocalDate.now().minusYears(100));
+        model.addAttribute("dataMinimaNascimentoCachorro",
+                LocalDate.now().minusYears(EspeciePet.CACHORRO.getIdadeMaximaAnos()));
+        model.addAttribute("dataMinimaNascimentoGato",
+                LocalDate.now().minusYears(EspeciePet.GATO.getIdadeMaximaAnos()));
         model.addAttribute("dataMaximaNascimento", LocalDate.now());
     }
 

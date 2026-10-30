@@ -83,13 +83,29 @@
             class="form-control"
             type="date"
             th:field="*{dataNascimento}"
-            th:attr="min=${dataMinimaNascimento},max=${dataMaximaNascimento}"
+            th:attr="min=${petRequest.especie == 'Gato' ? dataMinimaNascimentoGato : dataMinimaNascimentoCachorro},max=${dataMaximaNascimento},data-min-cachorro=${dataMinimaNascimentoCachorro},data-min-gato=${dataMinimaNascimentoGato}"
             required
           />
           <span
             class="text-danger"
             th:if="${#fields.hasErrors('dataNascimento')}"
             th:errors="*{dataNascimento}"
+          ></span>
+        </div>
+
+        <div class="mb-2" th:if="${petId == null}">
+          <label class="form-label" for="pesoKg">Peso inicial (kg, opcional)</label>
+          <input
+            class="form-control"
+            type="number"
+            th:field="*{pesoKg}"
+            min="0.01"
+            step="0.01"
+          />
+          <span
+            class="text-danger"
+            th:if="${#fields.hasErrors('pesoKg')}"
+            th:errors="*{pesoKg}"
           ></span>
         </div>
 
@@ -123,5 +139,20 @@
 
     <script th:replace="~{fragmentos :: bootstrap-script}" />
     <script th:replace="~{fragmentos :: combo-script}" />
+    <script>
+      const especieInput = document.getElementById("especie");
+      const nascimentoInput = document.getElementById("dataNascimento");
+
+      function atualizarDataMinimaNascimento() {
+        const especie = especieInput.value.toLowerCase();
+        nascimentoInput.min =
+          especie === "gato"
+            ? nascimentoInput.dataset.minGato
+            : nascimentoInput.dataset.minCachorro;
+      }
+
+      especieInput.addEventListener("change", atualizarDataMinimaNascimento);
+      atualizarDataMinimaNascimento();
+    </script>
   </body>
 </html>
