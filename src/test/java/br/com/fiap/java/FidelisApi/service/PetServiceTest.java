@@ -14,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -210,6 +212,55 @@ class PetServiceTest {
         assertThat(result.getNome()).isEqualTo("Max");
         assertThat(result.getEspecie()).isEqualTo(EspeciePet.GATO);
         verify(petRepository).save(pet);
+    }
+
+    @Test
+    void update_comPesoAlterado_deveAdicionarMedicaoAoHistorico() {
+        pet.getHistoricoPeso().add(HistoricoPeso.builder()
+                .pesoKg(new BigDecimal("8.50"))
+                .dataMedicao(LocalDate.now().minusDays(1))
+                .pet(pet)
+                .build());
+        Pet updated = Pet.builder()
+                .historicoPeso(new HashSet<>(List.of(HistoricoPeso.builder()
+                        .pesoKg(new BigDecimal("9.25"))
+                        .dataMedicao(LocalDate.now())
+                        .build())))
+                .build();
+
+        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.save(any(Pet.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Pet result = petService.update(1L, updated);
+
+        assertThat(result.getHistoricoPeso()).hasSize(2);
+        assertThat(result.getHistoricoPeso())
+                .anySatisfy(historico -> {
+                    assertThat(historico.getPesoKg()).isEqualByComparingTo("9.25");
+                    assertThat(historico.getPet()).isSameAs(pet);
+                });
+    }
+
+    @Test
+    void update_comPesoInalterado_naoDeveDuplicarMedicao() {
+        pet.getHistoricoPeso().add(HistoricoPeso.builder()
+                .pesoKg(new BigDecimal("8.50"))
+                .dataMedicao(LocalDate.now().minusDays(1))
+                .pet(pet)
+                .build());
+        Pet updated = Pet.builder()
+                .historicoPeso(new HashSet<>(List.of(HistoricoPeso.builder()
+                        .pesoKg(new BigDecimal("8.50"))
+                        .dataMedicao(LocalDate.now())
+                        .build())))
+                .build();
+
+        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.save(any(Pet.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Pet result = petService.update(1L, updated);
+
+        assertThat(result.getHistoricoPeso()).hasSize(1);
     }
 
     @Test

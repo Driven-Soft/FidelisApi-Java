@@ -2,6 +2,7 @@ package br.com.fiap.java.FidelisApi.service;
 
 import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.EspeciePet;
+import br.com.fiap.java.FidelisApi.entity.HistoricoPeso;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Tutor;
 import br.com.fiap.java.FidelisApi.exception.BusinessException;
@@ -16,6 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -71,11 +75,24 @@ public class PetService {
         existing.setDataNascimento(update.getDataNascimento());
         existing.setStatus(update.getStatus());
         existing.setFotoUrl(update.getFotoUrl());
-        update.getHistoricoPeso().forEach(historico -> {
-            historico.setPet(existing);
-            existing.getHistoricoPeso().add(historico);
-        });
+        update.getHistoricoPeso().stream()
+                .filter(historico -> pesoFoiAlterado(existing, historico.getPesoKg()))
+                .forEach(historico -> {
+                    historico.setPet(existing);
+                    existing.getHistoricoPeso().add(historico);
+                });
         return petRepository.save(existing);
+    }
+
+    private boolean pesoFoiAlterado(Pet pet, BigDecimal pesoNovo) {
+        if (pesoNovo == null) {
+            return false;
+        }
+        return pet.getHistoricoPeso().stream()
+                .max(Comparator.comparing(HistoricoPeso::getDataMedicao))
+                .map(HistoricoPeso::getPesoKg)
+                .map(pesoAtual -> pesoAtual.compareTo(pesoNovo) != 0)
+                .orElse(true);
     }
 
     @CacheEvict(value = "pets", allEntries = true)

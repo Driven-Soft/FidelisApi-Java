@@ -4,6 +4,7 @@ import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
 import br.com.fiap.java.FidelisApi.dto.request.PetRequest;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.EspeciePet;
+import br.com.fiap.java.FidelisApi.entity.HistoricoPeso;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Usuario;
 import br.com.fiap.java.FidelisApi.mapper.PetMapper;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,7 +87,9 @@ public class PetWebController {
 
     @GetMapping("/{id}/editar")
     public String editarForm(@PathVariable Long id, Authentication authentication, Model model) {
-        Pet pet = petDaClinica(id, clinicaLogada(authentication).getId());
+        Long clinicaId = clinicaLogada(authentication).getId();
+        Pet pet = petRepository.findByIdAndClinicaIdComHistoricoPeso(id, clinicaId)
+                .orElseThrow(() -> new AccessDeniedException("Pet não pertence à clínica logada"));
 
         PetRequest request = new PetRequest();
         request.setNome(pet.getNome());
@@ -96,6 +100,10 @@ public class PetWebController {
         request.setStatus(pet.getStatus());
         request.setFotoUrl(pet.getFotoUrl());
         request.setTutorId(pet.getTutor().getId());
+        pet.getHistoricoPeso().stream()
+                .max(Comparator.comparing(HistoricoPeso::getDataMedicao))
+                .map(HistoricoPeso::getPesoKg)
+                .ifPresent(request::setPesoKg);
 
         model.addAttribute("petId", id);
         model.addAttribute("petRequest", request);

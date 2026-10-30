@@ -25,6 +25,10 @@ public interface PetRepository extends JpaRepository<Pet, Long> {
 
     Optional<Pet> findByIdAndClinicaId(Long id, Long clinicaId);
 
+    @Query("SELECT DISTINCT p FROM Pet p JOIN FETCH p.tutor LEFT JOIN FETCH p.historicoPeso " +
+           "WHERE p.id = :id AND p.clinica.id = :clinicaId")
+    Optional<Pet> findByIdAndClinicaIdComHistoricoPeso(@Param("id") Long id, @Param("clinicaId") Long clinicaId);
+
     @Query("SELECT p FROM Pet p JOIN FETCH p.tutor WHERE p.clinica.id = :clinicaId")
     Page<Pet> findByClinicaIdComTutor(@Param("clinicaId") Long clinicaId, Pageable pageable);
 
