@@ -1,0 +1,63 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Analisar Pets')}" />
+  <body>
+    <div class="container pet-list-page">
+      <br />
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center gap-2 border-bottom pb-2 mb-3"
+      >
+        <div>
+          <h2 class="mb-1">Analisar Pets</h2>
+          <p class="text-muted mb-0">Selecione um pet para consultar a análise.</p>
+        </div>
+        <div th:replace="~{fragmentos :: botao-logout}" />
+      </div>
+
+      <div class="d-flex justify-content-end mb-3">
+        <a th:href="@{/dashboard}" class="btn btn-outline-primary">
+          &larr; Voltar ao dashboard
+        </a>
+      </div>
+
+      <div class="table-panel">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Espécie</th>
+              <th>Raça</th>
+              <th>Tutor</th>
+              <th>Status</th>
+              <th class="text-center">Análise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="pet : ${pets}">
+              <td th:text="${pet.nome}"></td>
+              <td th:text="${pet.especie.rotulo}"></td>
+              <td th:text="${pet.raca}"></td>
+              <td th:text="${pet.tutor.nome}"></td>
+              <td th:text="${pet.status}"></td>
+              <td class="text-center">
+                <a
+                  class="btn btn-sm btn-outline-primary"
+                  th:href="@{/clinica/analisar-pets/{id}(id=${pet.id})}"
+                  th:attr="aria-label=${'Analisar ' + pet.nome}"
+                  title="Analisar pet"
+                >
+                  <i class="bi bi-activity" aria-hidden="true"></i>
+                </a>
+              </td>
+            </tr>
+            <tr th:if="${pets.isEmpty()}">
+              <td colspan="6">Nenhum pet cadastrado para análise.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>

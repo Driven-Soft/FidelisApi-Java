@@ -32,6 +32,10 @@
         <a th:href="@{/clinica/pets}" class="btn btn-outline-primary"
           >Gerenciar Pets</a
         >
+        <a th:href="@{/clinica/analisar-pets}" class="btn btn-outline-primary">
+          <i class="bi bi-activity" aria-hidden="true"></i>
+          Analisar Pets
+        </a>
 
         <div
           th:if="${qtdPetsEmRisco != null and qtdPetsEmRisco > 0}"
