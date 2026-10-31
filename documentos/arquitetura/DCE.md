@@ -1,8 +1,6 @@
 # Diagrama de Classes de Entidade (DCE)
 
-Este documento apresenta o Diagrama de Classes de Entidade (DCE) da aplicação FidelisApi, com base nas classes JPA do pacote `entity`, seus atributos, enums e relacionamentos.
-
-![Diagrama DCE](DCE.png)
+Este documento apresenta o Diagrama de Classes de Entidade (DCE), revisado conforme as classes JPA atuais do pacote `entity`, incluindo os relacionamentos opcionais das recomendações e dos lembretes com consultas. O Mermaid abaixo é a fonte editável e é renderizado no GitHub.
 
 ```mermaid
 classDiagram
@@ -86,6 +84,8 @@ classDiagram
         +Pet pet
         +Set~Exame~ exames
         +Set~Prescricao~ prescricoes
+        +Set~Lembrete~ lembretes
+        +Set~Recomendacao~ recomendacoes
     }
 
     class Exame {
@@ -154,6 +154,7 @@ classDiagram
         +String descricao
         +LocalDate dataRecomendacao
         +Pet pet
+        +Consulta consulta
     }
 
     class Lembrete {
@@ -164,6 +165,7 @@ classDiagram
         +LembreteStatus status
         +Tutor tutor
         +Pet pet
+        +Consulta consulta
     }
 
     class Perfil {
@@ -208,6 +210,8 @@ classDiagram
     Veterinario "1" --> "*" Vermifugacao : aplica
     Consulta "1" --> "*" Exame : contem
     Consulta "1" --> "*" Prescricao : produz
+    Consulta "0..1" --> "0..*" Recomendacao : origina
+    Consulta "0..1" --> "0..*" Lembrete : referencia
     Prescricao "1" --> "*" Medicamento : inclui
     Pet ..> SexoPet : usa
     Pet ..> PetStatus : usa
@@ -223,5 +227,6 @@ classDiagram
 - `Pet` é o centro do modelo e compõe consultas, vacinas, vermifugações, recomendações, comportamentos, histórico de peso e lembretes. Usa os enums `SexoPet` e `PetStatus`.
 - `Consulta` relaciona um `Veterinario` e um `Pet`, e agrega `Exame` e `Prescricao`.
 - `Prescricao` agrega vários `Medicamento`.
-- `Lembrete` captura compromissos para `Tutor` e `Pet`, com status controlado pelo enum `LembreteStatus`.
+- `Lembrete` captura compromissos para `Tutor` e `Pet`, pode referenciar a consulta relacionada e tem status controlado pelo enum `LembreteStatus`.
+- `Consulta` pode estar associada a vários lembretes e recomendações; esse vínculo é opcional para registros antigos ou criados fora do fluxo automático.
 - `HistoricoPeso`, `Recomendacao` e `Comportamento` guardam informações de monitoramento do `Pet`.

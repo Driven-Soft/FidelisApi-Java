@@ -45,9 +45,11 @@ cd FidelisApi-Java
 java -jar target/FidelisApi-0.0.1-SNAPSHOT.jar
 ```
 
-A aplicação sobe em **http://localhost:8080**, usando o perfil padrão com banco **H2 em memória**. As migrations do **Flyway** (`src/main/resources/db/migration`) rodam automaticamente na inicialização, criando as tabelas e inserindo os dados de teste (clínica, tutor, veterinário e usuários de login).
+A aplicação sobe em **http://localhost:8080**, usando o perfil padrão com banco **H2 em memória**. As migrations do **Flyway** (`src/main/resources/db/migration`) rodam automaticamente na inicialização, criando as tabelas e inserindo os dados de teste: clínica, tutor, veterinário, usuários de login e a pet **Luna Teste IA**, com histórico clínico fictício para demonstração.
 
-> O driver Oracle (`ojdbc11`) já está no `pom.xml` para quando o projeto for apontado para um banco Oracle real — basta trocar `spring.datasource.url`/`driver-class-name` em `application.yaml` (ou usar variáveis de ambiente/profile) e ajustar a sintaxe das migrations se necessário.
+> O driver Oracle (`ojdbc11`) está declarado para uma possível evolução, mas a aplicação e as migrations atuais foram validadas com H2. Uma migração real para Oracle exige revisar as migrations e testar a configuração; não basta trocar a URL do datasource.
+
+O banco H2 configurado é volátil: os dados são perdidos ao reiniciar a aplicação. Não o use como armazenamento permanente para dados clínicos em produção.
 
 ## 4. Login na Aplicação
 
@@ -75,11 +77,27 @@ Além da API REST, o projeto tem uma camada web com Thymeleaf:
 | `/clinica/pets/novo`                  | CLINICA     | Cadastro de novo pet                                     |
 | `/clinica/pets/{id}/editar`           | CLINICA     | Edição de pet existente                                  |
 | `/clinica/consultas/nova`             | CLINICA     | Registro de nova consulta                                |
+| `/clinica/consultas/pet/{id}`         | CLINICA     | Consultas de um pet                                      |
+| `/clinica/vacinacoes/pet/{id}`        | CLINICA     | Vacinações de um pet                                     |
 | `/clinica/consultas/{id}/confirmacao` | CLINICA     | Confirmação de consulta registrada                       |
 | `/clinica/retencao`                   | CLINICA     | Alerta de retenção/churn (pets sem consulta há 90+ dias) |
+| `/clinica/analisar-pets`              | CLINICA     | Lista de pets para análise                               |
+| `/clinica/analisar-pets/{id}`         | CLINICA     | Dados clínicos e análise do pet                          |
 | `/tutor/pets`                         | TUTOR       | Listagem dos pets do tutor logado                        |
 | `/tutor/pets/{id}`                    | TUTOR       | Detalhe/histórico de um pet do tutor                     |
+| `/cadastro/tutor`                      | Público     | Cadastro de tutor                                        |
 | `/acesso-negado`                      | Público     | Página exibida em caso de acesso não autorizado          |
+
+### Habilitar a análise de pets com IA
+
+A integração Spring AI/OpenAI é opcional e fica desabilitada por padrão. Para usá-la localmente no Windows, configure a chave como variável de ambiente do usuário e habilite o recurso:
+
+```powershell
+setx OPENAI_API_KEY "SUA_CHAVE_NOVA"
+setx FIDELIS_AI_ENABLED true
+```
+
+Crie uma chave nova no provedor, não a coloque no repositório, e abra um novo terminal (ou reinicie o VS Code) após usar `setx`. Configure os mesmos nomes como variáveis secretas no ambiente do deploy se a IA for habilitada online. Sem uma chave válida, mantenha `FIDELIS_AI_ENABLED=false`. A execução da análise envia dados clínicos do pet ao provedor OpenAI; a resposta é informativa e não substitui avaliação veterinária. A chave exposta no projeto de referência da aula não deve ser reutilizada: revogue-a/rotacione-a.
 
 ## 6. Acessar os Recursos de API e Infraestrutura
 
@@ -112,7 +130,7 @@ http://localhost:8080/actuator/info
 
 1. Importe o arquivo: `documentos/api/postman_collection.json`
 2. Defina a variável `baseUrl` como: `http://localhost:8080`
-3. A collection já cobre autenticação, perfis e os principais fluxos de CRUD/negócio (ex.: geração automática de lembrete/recomendação, alerta de retenção)
+3. A collection cobre endpoints REST e fluxos de CRUD/negócio; as telas web e a análise opcional com IA devem ser validadas pelo navegador.
 4. A API exige o perfil `CLINICA`; use Basic Auth com `clinica@fidelis.com.br` / `Senha123` antes de chamar os endpoints protegidos. O perfil `TUTOR` usa as telas web e recebe `403` na API.
 
 ## 8. Estrutura de Endpoints da API
@@ -161,9 +179,8 @@ GET http://localhost:8080/api/v1/clinicas?page=0&size=5&sort=nome&direction=ASC
 ## 10. Recursos Documentados
 
 - **Documentação Técnica**: `documentos/requisitos/REQUISITOS_TECNICOS.md`
-- **Cronograma**: `documentos/requisitos/CRONOGRAMA.md`
-- **Diagrama de Classes (DCE)**: `documentos/arquitetura/DCE.png` / `DCE.md`
-- **Diagrama Entidade-Relacionamento (DER)**: `documentos/arquitetura/DER.png` / `DER.md`
+- **Diagrama de Classes (DCE)**: `documentos/arquitetura/DCE.md` (Mermaid)
+- **Diagrama Entidade-Relacionamento (DER)**: `documentos/arquitetura/DER.md` (Mermaid)
 - **Coleção Postman**: `documentos/api/postman_collection.json`
 
 ## 11. Troubleshooting

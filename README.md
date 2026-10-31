@@ -18,15 +18,25 @@
 
 <hr/>
 
-Sistema de gestão para clínicas veterinárias, construído em Spring Boot. O projeto oferece uma **API REST** completa para cadastro e consulta de clínicas, tutores, pets, veterinários, consultas, vacinas, vermifugações, exames, prescrições, medicamentos, recomendações, lembretes e histórico de peso — além de uma **camada web (Thymeleaf)** com login e telas próprias para os perfis de Clínica e Tutor.
+## Proposta e decisões da solução
 
-**Repositório GitHub:** [https://github.com/Driven-Soft/FidelisApi-Java](https://github.com/Driven-Soft/FidelisApi-Java)
+Sistema de gestão para clínicas veterinárias, construído em Spring Boot. A Fidelis centraliza o acompanhamento de pets por clínicas e tutores, reunindo cadastro, consultas, vacinação, vermifugação e histórico clínico. A interface web oferece fluxos dedicados por perfil, enquanto a API REST dá suporte às operações administrativas. As regras de negócio evitam conflitos de consultas da mesma clínica no mesmo horário e destacam pets sem acompanhamento recente.
 
-## Vídeo de demonstração
+A tela **Analisar Pets** usa Spring AI para enviar o histórico clínico do pet a um modelo OpenAI e apresentar uma análise de apoio à triagem. A resposta é probabilística, não constitui diagnóstico ou prescrição e não substitui o médico-veterinário. A integração é opcional, exige uma chave configurada localmente/no ambiente de deploy e envia os registros clínicos do pet ao provedor.
 
-> **Link:** [Demonstração da solução FidelisApi - Driven Soft (Challenge - 2026)](https://www.youtube.com/watch?v=BTbOPOLEyM0)
+> **Repositório GitHub:** [https://github.com/Driven-Soft/FidelisApi-Java](https://github.com/Driven-Soft/FidelisApi-Java)
 
-O vídeo apresenta a página inicial, autenticação com os dois perfis, cadastro de pet, registro de consulta, geração de lembrete e recomendação, vacinação, retenção, histórico do Tutor e bloqueio de acesso entre perfis.
+## Deploy do projeto e vídeo demonstração
+
+> **Aplicação publicada no Render:** [FidelisApi-Java](https://fidelisapi-java.onrender.com)
+>
+> **Vídeo de apresentação:** [Demonstração da solução FidelisApi - Driven Soft (Challenge - 2026)](.)
+
+## Vídeo de demonstração Sprint 3 (antigo)
+
+> **Link:** [Demonstração antiga da solução FidelisApi](https://www.youtube.com/watch?v=BTbOPOLEyM0)
+
+O vídeo da Sprint 3 demonstra a página inicial, autenticação dos perfis, cadastro de pet, consultas, lembretes e recomendações, vacinação, retenção, histórico do Tutor e autorização entre perfis. Ele não substitui o vídeo de apresentação da Sprint 4 acima.
 
 ## Tecnologias
 
@@ -39,6 +49,7 @@ O vídeo apresenta a página inicial, autenticação com os dois perfis, cadastr
 - Driver Oracle `ojdbc11` declarado no `pom.xml` para uma futura configuração Oracle; a execução atual utiliza H2 e as migrations não foram validadas como implantação Oracle
 - Thymeleaf (telas web)
 - SpringDoc OpenAPI / Swagger UI
+- Spring AI 2.0.1 com OpenAI (`gpt-4o-mini`) para análise opcional de pets
 - Bean Validation (Jakarta Validation), com validadores customizados de CPF e CNPJ
 - Cache simples do Spring (`@Cacheable` / `@CacheEvict`)
 - Lombok
@@ -50,6 +61,9 @@ O vídeo apresenta a página inicial, autenticação com os dois perfis, cadastr
 - Autenticação por sessão com dois perfis de acesso: **Clínica** e **Tutor**, cada um com suas próprias telas e permissões
 - Geração automática de **lembrete** e **recomendação** ao registrar uma nova consulta
 - Alerta de **retenção/churn**: identifica pets sem consulta há 90 dias ou mais
+- Cadastro público de tutor e telas web de gerenciamento para clínica e tutor
+- Cadastro e edição de pet com histórico de peso, validação de idade por espécie e limites de peso inicial
+- Análise de pets com Spring AI, opcional e desabilitada por padrão
 - Página pública de boas-vindas em `/home`, com acesso ao login
 - Documentação interativa via Swagger UI e coleção Postman pronta para uso
 
@@ -148,7 +162,7 @@ Para executar a suíte de testes automatizados do projeto:
 ./mvnw test
 ```
 
-Os testes cobrem contexto da aplicação, mappers, services, repositórios, segurança (login/perfis/proteção de rotas), fluxos de negócio e validações de Pet, Vacinação, Consulta, Clínica, Tutor e Veterinário. A suíte atual possui 79 testes aprovados e utiliza H2 em memória.
+Os testes cobrem contexto da aplicação, mappers, services, segurança, regras de negócio e validações. A suíte executada na revisão da Sprint 4 passou com **154 testes**, sem falhas; o número pode mudar conforme novos testes forem adicionados. O provedor externo de IA não é chamado durante os testes.
 
 ## Endpoints principais
 
@@ -160,7 +174,8 @@ As rotas da API seguem o padrão `/api/v1/{recurso}`. Exemplos:
 - `POST /api/v1/vacinacoes`
 - `GET /api/v1/veterinarios`
 - `POST /api/v1/clinicas`
-- `GET /api/v1/clinicas/{id}/retencao` - pets em risco de retenção/churn (perfil Clínica)
+- Recursos REST disponíveis: `/api/v1/clinicas`, `/tutores`, `/veterinarios`, `/pets`, `/consultas`, `/exames`, `/prescricoes`, `/medicamentos`, `/vacinacoes`, `/vermifugacoes`, `/historico-pesos`, `/comportamentos`, `/recomendacoes` e `/lembretes`. Cada recurso oferece operações CRUD e listagens paginadas.
+- `GET /api/v1/clinicas/{clinicaId}/retencao` - pets em risco de retenção/churn (perfil Clínica)
 
 Leituras (`GET`) e escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil `CLINICA`. O perfil `TUTOR` utiliza a camada web autorizada.
 
@@ -169,10 +184,11 @@ Leituras (`GET`) e escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil `CLINI
 - `@Cpf` - valida CPF
 - `@Cnpj` - valida CNPJ
 - Campos obrigatórios, tamanhos e formatos de texto são validados pelo Bean Validation
-- Pets: nome, espécie, raça, data de nascimento plausível e campos obrigatórios
-- Vacinações: vacina, data de aplicação, próxima dose e coerência entre datas
-- Consultas: tipo, datas de retorno, diagnóstico, observações e vínculos obrigatórios
-- Clínica, Tutor e Veterinário: nomes, e-mails, telefones, endereços, identificadores e datas
+- Pets: nome entre 3 e 30 caracteres, espécie cachorro/gato, data de nascimento até 31 anos para cães ou 39 para gatos. No cadastro, peso inicial entre 0,1 e 157 kg para cães e 0,5 e 22 kg para gatos; na edição, o peso deve ser positivo e mudanças geram nova medição no histórico.
+- Tutores: senha entre 8 e 100 caracteres, nome com no mínimo 3 letras, telefone com DDD (10 ou 11 dígitos, com ou sem máscara) e endereço com no mínimo 4 letras e 1 número. CPF aceita entrada sem máscara e é validado.
+- Consultas: tipo e campos obrigatórios validados, data de retorno não anterior à consulta e bloqueio de outra consulta da mesma clínica na mesma data e horário, inclusive quando há veterinários diferentes.
+- Vacinações: vacina, data de aplicação e validação da coerência entre aplicação e próxima dose.
+- Clínica e Veterinário: campos obrigatórios, tamanhos e formatos de e-mail, telefone, endereço e identificadores validados de acordo com cada request.
 - Os formulários web também possuem validação nativa do navegador, mas o backend permanece como validação definitiva
 
 ## Documentação adicional
@@ -186,5 +202,6 @@ Leituras (`GET`) e escritas (`POST`/`PUT`/`PATCH`/`DELETE`) exigem perfil `CLINI
 ## Observações
 
 - A aplicação usa H2 em memória para facilitar testes e desenvolvimento, com schema controlado por migrations Flyway versionadas em `db/migration`.
+- O H2 em memória não oferece persistência entre reinicializações e não deve ser tratado como armazenamento permanente para dados clínicos em produção. A disponibilidade da URL de deploy indicada acima deve ser confirmada na plataforma antes da apresentação.
 - A organização do código segue um padrão de camadas para manter separação entre API, negócio e persistência.
 - O driver Oracle `ojdbc11` está incluído no `pom.xml`, mas a aplicação desta Sprint utiliza H2 em memória. Uma futura migração para Oracle exigirá configurar o datasource, revisar as migrations conforme o dialeto Oracle e validar o ambiente de implantação.

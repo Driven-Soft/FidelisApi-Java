@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(properties = "fidelis.analise.ia.enabled=false")
 @Transactional
 class ConsultaExclusaoIntegrationTest {
 

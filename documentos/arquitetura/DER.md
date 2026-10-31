@@ -1,8 +1,6 @@
 # Diagrama de Entidade-Relacionamento (DER)
 
-Este documento apresenta o Diagrama de Entidade-Relacionamento (DER) do banco de dados da aplicação FidelisApi, com base nas entidades JPA mapeadas no código (pacote `entity`). Ele mostra as tabelas, colunas, chaves primárias (PK), chaves estrangeiras (FK), chaves únicas (UK) e a cardinalidade dos relacionamentos.
-
-![Diagrama DER](DER.png)
+Este documento apresenta o Diagrama de Entidade-Relacionamento (DER) atualizado a partir das migrations Flyway e das entidades JPA da aplicação. O diagrama Mermaid abaixo é a fonte editável e é renderizado no GitHub.
 
 ```mermaid
 erDiagram
@@ -19,6 +17,8 @@ erDiagram
     FIDELIS_PET ||--o{ FIDELIS_COMPORTAMENTO : registra
     FIDELIS_PET ||--o{ FIDELIS_RECOMENDACAO : recebe
     FIDELIS_PET ||--o{ FIDELIS_LEMBRETE : tem
+    FIDELIS_CONSULTA |o--o{ FIDELIS_LEMBRETE : associa
+    FIDELIS_CONSULTA |o--o{ FIDELIS_RECOMENDACAO : associa
     FIDELIS_VETERINARIO ||--o{ FIDELIS_CONSULTA : realiza
     FIDELIS_VETERINARIO ||--o{ FIDELIS_VACINACAO : aplica
     FIDELIS_VETERINARIO ||--o{ FIDELIS_VERMIFUGACAO : aplica
@@ -157,6 +157,7 @@ erDiagram
         varchar descricao
         date data_recomendacao
         bigint FIDELIS_PET_id FK
+        bigint FIDELIS_CONSULTA_id FK "nullable"
     }
 
     FIDELIS_LEMBRETE {
@@ -167,6 +168,7 @@ erDiagram
         char status
         bigint FIDELIS_TUTOR_id FK
         bigint FIDELIS_PET_id FK
+        bigint FIDELIS_CONSULTA_id FK "nullable"
     }
 ```
 
@@ -181,7 +183,8 @@ erDiagram
 - **FIDELIS_EXAME**: exames vinculados a uma consulta.
 - **FIDELIS_PRESCRICAO**: prescrição médica de uma consulta, que agrega vários `FIDELIS_MEDICAMENTO`.
 - **FIDELIS_VACINACAO** e **FIDELIS_VERMIFUGACAO**: procedimentos aplicados a um `FIDELIS_PET` por um `FIDELIS_VETERINARIO`.
-- **FIDELIS_HISTORICO_PESO**, **FIDELIS_COMPORTAMENTO** e **FIDELIS_RECOMENDACAO**: registros de acompanhamento vinculados diretamente ao `FIDELIS_PET`.
-- **FIDELIS_LEMBRETE**: compromissos/tarefas vinculados a um `FIDELIS_TUTOR` e a um `FIDELIS_PET`, com status controlado (`P` = pendente, `C` = concluído).
+- **FIDELIS_HISTORICO_PESO** e **FIDELIS_COMPORTAMENTO**: registros de acompanhamento vinculados diretamente ao `FIDELIS_PET`.
+- **FIDELIS_RECOMENDACAO**: vinculada ao `FIDELIS_PET` e, opcionalmente, à consulta que a originou.
+- **FIDELIS_LEMBRETE**: vinculado a um `FIDELIS_TUTOR` e a um `FIDELIS_PET`; pode também referenciar a consulta relacionada. Status: `P` = pendente, `C` = concluído.
 
 > Observação: os relacionamentos de `FIDELIS_USUARIO` com `FIDELIS_TUTOR` e `FIDELIS_CLINICA` são opcionais (colunas FK nulas), pois um usuário se autentica apenas em um dos dois perfis (`Perfil.TUTOR` ou `Perfil.CLINICA`).

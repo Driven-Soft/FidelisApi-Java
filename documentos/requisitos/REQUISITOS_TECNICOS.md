@@ -168,7 +168,7 @@ public Clinica create(Clinica clinica) {
 
 ### Observação:
 
-- O `pom.xml` já inclui as dependências `jjwt-api`/`jjwt-impl`/`jjwt-jackson` para suportar autenticação via token (JWT) no futuro, mas a autenticação em uso atualmente é baseada em sessão (form login), não em JWT.
+- A autenticação implementada usa sessão HTTP (form login) e Basic Auth para API. JWT não faz parte da aplicação atual.
 
 ---
 
@@ -194,14 +194,17 @@ public Clinica create(Clinica clinica) {
 
 ```java
 @ExceptionHandler(ResourceNotFoundException.class)
-public ResponseEntity<ApiErrorResponse> handleResourceNotFound(
-        ResourceNotFoundException ex) {
+public ResponseEntity<ApiErrorResponse> handleNotFound(
+        ResourceNotFoundException ex, HttpServletRequest request) {
     ApiErrorResponse error = new ApiErrorResponse(
+            LocalDateTime.now(),
             HttpStatus.NOT_FOUND.value(),
+            "Resource not found",
             ex.getMessage(),
-            System.currentTimeMillis()
+            request.getRequestURI(),
+            List.of(ex.getMessage())
     );
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 }
 ```
 
@@ -319,7 +322,7 @@ public class PetController {
 
 ---
 
-## 12. Persistência em Banco de Dados (H2/Oracle) com Flyway
+## 12. Persistência em Banco de Dados com Flyway
 
 **Status:** ✓ Implementado
 
@@ -328,16 +331,23 @@ public class PetController {
 - Utiliza `Spring Data JPA` com Hibernate
 - Banco H2 em memória para desenvolvimento
 - Schema **versionado por migrations Flyway** (`src/main/resources/db/migration`), com `ddl-auto: validate` — o Hibernate não gera mais o schema, apenas valida se ele bate com as entidades
-- Suporta migração para Oracle (driver `ojdbc11` já presente no `pom.xml`), bastando ajustar `spring.datasource.url`/`driver-class-name` em `application.yaml`
+- O driver Oracle `ojdbc11` está declarado para uma possível evolução, mas as migrations e a aplicação atual foram validadas com H2; o suporte Oracle não está concluído nem pode ser habilitado apenas trocando a URL.
 
 ### Migrations existentes:
 
-| Arquivo                          | Conteúdo                                                                                                                                                                                   |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `V1__create_domain_tables.sql`   | Cria as tabelas de domínio (clínica, tutor, pet, veterinário, consulta, exame, prescrição, medicamento, vacinação, vermifugação, histórico de peso, comportamento, recomendação, lembrete) |
-| `V2__create_security_table.sql`  | Cria a tabela `FIDELIS_USUARIO`, com vínculo opcional a `FIDELIS_TUTOR` ou `FIDELIS_CLINICA`                                                                                               |
-| `V3__seed_usuarios_teste.sql`    | Insere clínica, tutor e usuários de teste (`clinica@fidelis.com.br` / `tutor@fidelis.com.br`, senha `Senha123`)                                                                            |
-| `V4__seed_veterinario_teste.sql` | Insere um veterinário de teste vinculado à clínica seed                                                                                                                                    |
+| Arquivo                                      | Conteúdo |
+| -------------------------------------------- | -------- |
+| `V1__create_domain_tables.sql`               | Cria as tabelas de domínio |
+| `V2__create_security_table.sql`              | Cria `FIDELIS_USUARIO` e restringe o vínculo conforme o perfil |
+| `V3__seed_usuarios_teste.sql`                | Insere clínica, tutor e usuários de teste (`Senha123`) |
+| `V4__seed_veterinario_teste.sql`             | Insere o veterinário de demonstração |
+| `V5__restringe_especies_pets.sql`            | Normaliza e limita as espécies a cachorro e gato |
+| `V6__vincula_lembrete_e_recomendacao_a_consulta.sql` | Acrescenta vínculo opcional de lembretes e recomendações à consulta |
+| `V7__cria_usuarios_para_tutores_existentes.sql` | Cria usuários para tutores antigos sem login |
+| `V8__seed_pet_demo_analise.sql`              | Cria Luna Teste IA e registros clínicos fictícios |
+| `V9__ajusta_horario_consultas_pet_demo.sql`  | Ajusta as consultas demonstrativas para 21:30 |
+
+> H2 está configurado em memória: reiniciar a aplicação recria o banco e reaplica as migrations. Dados cadastrados durante a execução não persistem entre reinicializações.
 
 ### Configuração:
 
@@ -379,10 +389,21 @@ spring:
 | `/login`                                                           | Público     | `LoginController`       |
 | `/acesso-negado`                                                   | Público     | `LoginController`       |
 | `/dashboard`                                                       | Autenticado | `DashboardController`   |
+| `/cadastro/tutor`                                                  | Público     | `TutorCadastroWebController` |
 | `/clinica/pets`, `/clinica/pets/novo`, `/clinica/pets/{id}/editar` | CLINICA     | `PetWebController`      |
-| `/clinica/consultas/nova`, `/clinica/consultas/{id}/confirmacao`   | CLINICA     | `ConsultaWebController` |
+| `/clinica/consultas/**`                                            | CLINICA     | `ConsultaWebController` |
+| `/clinica/vacinacoes/**`                                           | CLINICA     | `VacinacaoWebController` |
 | `/clinica/retencao`                                                | CLINICA     | `RetencaoWebController` |
+| `/clinica/analisar-pets/**`                                        | CLINICA     | `AnalisePetsWebController` |
 | `/tutor/pets`, `/tutor/pets/{id}`                                  | TUTOR       | `TutorPetWebController` |
+
+### Análise opcional de pets com Spring AI
+
+- Usa Spring AI `2.0.1` com o starter OpenAI e o modelo configurado `gpt-4o-mini`.
+- Fica desabilitada por padrão (`FIDELIS_AI_ENABLED=false`). Para habilitá-la, configure também `OPENAI_API_KEY` no ambiente; a aplicação falha explicitamente na inicialização se a funcionalidade for habilitada sem chave.
+- Ao gerar uma análise, envia ao provedor dados clínicos do pet (perfil, idade, peso, consultas, exames, prescrições, vacinação, vermifugação, comportamento, recomendações e lembretes), sem nome/e-mail/CPF/telefone/endereço do tutor.
+- A análise é probabilística, não é diagnóstico ou prescrição, e não substitui avaliação veterinária. O resultado é exibido na resposta da página e não é persistido como histórico.
+- A aplicação e a suíte de testes não fazem chamadas reais ao provedor; o teste de integração precisa de uma chave válida e pode gerar cobrança.
 
 ---
 
@@ -450,7 +471,11 @@ spring:
 - Ao registrar uma nova `Consulta` (`ConsultaService`), o sistema gera automaticamente:
   - Um `Lembrete` (status `PENDENTE`) para o retorno/acompanhamento do pet
   - Uma `Recomendacao` associada à consulta
+- A clínica não pode registrar duas consultas na mesma data e horário, mesmo com veterinários diferentes da mesma clínica; a regra também é aplicada na edição.
 - `RetencaoService` identifica pets "em risco de churn": aqueles sem nenhuma consulta registrada nos últimos 90 dias (ou que nunca tiveram consulta), expostos via `GET /api/v1/clinicas/{id}/retencao` e pela tela `/clinica/retencao`
+- No cadastro do pet, os limites de peso inicial são 0,1–157 kg para cães e 0,5–22 kg para gatos. A edição do peso exige valor positivo e registra novas medições no histórico quando o valor muda.
+- Idade máxima no cadastro: 31 anos para cães e 39 anos para gatos. O formulário e a API validam a data de nascimento.
+- O cadastro público de tutor cria também a credencial BCrypt, normaliza CPF e telefone enviados sem máscara e valida os campos de nome, endereço e senha.
 
 ---
 
@@ -467,32 +492,37 @@ spring:
   - Repositórios (JPA tests)
   - Controllers (Integration tests)
   - Segurança (login, perfis e proteção de rotas MVC/API)
-  - Fluxos de negócio (geração automática de lembrete/recomendação, alerta de retenção/churn)
+  - Fluxos de negócio (cadastro de tutor, peso/idade de pets, conflito de horário, geração de lembrete/recomendação, alerta de retenção/churn e migrations dos dados de demonstração)
 
 ### Execução:
 
 ```bash
+# Windows
+.\mvnw.cmd test
+
+# Linux/macOS
 ./mvnw test
 ```
 
-**Resultado:** BUILD SUCCESS ✓
+**Última validação da Sprint 4:** 154 testes, sem falhas ou erros. A suíte não chama o provedor externo de IA.
 
 ---
 
 ## 18. Documentação e Entrega
 
-**Status:** ✓ Implementado
+**Status:** Implementado, com itens externos da entrega ainda pendentes
 
 ### Artefatos Entregues:
 
-1. ✓ Código-fonte (GitHub)
-2. ✓ README.md com instruções
-3. ✓ Cronograma de desenvolvimento (`documentos/requisitos/CRONOGRAMA.md`)
-4. ✓ Diagramas DER e DCE (`documentos/arquitetura/`)
-5. ✓ Coleção Postman (`documentos/api/postman_collection.json`)
-6. ✓ Documentação de requisitos (este arquivo)
-7. ✓ Guia de execução (`documentos/requisitos/COMO_EXECUTAR.md`)
-8. ✓ Testes passando (Maven tests)
+1. ✓ Código-fonte e documentação no GitHub
+2. ✓ README e guia de execução
+3. ✓ Diagramas DER e DCE em Mermaid (`documentos/arquitetura/`)
+4. ✓ Coleção Postman (`documentos/api/postman_collection.json`)
+5. ✓ Documentação de requisitos e migrations SQL
+6. ✓ Suíte de testes Maven aprovada
+7. ⚠ URL pública do Render: falta inserir e validar no README
+8. ⚠ Vídeo da Sprint 4: falta inserir o link, confirmar duração máxima de 15 minutos e participação de todos os integrantes
+9. ⚠ Evidências de integração com outras disciplinas: reunir/incluir no vídeo e nos artefatos finais, se aplicável
 
 ---
 
@@ -515,11 +545,12 @@ spring:
 | Camada Web (Thymeleaf)          | ✓      | `controller/web`, telas por perfil                                  |
 | Regras de Negócio Automatizadas | ✓      | Geração de lembrete/recomendação, alerta de retenção                |
 | Design Patterns                 | ✓      | Repository, Service, Mapper, etc.                                   |
-| Documentação                    | ✓      | README, Cronograma, Requisitos, Como Executar                       |
+| Documentação                    | ✓      | README, Requisitos Técnicos, Como Executar, diagramas e collection |
 | Código no GitHub                | ✓      | Repositório público                                                 |
 | Testes Passando                 | ✓      | `./mvnw test` SUCCESS                                               |
+| Deploy e vídeo da Sprint 4      | ⚠      | URLs ainda devem ser preenchidas e verificadas                      |
 
 ---
 
-**Atualizado em:** 10/09/2026
-**Status Final:** PROJETO PRONTO PARA ENTREGA ✓
+**Atualizado em:** 30/10/2026
+**Status:** aplicação e documentação técnica revisadas; entrega ainda depende da inclusão e validação dos links do Render e do vídeo da Sprint 4.
