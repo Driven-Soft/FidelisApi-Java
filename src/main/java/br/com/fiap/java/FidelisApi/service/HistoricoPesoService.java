@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
@@ -35,6 +36,7 @@ public class HistoricoPesoService {
     }
 
     @CacheEvict(value = "historicoPeso", allEntries = true)
+    @Transactional
     public HistoricoPeso create(HistoricoPeso historicoPeso, Long petId) {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado com id " + petId));
@@ -43,6 +45,7 @@ public class HistoricoPesoService {
     }
 
     @CacheEvict(value = "historicoPeso", allEntries = true)
+    @Transactional
     public HistoricoPeso update(Long id, HistoricoPeso update) {
         HistoricoPeso existing = findById(id);
         existing.setPesoKg(update.getPesoKg());

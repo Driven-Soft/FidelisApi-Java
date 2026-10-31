@@ -194,6 +194,95 @@ class PetServiceTest {
     }
 
     @Test
+    void create_gatoNoPesoMaximoPermitido_deveSalvarPet() {
+        when(tutorRepository.findById(1L)).thenReturn(Optional.of(tutor));
+        when(clinicaRepository.findById(1L)).thenReturn(Optional.of(clinica));
+        Pet gato = petComPesoInicial(EspeciePet.GATO, "22.00");
+        when(petRepository.save(any(Pet.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Pet result = petService.create(gato, 1L, 1L);
+
+        assertThat(result.getHistoricoPeso()).hasSize(1);
+        verify(petRepository).save(gato);
+    }
+
+    @Test
+    void create_gatoAbaixoDoPesoMinimo_deveRejeitarCadastro() {
+        Pet gato = petComPesoInicial(EspeciePet.GATO, "0.49");
+
+        assertThatThrownBy(() -> petService.create(gato, 1L, 1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("entre 0.5 kg e 22 kg");
+
+        verifyNoInteractions(tutorRepository, clinicaRepository, petRepository);
+    }
+
+    @Test
+    void create_gatoAcimaDoPesoMaximo_deveRejeitarCadastro() {
+        Pet gato = petComPesoInicial(EspeciePet.GATO, "22.01");
+
+        assertThatThrownBy(() -> petService.create(gato, 1L, 1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("entre 0.5 kg e 22 kg");
+
+        verifyNoInteractions(tutorRepository, clinicaRepository, petRepository);
+    }
+
+    @Test
+    void create_gatoNoPesoMinimoPermitido_deveSalvarPet() {
+        when(tutorRepository.findById(1L)).thenReturn(Optional.of(tutor));
+        when(clinicaRepository.findById(1L)).thenReturn(Optional.of(clinica));
+        Pet gato = petComPesoInicial(EspeciePet.GATO, "0.50");
+        when(petRepository.save(any(Pet.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThat(petService.create(gato, 1L, 1L).getHistoricoPeso()).hasSize(1);
+    }
+
+    @Test
+    void create_cachorroNoPesoMaximoPermitido_deveSalvarPet() {
+        when(tutorRepository.findById(1L)).thenReturn(Optional.of(tutor));
+        when(clinicaRepository.findById(1L)).thenReturn(Optional.of(clinica));
+        Pet cachorro = petComPesoInicial(EspeciePet.CACHORRO, "157.00");
+        when(petRepository.save(any(Pet.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Pet result = petService.create(cachorro, 1L, 1L);
+
+        assertThat(result.getHistoricoPeso()).hasSize(1);
+        verify(petRepository).save(cachorro);
+    }
+
+    @Test
+    void create_cachorroAbaixoDoPesoMinimo_deveRejeitarCadastro() {
+        Pet cachorro = petComPesoInicial(EspeciePet.CACHORRO, "0.09");
+
+        assertThatThrownBy(() -> petService.create(cachorro, 1L, 1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("entre 0.1 kg e 157 kg");
+
+        verifyNoInteractions(tutorRepository, clinicaRepository, petRepository);
+    }
+
+    @Test
+    void create_cachorroAcimaDoPesoMaximo_deveRejeitarCadastro() {
+        Pet cachorro = petComPesoInicial(EspeciePet.CACHORRO, "157.01");
+
+        assertThatThrownBy(() -> petService.create(cachorro, 1L, 1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("entre 0.1 kg e 157 kg");
+
+        verifyNoInteractions(tutorRepository, clinicaRepository, petRepository);
+    }
+
+    @Test
+    void create_cachorroNoPesoMinimoPermitido_deveSalvarPet() {
+        when(tutorRepository.findById(1L)).thenReturn(Optional.of(tutor));
+        when(clinicaRepository.findById(1L)).thenReturn(Optional.of(clinica));
+        Pet cachorro = petComPesoInicial(EspeciePet.CACHORRO, "0.10");
+        when(petRepository.save(any(Pet.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThat(petService.create(cachorro, 1L, 1L).getHistoricoPeso()).hasSize(1);
+    }
+    @Test
     void update_existente_deveAtualizarCampos() {
         Pet updated = Pet.builder()
                 .nome("Max")
@@ -264,6 +353,27 @@ class PetServiceTest {
     }
 
     @Test
+    void update_comPesoAcimaDaVariacaoDoHistorico_deveAceitarNovoPeso() {
+        pet.getHistoricoPeso().add(HistoricoPeso.builder()
+                .pesoKg(new BigDecimal("8.50"))
+                .dataMedicao(LocalDate.now().minusDays(1))
+                .pet(pet)
+                .build());
+        Pet updated = Pet.builder()
+                .historicoPeso(new HashSet<>(List.of(HistoricoPeso.builder()
+                        .pesoKg(new BigDecimal("157.10"))
+                        .dataMedicao(LocalDate.now())
+                        .build())))
+                .build();
+        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(petRepository.save(any(Pet.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Pet result = petService.update(1L, updated);
+        assertThat(result.getHistoricoPeso())
+                .anySatisfy(historico -> assertThat(historico.getPesoKg()).isEqualByComparingTo("157.10"));
+    }
+
+    @Test
     void update_inexistente_deveLancarResourceNotFoundException() {
         when(petRepository.findById(99L)).thenReturn(Optional.empty());
 
@@ -290,5 +400,22 @@ class PetServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class);
 
         verify(petRepository, never()).delete(any());
+    }
+
+    private Pet petComPesoInicial(EspeciePet especie, String pesoKg) {
+        Pet petComPeso = Pet.builder()
+                .nome("Pet")
+                .especie(especie)
+                .raca("Sem raça definida")
+                .sexo(SexoPet.M)
+                .dataNascimento(LocalDate.of(2020, 1, 1))
+                .status(PetStatus.ATIVO)
+                .build();
+        petComPeso.getHistoricoPeso().add(HistoricoPeso.builder()
+                .pesoKg(new BigDecimal(pesoKg))
+                .dataMedicao(LocalDate.now())
+                .pet(petComPeso)
+                .build());
+        return petComPeso;
     }
 }

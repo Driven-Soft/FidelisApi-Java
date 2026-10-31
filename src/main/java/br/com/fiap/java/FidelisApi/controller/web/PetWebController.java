@@ -1,12 +1,14 @@
 package br.com.fiap.java.FidelisApi.controller.web;
 
 import br.com.fiap.java.FidelisApi.common.CatalogoOpcoes;
+import br.com.fiap.java.FidelisApi.common.ValidacaoPesoInicialPet;
 import br.com.fiap.java.FidelisApi.dto.request.PetRequest;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.EspeciePet;
 import br.com.fiap.java.FidelisApi.entity.HistoricoPeso;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Usuario;
+import br.com.fiap.java.FidelisApi.exception.BusinessException;
 import br.com.fiap.java.FidelisApi.mapper.PetMapper;
 import br.com.fiap.java.FidelisApi.repository.PetRepository;
 import br.com.fiap.java.FidelisApi.repository.TutorRepository;
@@ -80,7 +82,13 @@ public class PetWebController {
         }
 
         Pet pet = PetMapper.toEntity(petRequest);
-        petService.create(pet, petRequest.getTutorId(), petRequest.getClinicaId());
+        try {
+            petService.create(pet, petRequest.getTutorId(), petRequest.getClinicaId());
+        } catch (BusinessException exception) {
+            bindingResult.rejectValue("pesoKg", "peso.acima.limite", exception.getMessage());
+            prepararFormulario(model);
+            return "clinica/pets-form";
+        }
 
         return "redirect:/clinica/pets";
     }
@@ -88,8 +96,7 @@ public class PetWebController {
     @GetMapping("/{id}/editar")
     public String editarForm(@PathVariable Long id, Authentication authentication, Model model) {
         Long clinicaId = clinicaLogada(authentication).getId();
-        Pet pet = petRepository.findByIdAndClinicaIdComHistoricoPeso(id, clinicaId)
-                .orElseThrow(() -> new AccessDeniedException("Pet não pertence à clínica logada"));
+        Pet pet = petDaClinicaComHistoricoPeso(id, clinicaId);
 
         PetRequest request = new PetRequest();
         request.setNome(pet.getNome());
@@ -125,7 +132,6 @@ public class PetWebController {
         validator.validate(petRequest, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("petId", id);
             prepararFormulario(model);
             return "clinica/pets-form";
         }
@@ -154,10 +160,19 @@ public class PetWebController {
         model.addAttribute("dataMinimaNascimentoGato",
                 LocalDate.now().minusYears(EspeciePet.GATO.getIdadeMaximaAnos()));
         model.addAttribute("dataMaximaNascimento", LocalDate.now());
+        model.addAttribute("pesoMinimoGato", ValidacaoPesoInicialPet.pesoMinimo(EspeciePet.GATO));
+        model.addAttribute("pesoMinimoCachorro", ValidacaoPesoInicialPet.pesoMinimo(EspeciePet.CACHORRO));
+        model.addAttribute("pesoMaximoGato", ValidacaoPesoInicialPet.pesoMaximo(EspeciePet.GATO));
+        model.addAttribute("pesoMaximoCachorro", ValidacaoPesoInicialPet.pesoMaximo(EspeciePet.CACHORRO));
     }
 
     private Pet petDaClinica(Long id, Long clinicaId) {
         return petRepository.findByIdAndClinicaId(id, clinicaId)
+                .orElseThrow(() -> new AccessDeniedException("Pet não pertence à clínica logada"));
+    }
+
+    private Pet petDaClinicaComHistoricoPeso(Long id, Long clinicaId) {
+        return petRepository.findByIdAndClinicaIdComHistoricoPeso(id, clinicaId)
                 .orElseThrow(() -> new AccessDeniedException("Pet não pertence à clínica logada"));
     }
 

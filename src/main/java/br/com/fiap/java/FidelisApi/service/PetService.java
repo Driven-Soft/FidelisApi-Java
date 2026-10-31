@@ -1,5 +1,6 @@
 package br.com.fiap.java.FidelisApi.service;
 
+import br.com.fiap.java.FidelisApi.common.ValidacaoPesoInicialPet;
 import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.EspeciePet;
 import br.com.fiap.java.FidelisApi.entity.HistoricoPeso;
@@ -55,6 +56,7 @@ public class PetService {
     @CacheEvict(value = "pets", allEntries = true)
     @Transactional
     public Pet create(Pet pet, Long tutorId, Long clinicaId) {
+        ValidacaoPesoInicialPet.validar(pet);
         Tutor tutor = tutorRepository.findById(tutorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Tutor não encontrado com id " + tutorId));
         Clinica clinica = clinicaRepository.findById(clinicaId)

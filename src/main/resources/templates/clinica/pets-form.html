@@ -69,8 +69,8 @@
           <select class="form-control" th:field="*{sexo}" required>
             <option
               th:each="s : ${T(br.com.fiap.java.FidelisApi.entity.SexoPet).values()}"
-              th:value="${s}"
-              th:text="${s}"
+              th:value="${s.name()}"
+              th:text="${s.rotulo}"
             ></option>
           </select>
         </div>
@@ -99,7 +99,7 @@
             class="form-control"
             type="number"
             th:field="*{pesoKg}"
-            min="0.01"
+            th:attr="min=${petId == null ? (petRequest.especie == 'Gato' ? pesoMinimoGato : pesoMinimoCachorro) : '0.01'},max=${petId == null ? (petRequest.especie == 'Gato' ? pesoMaximoGato : pesoMaximoCachorro) : null},data-min-gato=${petId == null ? pesoMinimoGato : null},data-min-cachorro=${petId == null ? pesoMinimoCachorro : null},data-max-gato=${petId == null ? pesoMaximoGato : null},data-max-cachorro=${petId == null ? pesoMaximoCachorro : null}"
             step="0.01"
           />
           <span
@@ -142,6 +142,8 @@
     <script>
       const especieInput = document.getElementById("especie");
       const nascimentoInput = document.getElementById("dataNascimento");
+      const pesoInput = document.getElementById("pesoKg");
+      const cadastroInicial = pesoInput.dataset.maxGato !== undefined;
 
       function atualizarDataMinimaNascimento() {
         const especie = especieInput.value.toLowerCase();
@@ -153,6 +155,22 @@
 
       especieInput.addEventListener("change", atualizarDataMinimaNascimento);
       atualizarDataMinimaNascimento();
+
+      function atualizarLimitesPeso() {
+        if (!cadastroInicial) {
+          return;
+        }
+        const gato = especieInput.value.toLowerCase() === "gato";
+        pesoInput.min = gato
+          ? pesoInput.dataset.minGato
+          : pesoInput.dataset.minCachorro;
+        pesoInput.max = gato
+          ? pesoInput.dataset.maxGato
+          : pesoInput.dataset.maxCachorro;
+      }
+
+      especieInput.addEventListener("change", atualizarLimitesPeso);
+      atualizarLimitesPeso();
     </script>
   </body>
 </html>

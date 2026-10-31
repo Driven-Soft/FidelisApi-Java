@@ -89,4 +89,5 @@ public class Pet {
     @JsonIgnoreProperties("pet")
     @Builder.Default
     private Set<Lembrete> lembretes = new HashSet<>();
+
 }
