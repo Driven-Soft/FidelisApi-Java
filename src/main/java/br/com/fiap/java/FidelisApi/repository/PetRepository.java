@@ -5,6 +5,7 @@ import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.SexoPet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,13 +16,25 @@ import java.util.Optional;
 
 public interface PetRepository extends JpaRepository<Pet, Long> {
 
+    @Override
+    @EntityGraph(attributePaths = {"tutor", "clinica"})
+    Page<Pet> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = {"tutor", "clinica"})
     Page<Pet> findByNomeContainingIgnoreCase(String nome, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"tutor", "clinica"})
     Page<Pet> findByEspecie(EspeciePet especie, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"tutor", "clinica"})
     Page<Pet> findBySexo(SexoPet sexo, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"tutor", "clinica"})
     Page<Pet> findByNomeContainingIgnoreCaseAndEspecie(String nome, EspeciePet especie, Pageable pageable);
+
+    @Override
+    @EntityGraph(attributePaths = {"tutor", "clinica"})
+    Optional<Pet> findById(Long id);
 
     Optional<Pet> findByIdAndClinicaId(Long id, Long clinicaId);
 
