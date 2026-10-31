@@ -10,6 +10,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     Optional<Usuario> findByEmailIgnoreCase(String email);
 
-    @Query("SELECT u FROM Usuario u LEFT JOIN FETCH u.tutor LEFT JOIN FETCH u.clinica WHERE u.email = :email")
+    @Query("SELECT u FROM Usuario u LEFT JOIN FETCH u.tutor LEFT JOIN FETCH u.clinica WHERE LOWER(u.email) = LOWER(:email)")
     Optional<Usuario> findByEmailComVinculo(String email);
 }

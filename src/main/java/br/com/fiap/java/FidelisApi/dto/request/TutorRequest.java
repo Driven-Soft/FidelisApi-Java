@@ -24,7 +24,8 @@ public class TutorRequest {
 
     @NotBlank(message = "Nome do tutor é obrigatório")
     @Size(min = 3, max = 75, message = "Nome deve ter entre 3 e 75 caracteres")
-    @Pattern(regexp = "^[\\p{L}][\\p{L} .'-]*$", message = "Nome contém caracteres inválidos")
+    @Pattern(regexp = "^(?=(?:.*\\p{L}){3,})[\\p{L} .'-]+$",
+            message = "Nome deve conter no mínimo 3 letras e apenas caracteres válidos")
     private String nome;
 
     @NotBlank(message = "Email é obrigatório")
@@ -33,16 +34,19 @@ public class TutorRequest {
     private String email;
 
     @NotBlank(message = "Senha é obrigatória")
-    @Size(min = 8, max = 100)
+    @Size(min = 8, max = 100, message = "Senha deve ter entre 8 e 100 caracteres")
     private String senha;
 
     @NotBlank(message = "Telefone é obrigatório")
     @Size(min = 10, max = 15, message = "Telefone deve ter entre 10 e 15 caracteres")
-    @Pattern(regexp = "^[0-9()+ .-]+$", message = "Telefone contém caracteres inválidos")
+    @Pattern(regexp = "^(?:\\d{10,11}|\\(?\\d{2}\\)?[ .-]?\\d{4,5}[ .-]?\\d{4})$",
+            message = "Informe um telefone com DDD e 10 ou 11 dígitos")
     private String telefone;
 
     @NotBlank(message = "Endereço é obrigatório")
     @Size(min = 5, max = 255, message = "Endereço deve ter entre 5 e 255 caracteres")
+    @Pattern(regexp = "^(?=(?:.*\\p{L}){4,})(?=.*\\d)[\\p{L}\\p{N} .,'/#-]+$",
+            message = "Endereço deve conter no mínimo 4 letras e 1 número")
     private String endereco;
 
     @NotNull(message = "Data de criação é obrigatória")

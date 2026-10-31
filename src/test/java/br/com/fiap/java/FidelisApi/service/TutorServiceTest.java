@@ -1,12 +1,16 @@
 package br.com.fiap.java.FidelisApi.service;
 
 import br.com.fiap.java.FidelisApi.entity.Tutor;
+import br.com.fiap.java.FidelisApi.entity.Perfil;
+import br.com.fiap.java.FidelisApi.entity.Usuario;
 import br.com.fiap.java.FidelisApi.exception.BusinessException;
 import br.com.fiap.java.FidelisApi.exception.ResourceNotFoundException;
 import br.com.fiap.java.FidelisApi.repository.TutorRepository;
+import br.com.fiap.java.FidelisApi.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,6 +30,9 @@ class TutorServiceTest {
 
     @Mock
     private TutorRepository tutorRepository;
+
+    @Mock
+    private UsuarioRepository usuarioRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -104,16 +111,27 @@ class TutorServiceTest {
 
     @Test
     void create_dadosNovos_deveSalvar() {
-        when(tutorRepository.existsByCpf(tutor.getCpf())).thenReturn(false);
-        when(tutorRepository.existsByEmail(tutor.getEmail())).thenReturn(false);
+        when(tutorRepository.existsByCpf("123.456.789-09")).thenReturn(false);
+        when(tutorRepository.existsByEmailIgnoreCase("maria@email.com")).thenReturn(false);
         when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
-        when(tutorRepository.save(any(Tutor.class))).thenReturn(tutor);
+        when(tutorRepository.save(any(Tutor.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         Tutor result = tutorService.create(tutor);
 
         assertThat(result).isNotNull();
-        verify(passwordEncoder).encode(any());
+        assertThat(result.getCpf()).isEqualTo("123.456.789-09");
+        assertThat(result.getTelefone()).isEqualTo("(11) 98765-4321");
+        assertThat(result.getSenha()).isEqualTo("encodedPassword");
+        verify(passwordEncoder).encode("senha123");
         verify(tutorRepository).save(tutor);
+        ArgumentCaptor<Usuario> usuarioCaptor = ArgumentCaptor.forClass(Usuario.class);
+        verify(usuarioRepository).save(usuarioCaptor.capture());
+        assertThat(usuarioCaptor.getValue().getEmail()).isEqualTo("maria@email.com");
+        assertThat(usuarioCaptor.getValue().getSenha()).isEqualTo("encodedPassword");
+        assertThat(usuarioCaptor.getValue().getPerfil()).isEqualTo(Perfil.TUTOR);
+        assertThat(usuarioCaptor.getValue().getTutor()).isSameAs(result);
+        assertThat(usuarioCaptor.getValue().isAtivo()).isTrue();
     }
 
     @Test
@@ -130,13 +148,29 @@ class TutorServiceTest {
     @Test
     void create_emailDuplicado_deveLancarBusinessException() {
         when(tutorRepository.existsByCpf(tutor.getCpf())).thenReturn(false);
-        when(tutorRepository.existsByEmail(tutor.getEmail())).thenReturn(true);
+        when(tutorRepository.existsByEmailIgnoreCase(tutor.getEmail())).thenReturn(true);
 
         assertThatThrownBy(() -> tutorService.create(tutor))
                 .isInstanceOf(BusinessException.class)
                 .hasMessageContaining("Email");
 
         verify(tutorRepository, never()).save(any());
+    }
+
+    @Test
+    void create_cpfETelefoneSemFormatacao_deveNormalizarDados() {
+        tutor.setCpf("12345678909");
+        tutor.setTelefone("11987654321");
+        when(tutorRepository.existsByCpf("123.456.789-09")).thenReturn(false);
+        when(tutorRepository.existsByEmailIgnoreCase(tutor.getEmail())).thenReturn(false);
+        when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
+        when(tutorRepository.save(any(Tutor.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usuarioRepository.save(any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Tutor result = tutorService.create(tutor);
+
+        assertThat(result.getCpf()).isEqualTo("123.456.789-09");
+        assertThat(result.getTelefone()).isEqualTo("(11) 98765-4321");
     }
 
     @Test

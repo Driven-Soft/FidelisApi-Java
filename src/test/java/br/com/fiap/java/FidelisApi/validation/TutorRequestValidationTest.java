@@ -45,6 +45,42 @@ class TutorRequestValidationTest {
     }
 
     @Test
+    void deveAceitarCpfSemFormatacao() {
+        TutorRequest request = requestBase();
+        request.setCpf("12345678909");
+
+        assertThat(validator.validate(request)).isEmpty();
+    }
+
+    @Test
+    void deveAceitarTelefoneSomenteComDigitos() {
+        TutorRequest request = requestBase();
+        request.setTelefone("11987654321");
+
+        assertThat(validator.validate(request)).isEmpty();
+    }
+
+    @Test
+    void deveRejeitarEnderecoSemQuatroLetrasOuNumero() {
+        TutorRequest request = requestBase();
+        request.setEndereco("Rua");
+
+        assertThat(validator.validate(request))
+                .extracting("message")
+                .contains("Endereço deve conter no mínimo 4 letras e 1 número");
+    }
+
+    @Test
+    void deveRejeitarNomeSemTresLetras() {
+        TutorRequest request = requestBase();
+        request.setNome("A1");
+
+        assertThat(validator.validate(request))
+                .extracting("message")
+                .contains("Nome deve conter no mínimo 3 letras e apenas caracteres válidos");
+    }
+
+    @Test
     void deveRejeitarDataDeCriacaoFutura() {
         TutorRequest request = requestBase();
         request.setDataCriacao(LocalDate.now().plusDays(1));
