@@ -1,16 +1,20 @@
 package br.com.fiap.java.FidelisApi;
 
+import br.com.fiap.java.FidelisApi.service.PetAnaliseContextService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 
-@SpringBootTest
+@SpringBootTest(properties = "fidelis.analise.ia.enabled=false")
 class FidelisApiApplicationTests {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private PetAnaliseContextService petAnaliseContextService;
 
 	@Test
 	void contextLoads() {
@@ -38,6 +42,27 @@ class FidelisApiApplicationTests {
 				  AND EXTRACT(HOUR FROM consulta.data_hora) = 21
 				  AND EXTRACT(MINUTE FROM consulta.data_hora) = 30
 				""", Integer.class));
+	}
+
+	@Test
+	void contextoDeAnaliseIncluiDadosClinicosSemDadosDoTutor() {
+		var pet = jdbcTemplate.queryForMap("""
+				SELECT pet.id, pet.FIDELIS_CLINICA_id
+				FROM FIDELIS_PET pet
+				JOIN FIDELIS_TUTOR tutor ON tutor.id = pet.FIDELIS_TUTOR_id
+				WHERE tutor.email = 'tutor.teste@fidelis.com.br'
+				  AND pet.nome = 'Luna Teste IA'
+				""");
+		String contexto = petAnaliseContextService.construirContexto(
+				((Number) pet.get("ID")).longValue(),
+				((Number) pet.get("FIDELIS_CLINICA_ID")).longValue());
+
+		Assertions.assertTrue(contexto.contains("Nome: Luna Teste IA"));
+		Assertions.assertTrue(contexto.contains("Espécie: Cachorro"));
+		Assertions.assertTrue(contexto.contains("V8"));
+		Assertions.assertTrue(contexto.contains("12.40"));
+		Assertions.assertTrue(contexto.contains("Consulta de rotina"));
+		Assertions.assertFalse(contexto.contains("Tutor Teste"));
 	}
 
 	private int contar(String tabela) {

@@ -1,6 +1,12 @@
 spring:
   application:
     name: FidelisApi
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY:}
+      chat:
+        model: gpt-4o-mini
+        temperature: 0.2
   jackson: {}
   datasource:
     url: jdbc:h2:mem:fidelisdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -26,6 +32,10 @@ spring:
       path: /h2-console
   cache:
     type: simple
+fidelis:
+  analise:
+    ia:
+      enabled: ${FIDELIS_AI_ENABLED:false}
 server:
   port: ${PORT:8080}
 springdoc:

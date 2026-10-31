@@ -26,8 +26,44 @@
       <section class="alert alert-info" role="status">
         <h3 class="h5">Análise com IA</h3>
         <p class="mb-0">
-          A integração com Spring AI será conectada na próxima etapa. Nenhum
-          resultado clínico foi gerado ainda.
+          A análise é um apoio informativo, não substitui a avaliação de um
+          médico-veterinário. Os dados clínicos do pet serão enviados ao
+          provedor de IA configurado.
+        </p>
+      </section>
+
+      <section class="table-panel p-3 mb-3">
+        <h3 class="h5">Resultado da análise</h3>
+        <div
+          class="alert alert-warning"
+          role="alert"
+          th:if="${erroAnalise != null}"
+          th:text="${erroAnalise}"
+        ></div>
+        <p
+          class="mb-3"
+          style="white-space: pre-wrap"
+          th:if="${resultadoAnalise != null}"
+          th:text="${resultadoAnalise}"
+        ></p>
+        <p
+          class="text-muted mb-3"
+          th:if="${resultadoAnalise == null and erroAnalise == null}"
+        >
+          Ainda não foi gerada uma análise para este pet.
+        </p>
+        <form
+          th:if="${analiseDisponivel}"
+          th:action="@{/clinica/analisar-pets/{id}(id=${pet.id})}"
+          method="post"
+        >
+          <button type="submit" class="btn btn-info text-white">
+            <i class="bi bi-activity" aria-hidden="true"></i>
+            Gerar análise
+          </button>
+        </form>
+        <p class="text-muted mb-0" th:unless="${analiseDisponivel}">
+          A integração ainda não está habilitada neste ambiente.
         </p>
       </section>
 

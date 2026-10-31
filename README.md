@@ -81,6 +81,17 @@ O projeto já está configurado para rodar com H2 em memória no arquivo `src/ma
 - Tela de login: `http://localhost:8080/login`
 - Página pública: `http://localhost:8080/home`
 
+### Análise de pets com IA (opcional)
+
+A análise usa Spring AI com o modelo OpenAI `gpt-4o-mini` e fica desabilitada por padrão. Para habilitá-la no Windows, configure a chave como variável de ambiente do usuário e ative o recurso:
+
+```powershell
+setx OPENAI_API_KEY "SUA_CHAVE_NOVA"
+setx FIDELIS_AI_ENABLED true
+```
+
+Crie uma chave nova no provedor, não a compartilhe no código nem em commits, e abra um novo terminal após usar `setx`. Os dados clínicos do pet são enviados ao provedor para gerar a resposta. A análise é informativa e não substitui a avaliação de um médico-veterinário.
+
 ## Como executar
 
 Para instruções detalhadas de execução, veja: **[COMO_EXECUTAR.md](documentos/requisitos/COMO_EXECUTAR.md)**
