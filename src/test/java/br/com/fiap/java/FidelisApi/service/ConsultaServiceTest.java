@@ -1,6 +1,7 @@
 package br.com.fiap.java.FidelisApi.service;
 
 import br.com.fiap.java.FidelisApi.entity.*;
+import br.com.fiap.java.FidelisApi.exception.BusinessException;
 import br.com.fiap.java.FidelisApi.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -33,12 +35,14 @@ class ConsultaServiceTest {
     private Tutor tutor;
     private Pet pet;
     private Veterinario veterinario;
+    private Clinica clinica;
 
     @BeforeEach
     void setUp() {
+        clinica = Clinica.builder().id(1L).nome("Clínica").build();
         tutor = Tutor.builder().id(1L).nome("João Silva").build();
         pet = Pet.builder().id(1L).nome("Rex").tutor(tutor).build();
-        veterinario = Veterinario.builder().id(1L).nome("Dra. Ana").build();
+        veterinario = Veterinario.builder().id(1L).nome("Dra. Ana").clinica(clinica).build();
     }
 
     @Test
@@ -106,5 +110,39 @@ class ConsultaServiceTest {
         assertThat(recomendacao.getTipo()).isEqualTo("Cuidado Pós-Consulta");
         assertThat(recomendacao.getDescricao()).contains("mancar na pata traseira");
         assertThat(recomendacao.getPet()).isEqualTo(pet);
+    }
+
+    @Test
+    void deveImpedirCriacaoDeConsultaNoHorarioOcupadoNaClinica() {
+        Consulta consulta = Consulta.builder()
+                .dataHora(LocalDateTime.of(2026, 1, 10, 10, 0))
+                .tipo("Checkup")
+                .build();
+        when(veterinarioRepository.findById(1L)).thenReturn(Optional.of(veterinario));
+        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(consultaRepository.existeConflitoDeHorario(1L, consulta.getDataHora(), null)).thenReturn(true);
+
+        assertThatThrownBy(() -> consultaService.create(consulta, 1L, 1L))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("já possui uma consulta");
+
+        verify(consultaRepository, never()).save(any(Consulta.class));
+        verifyNoInteractions(lembreteRepository, recomendacaoRepository);
+    }
+
+    @Test
+    void devePermitirCriacaoEmOutroHorario() {
+        Consulta consulta = Consulta.builder()
+                .dataHora(LocalDateTime.of(2026, 1, 10, 11, 0))
+                .tipo("Checkup")
+                .build();
+        when(veterinarioRepository.findById(1L)).thenReturn(Optional.of(veterinario));
+        when(petRepository.findById(1L)).thenReturn(Optional.of(pet));
+        when(consultaRepository.existeConflitoDeHorario(1L, consulta.getDataHora(), null)).thenReturn(false);
+        when(consultaRepository.save(any(Consulta.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        assertThat(consultaService.create(consulta, 1L, 1L)).isSameAs(consulta);
+
+        verify(consultaRepository).save(consulta);
     }
 }

@@ -13,6 +13,13 @@ import java.util.Optional;
 
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 
+    @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM Consulta c " +
+           "WHERE c.veterinario.clinica.id = :clinicaId AND c.dataHora = :dataHora " +
+           "AND (:consultaId IS NULL OR c.id <> :consultaId)")
+    boolean existeConflitoDeHorario(@Param("clinicaId") Long clinicaId,
+                                    @Param("dataHora") LocalDateTime dataHora,
+                                    @Param("consultaId") Long consultaId);
+
     Page<Consulta> findByTipoContainingIgnoreCase(String tipo, Pageable pageable);
 
     @Query("select c from Consulta c where (:inicio is null or c.dataHora >= :inicio) and (:fim is null or c.dataHora <= :fim)")

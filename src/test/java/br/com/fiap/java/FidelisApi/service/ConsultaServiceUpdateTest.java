@@ -1,11 +1,13 @@
 package br.com.fiap.java.FidelisApi.service;
 
 import br.com.fiap.java.FidelisApi.entity.Consulta;
+import br.com.fiap.java.FidelisApi.entity.Clinica;
 import br.com.fiap.java.FidelisApi.entity.Lembrete;
 import br.com.fiap.java.FidelisApi.entity.LembreteStatus;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Recomendacao;
 import br.com.fiap.java.FidelisApi.entity.Veterinario;
+import br.com.fiap.java.FidelisApi.exception.BusinessException;
 import br.com.fiap.java.FidelisApi.exception.ResourceNotFoundException;
 import br.com.fiap.java.FidelisApi.repository.ConsultaRepository;
 import br.com.fiap.java.FidelisApi.repository.LembreteRepository;
@@ -55,10 +57,12 @@ class ConsultaServiceUpdateTest {
     private Veterinario veterinarioAtual;
     private Consulta existente;
     private Consulta alteracoes;
+    private Clinica clinica;
 
     @BeforeEach
     void setUp() {
-        veterinarioAtual = Veterinario.builder().id(1L).nome("Dra. Ana").build();
+        clinica = Clinica.builder().id(1L).nome("Clínica").build();
+        veterinarioAtual = Veterinario.builder().id(1L).nome("Dra. Ana").clinica(clinica).build();
         existente = Consulta.builder()
                 .id(10L)
                 .dataHora(LocalDateTime.of(2026, 1, 10, 9, 0))
@@ -78,7 +82,7 @@ class ConsultaServiceUpdateTest {
 
     @Test
     void deveAtualizarCamposETrocarOVeterinario() {
-        Veterinario novo = Veterinario.builder().id(2L).nome("Dr. Bruno").build();
+        Veterinario novo = Veterinario.builder().id(2L).nome("Dr. Bruno").clinica(clinica).build();
         when(consultaRepository.findById(10L)).thenReturn(Optional.of(existente));
         when(veterinarioRepository.findById(2L)).thenReturn(Optional.of(novo));
         when(consultaRepository.save(any(Consulta.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -101,6 +105,18 @@ class ConsultaServiceUpdateTest {
         assertThatThrownBy(() -> consultaService.update(10L, alteracoes, 99L))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessageContaining("99");
+
+        verify(consultaRepository, never()).save(any());
+    }
+
+    @Test
+    void deveImpedirAtualizacaoParaHorarioOcupadoNaClinica() {
+        when(consultaRepository.findById(10L)).thenReturn(Optional.of(existente));
+        when(consultaRepository.existeConflitoDeHorario(1L, alteracoes.getDataHora(), 10L)).thenReturn(true);
+
+        assertThatThrownBy(() -> consultaService.update(10L, alteracoes))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("já possui uma consulta");
 
         verify(consultaRepository, never()).save(any());
     }

@@ -8,6 +8,7 @@ import br.com.fiap.java.FidelisApi.entity.Lembrete;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Recomendacao;
 import br.com.fiap.java.FidelisApi.entity.Usuario;
+import br.com.fiap.java.FidelisApi.exception.BusinessException;
 import br.com.fiap.java.FidelisApi.mapper.ConsultaMapper;
 import br.com.fiap.java.FidelisApi.repository.ConsultaRepository;
 import br.com.fiap.java.FidelisApi.repository.LembreteRepository;
@@ -90,8 +91,15 @@ public class ConsultaWebController {
             return "clinica/consultas-form";
         }
 
-        Consulta consulta = consultaService.create(
-                ConsultaMapper.toEntity(request), request.getVeterinarioId(), request.getPetId());
+        Consulta consulta;
+        try {
+            consulta = consultaService.create(
+                    ConsultaMapper.toEntity(request), request.getVeterinarioId(), request.getPetId());
+        } catch (BusinessException exception) {
+            bindingResult.rejectValue("dataHora", "consulta.horario.ocupado", exception.getMessage());
+            prepararFormulario(clinicaId, request, model);
+            return "clinica/consultas-form";
+        }
 
         return "redirect:/clinica/consultas/" + consulta.getId() + "/confirmacao";
     }
@@ -142,7 +150,13 @@ public class ConsultaWebController {
             return "clinica/consultas-form";
         }
 
-        consultaService.update(id, ConsultaMapper.toEntity(request), request.getVeterinarioId());
+        try {
+            consultaService.update(id, ConsultaMapper.toEntity(request), request.getVeterinarioId());
+        } catch (BusinessException exception) {
+            bindingResult.rejectValue("dataHora", "consulta.horario.ocupado", exception.getMessage());
+            prepararEdicao(clinicaId, id, pet, request, model);
+            return "clinica/consultas-form";
+        }
 
         return "redirect:/clinica/consultas/pet/" + pet.getId() + "?sucesso=atualizada";
     }

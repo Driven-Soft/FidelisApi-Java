@@ -6,6 +6,7 @@ import br.com.fiap.java.FidelisApi.entity.LembreteStatus;
 import br.com.fiap.java.FidelisApi.entity.Pet;
 import br.com.fiap.java.FidelisApi.entity.Recomendacao;
 import br.com.fiap.java.FidelisApi.entity.Veterinario;
+import br.com.fiap.java.FidelisApi.exception.BusinessException;
 import br.com.fiap.java.FidelisApi.exception.ResourceNotFoundException;
 import br.com.fiap.java.FidelisApi.repository.ConsultaRepository;
 import br.com.fiap.java.FidelisApi.repository.LembreteRepository;
@@ -54,6 +55,7 @@ public class ConsultaService {
         Pet pet = petRepository.findById(petId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pet não encontrado com id " + petId));
 
+        validarDisponibilidade(consulta, veterinario, null);
         consulta.setVeterinario(veterinario);
         consulta.setPet(pet);
         Consulta salva = consultaRepository.save(consulta);
@@ -67,6 +69,7 @@ public class ConsultaService {
     @CacheEvict(value = "consultas", allEntries = true)
     public Consulta update(Long id, Consulta update) {
         Consulta existing = findById(id);
+        validarDisponibilidade(update, existing.getVeterinario(), id);
         aplicarAlteracoes(existing, update);
         sincronizarGerados(existing);
         return consultaRepository.save(existing);
@@ -76,8 +79,10 @@ public class ConsultaService {
     @CacheEvict(value = "consultas", allEntries = true)
     public Consulta update(Long id, Consulta update, Long veterinarioId) {
         Consulta existing = findById(id);
-        existing.setVeterinario(veterinarioRepository.findById(veterinarioId)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinário não encontrado com id " + veterinarioId)));
+        Veterinario veterinario = veterinarioRepository.findById(veterinarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinário não encontrado com id " + veterinarioId));
+        validarDisponibilidade(update, veterinario, id);
+        existing.setVeterinario(veterinario);
         aplicarAlteracoes(existing, update);
         sincronizarGerados(existing);
         return consultaRepository.save(existing);
@@ -96,6 +101,13 @@ public class ConsultaService {
         existing.setDiagnostico(update.getDiagnostico());
         existing.setObservacoes(update.getObservacoes());
         existing.setDataRetorno(update.getDataRetorno());
+    }
+
+    private void validarDisponibilidade(Consulta consulta, Veterinario veterinario, Long consultaId) {
+        Long clinicaId = veterinario.getClinica().getId();
+        if (consultaRepository.existeConflitoDeHorario(clinicaId, consulta.getDataHora(), consultaId)) {
+            throw new BusinessException("A clínica já possui uma consulta agendada nesta data e horário");
+        }
     }
 
     private void gerarLembreteERecomendacao(Consulta consulta, Pet pet) {
