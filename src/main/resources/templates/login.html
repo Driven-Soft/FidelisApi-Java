@@ -17,6 +17,10 @@
             Logout efetuado com sucesso.
           </div>
 
+          <div th:if="${param.cadastro}" class="alert alert-success">
+            Cadastro realizado. Entre com seu e-mail e senha.
+          </div>
+
           <form th:action="@{/login}" method="post">
             <label class="form-label" for="email">E-mail</label>
             <input
@@ -38,6 +42,11 @@
             />
             <button type="submit" class="btn btn-primary w-100">Entrar</button>
           </form>
+
+          <p class="text-center mt-3 mb-0">
+            Ainda não tem conta?
+            <a th:href="@{/cadastro/tutor}">Cadastre-se como tutor</a>
+          </p>
 
           <div th:if="${param.falha}" class="alert alert-danger mt-3 mb-0">
             E-mail e/ou senha inválidos.

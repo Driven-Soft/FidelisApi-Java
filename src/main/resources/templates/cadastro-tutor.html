@@ -1,0 +1,102 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragmentos :: cabecalho('Fidelis - Cadastro de Tutor')}" />
+  <body>
+    <main class="container py-4" style="max-width: 600px">
+      <h1 class="h2 mb-3">Cadastro de tutor</h1>
+      <p class="text-muted">Preencha seus dados para criar sua conta.</p>
+
+      <form th:action="@{/cadastro/tutor}" th:object="${tutorRequest}" method="post">
+        <div class="mb-3">
+          <label class="form-label" for="nome">Nome completo</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{nome}"
+            autocomplete="name"
+            minlength="3"
+            maxlength="75"
+            required
+          />
+          <span class="text-danger" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="cpf">CPF</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{cpf}"
+            autocomplete="off"
+            maxlength="14"
+            placeholder="000.000.000-00"
+            required
+          />
+          <span class="text-danger" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="email">E-mail</label>
+          <input
+            class="form-control"
+            type="email"
+            th:field="*{email}"
+            autocomplete="email"
+            maxlength="75"
+            required
+          />
+          <span class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="senha">Senha</label>
+          <input
+            class="form-control"
+            type="password"
+            th:field="*{senha}"
+            autocomplete="new-password"
+            minlength="8"
+            maxlength="100"
+            required
+          />
+          <span class="text-danger" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="telefone">Telefone</label>
+          <input
+            class="form-control"
+            type="tel"
+            th:field="*{telefone}"
+            autocomplete="tel"
+            minlength="10"
+            maxlength="15"
+            required
+          />
+          <span class="text-danger" th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="endereco">Endereço</label>
+          <input
+            class="form-control"
+            type="text"
+            th:field="*{endereco}"
+            autocomplete="street-address"
+            minlength="5"
+            maxlength="255"
+            required
+          />
+          <span class="text-danger" th:if="${#fields.hasErrors('endereco')}" th:errors="*{endereco}"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Criar conta</button>
+      </form>
+
+      <p class="text-center mt-3 mb-0">
+        Já tem uma conta? <a th:href="@{/login}">Entrar</a>
+      </p>
+    </main>
+    <script th:replace="~{fragmentos :: bootstrap-script}" />
+  </body>
+</html>
