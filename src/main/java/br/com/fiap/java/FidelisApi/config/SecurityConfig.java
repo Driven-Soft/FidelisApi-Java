@@ -31,7 +31,8 @@ public class SecurityConfig {
                     "/", "/home",
                     "/login", "/cadastro/tutor", "/acesso-negado",
                     "/css/**", "/js/**", "/images/**",
-                    "/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**",
+                    "/swagger-ui/**", "/swagger-ui.html",
+                    "/v3/api-docs", "/v3/api-docs/**",
                     "/h2-console/**",
                     "/actuator/health", "/actuator/info"
                 ).permitAll()
