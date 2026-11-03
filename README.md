@@ -30,7 +30,7 @@ A tela **Analisar Pets** usa Spring AI para enviar o histórico clínico do pet 
 
 > **Aplicação publicada no Render:** [FidelisApi-Java](https://fidelisapi-java.onrender.com)
 >
-> **Vídeo de apresentação:** [Demonstração da solução FidelisApi - Driven Soft (Challenge - 2026)](.)
+> **Vídeo de apresentação:** [Demonstração da solução FidelisApi - Driven Soft (Challenge 2 | 2026)](https://www.youtube.com/watch?v=Uh9tMj9W-fk)
 
 ## Vídeo de demonstração Sprint 3 (antigo)
 
